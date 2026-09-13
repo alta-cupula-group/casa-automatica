@@ -1,6 +1,7 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: aprovada
-> Condutor aprovou: 2026-09-12 · Operador aprovou: 2026-09-12
+> Estado: aguardando operador
+> Condutor aprovou: 2026-09-12 · Operador aprovou: —
+> Reaberto em 2026-09-12 depois da rodada 1. Ver `## Alterações`.
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M0.1-monorepo-base`
@@ -32,13 +33,12 @@ medidas juntas, rodando.
 | `prettier` | 3.9.6 | `devDependencies` da raiz |
 | `typescript-eslint` | 8.70.0 | `dependencies` de `packages/config` |
 | `eslint-config-prettier` | 10.1.8 | `dependencies` de `packages/config` |
-| `globals` | 16.5.0 | `dependencies` de `packages/config` |
 | `vitest` | 5.0.0 | `devDependencies` de cada pacote que tem teste |
 | `vite` | 8.3.0 | `devDependencies` de `apps/web` |
 | `@vitejs/plugin-react` | 6.1.1 | `devDependencies` de `apps/web` |
 | `react` e `react-dom` | 19.3.0 | `dependencies` de `apps/web` |
 | `@testing-library/react` | 16.3.0 | `devDependencies` de `apps/web` |
-| `@types/node` | 26.5.1 | `devDependencies` de `apps/api` e `packages/shared` |
+| `@types/node` | 26.5.1 | `devDependencies` de `apps/api`. Só ali: o código de `packages/shared` não usa nada do Node |
 | `@types/react` e `@types/react-dom` | a versão que casa com React 19.3.0 | `devDependencies` de `apps/web` |
 | `jsdom` | a mais nova estável | `devDependencies` de `apps/web` |
 
@@ -62,16 +62,20 @@ resolve a versão do pnpm é o campo `packageManager`, lido pelo próprio pnpm. 
 
 ### Scripts
 
-Os quatro scripts ficam em **todos** os quatro pacotes, `packages/config` incluído. Isto
-não é zelo: `pnpm -r <script>` sai com código 0 quando alguns pacotes têm o script e
-outros não, então um pacote sem `test` deixa o DoD verde sem testar nada.
+Os três pacotes de produto têm os quatro scripts. `packages/config` tem só `lint`, porque
+ele não tem TypeScript nenhum: o único fonte dele é `eslint.base.js`, que é JavaScript e
+mora na raiz do pacote. Dar `build` e `typecheck` a ele só produziria verde vazio.
+
+`pnpm -r <script>` sai com código 0 quando alguns pacotes têm o script e outros não. Quem
+protege contra pacote esquecido é o item 8 do DoD, que roda os comandos e confere quais
+pacotes de fato apareceram na saída.
 
 | Script | Onde | Comando |
 |---|---|---|
-| `build` | cada pacote | `tsc -p tsconfig.build.json` em `api`, `shared` e `config`. Em `web`: `tsc -p tsconfig.json --noEmit && vite build` |
-| `lint` | cada pacote | `eslint .` |
-| `typecheck` | cada pacote | `tsc -p tsconfig.json --noEmit` |
-| `test` | cada pacote | `vitest run`. Em `packages/config`, que não tem teste, use `vitest run --passWithNoTests` |
+| `build` | `api`, `web`, `shared` | `tsc -p tsconfig.build.json` em `api` e `shared`. Em `web`: `tsc -p tsconfig.json --noEmit && vite build` |
+| `lint` | os quatro pacotes | `eslint .` |
+| `typecheck` | `api`, `web`, `shared` | `tsc -p tsconfig.json --noEmit` |
+| `test` | `api`, `web`, `shared` | `vitest run` |
 | `format` e `format:check` | só a raiz | `prettier --write .` e `prettier --check .` |
 
 A raiz reexporta `build`, `lint`, `typecheck` e `test` como `pnpm -r <script>`. A
@@ -139,6 +143,24 @@ exclua os testes, deixa erro de tipo dentro de teste passar despercebido.
 }
 ```
 
+`apps/api` acrescenta `"types": ["node"]` ao `tsconfig.json`. O TypeScript 6 não inclui
+mais sozinho os pacotes de `node_modules/@types`, e sem esse campo `process` e o espaço de
+nomes `NodeJS` não existem para o compilador.
+
+```json
+// apps/api/tsconfig.json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*"]
+}
+```
+
 `apps/web` é exceção, porque quem constrói é o Vite:
 
 ```json
@@ -179,12 +201,24 @@ import { base } from '@casa/config/eslint';
 export default base;
 ```
 
-O `.prettierignore` é obrigatório. Sem ele, `pnpm format:check` reprova por causa do
-`pnpm-lock.yaml`, que é arquivo gerado.
+O `.prettierignore` é obrigatório, e os documentos ficam fora dele. O `pnpm-lock.yaml` é
+gerado. Os arquivos `.md` são escritos à mão, em pt-BR, e o Prettier reescreve as tabelas
+deles. O `format:check` governa código, não documento.
 
 ```
 pnpm-lock.yaml
 dist/
+*.md
+```
+
+O `prettier.config.js` fixa o estilo. Aspas simples no código, aspas duplas no YAML, que é
+o que os blocos deste contrato usam.
+
+```js
+export default {
+  singleQuote: true,
+  overrides: [{ files: ['*.yaml', '*.yml'], options: { singleQuote: false } }],
+};
 ```
 
 ### Código dos pacotes
@@ -210,8 +244,9 @@ O `package.json` de `packages/shared` aponta `exports` para o `dist`:
 // src/config.ts
 export type Config = { port: number; nodeEnv: string };
 export function loadConfig(env: NodeJS.ProcessEnv): Config;
-// port vem de PORT, padrão 3000. nodeEnv vem de NODE_ENV, padrão 'development'.
-// port inválido, como '' ou 'abc', é erro lançado com mensagem em pt-BR.
+// port vem de PORT. Ausente ou vazio vira 3000, porque o .env.example vai sem valor e o
+// README manda copiá-lo. Valor não numérico é erro lançado com mensagem em pt-BR.
+// nodeEnv vem de NODE_ENV. Ausente ou vazio vira 'development'.
 
 // src/index.ts
 // chama loadConfig(process.env), imprime uma linha e sai com código 0:
@@ -242,9 +277,11 @@ export default defineConfig({
 
 ### Ambiente
 
-A API lê o `.env` com `--env-file-if-exists`, recurso do próprio Node 26. Nada de
-`dotenv`. O web lê por `import.meta.env.VITE_*`, e o Vite lê `apps/web/.env`, nunca o
-`.env` da raiz.
+Nesta unidade nada lê arquivo `.env`. A API lê `process.env`, e só. Carregar `.env` é
+assunto do M2, e o Node 26 já traz `--env-file-if-exists` para isso, sem `dotenv`. O web lê
+por `import.meta.env.VITE_*`, e o Vite lê `apps/web/.env`, nunca o `.env` da raiz.
+
+Os dois `cp` do README existem para preparar o M2 e para provar que o exemplo é copiável.
 
 | Arquivo | Variável | Comentário em pt-BR |
 |---|---|---|
@@ -343,10 +380,34 @@ gerado pelo gerenciador e entra versionado.
 | `packages/shared/src/index.test.ts` | criar |
 | `packages/config/package.json` | criar |
 | `packages/config/eslint.base.js` | criar |
+| `packages/config/eslint.config.js` | criar |
 | `docs/fase 1/unidades/M0.1-monorepo-base/execucao.md` | criar |
 
 Nomes dos pacotes: `@casa/api`, `@casa/web`, `@casa/shared`, `@casa/config`. Todos com
 `"private": true` e `"type": "module"`.
+
+## Rodada 2
+
+A rodada 1 criou todos os arquivos da lista acima, no commit `bf241ad` da branch
+`unidade/M0.1-monorepo-base`, e parou porque o contrato tinha três defeitos. Os defeitos
+foram corrigidos neste documento e estão na seção `## Alterações`.
+
+A rodada 2 parte do que já está lá e muda exatamente isto:
+
+| # | Arquivo | Mudança |
+|---|---|---|
+| 1 | `packages/config/package.json` | Fica só com o script `lint`. Saem `build`, `typecheck` e `test`. Saem as dependências `globals` e `vitest` |
+| 2 | `packages/config/eslint.config.js` | Criar, com as duas linhas do modelo |
+| 3 | `apps/api/tsconfig.json` | Acrescentar `"types": ["node"]` |
+| 4 | `apps/api/package.json` | Nada muda. `@types/node` continua aqui |
+| 5 | `packages/shared/package.json` | Remover `@types/node`, que não é usado |
+| 6 | `.prettierignore` | Acrescentar `*.md` |
+| 7 | `prettier.config.js` | Deixar igual ao bloco fixado neste contrato |
+| 8 | `apps/api/src/config.ts` | `PORT` e `NODE_ENV` ausentes **ou vazios** caem no padrão. Só valor não numérico em `PORT` é erro |
+| 9 | `apps/api/src/config.test.ts` | Cobrir o valor vazio, além do ausente, do válido e do inválido |
+| 10 | `README.md` | Tirar a menção a `--env-file-if-exists`, porque nesta unidade nada lê arquivo `.env` |
+
+Nenhum outro arquivo muda. O `pnpm-lock.yaml` acompanha a remoção das dependências.
 
 ## Fora deste contrato
 
@@ -357,6 +418,9 @@ Nomes dos pacotes: `@casa/api`, `@casa/web`, `@casa/shared`, `@casa/config`. Tod
 - Manifest, service worker, ícone, roteamento, i18n, qualquer tela de produto. Isso é o M8.
 - `.mcp.json` real. Ele fica fora do repositório.
 - Alterar `docs/`, `.claude/` ou qualquer documento de outra unidade.
+- Manter `docs/fase 1/estado.md`. Quem faz isso é o condutor. O executor escreve o
+  cabeçalho do próprio `execucao.md` e para por aí. O item A4 do DoD da fase não é dele.
+- Reformatar documento existente com o Prettier.
 - Trocar qualquer versão da tabela por uma mais nova, mesmo que exista.
 
 ## Definition of Done
@@ -373,26 +437,29 @@ roda a partir da raiz de um clone limpo, com `pnpm install --frozen-lockfile` fe
 | 5 | Testes | `pnpm -r test` sai com 0, com um arquivo de teste passando em `apps/api`, um em `apps/web` e um em `packages/shared` |
 | 6 | Formatação | `pnpm format:check` sai com 0 |
 | 7 | A API roda | `node apps/api/dist/index.js` imprime `api ok port=3000 sample=10,99` e sai com 0. `pnpm --filter @casa/api start` faz o mesmo |
-| 8 | Nenhum pacote fica de fora do `pnpm -r` | O bloco de verificação abaixo sai com 0 |
+| 8 | Nenhum pacote fica de fora do `pnpm -r` | O bloco de verificação abaixo sai com 0. Ele roda os comandos e confere quais pacotes apareceram na saída, em vez de contar scripts no `package.json` |
 | 9 | Erro de tipo dentro de teste reprova | Inserir `const x: number = 'texto';` em `packages/shared/src/index.test.ts`, rodar `pnpm --filter @casa/shared typecheck`, ver o erro `TS2322`, desfazer. A saída dos dois passos vai para `execucao.md` |
 | 10 | Árvore limpa depois do build | `git status --porcelain` não imprime nada depois de `pnpm install` e `pnpm -r build` |
 | 11 | Nada de segredo nem de configuração local versionada | `git ls-files` não lista `.env`, `.env.local` nem `.mcp.json`, e lista `apps/api/.env.example`, `apps/web/.env.example` e `.mcp.json.example` |
 | 12 | O exemplo de MCP não carrega o projeto | `grep -c "omgheudterjqrjunpack" .mcp.json.example` devolve 0, e `grep -c "read_only=true" .mcp.json.example` devolve 1 |
 | 13 | O web não lê variável sem prefixo | `grep -rn "import.meta.env" apps/web/src` só mostra nomes que começam com `VITE_` |
-| 14 | O README funciona | Rodar a sequência do README num clone limpo e colar a saída real com os tempos em `execucao.md`. O clone é **do próprio repositório local**, com `git clone . "$(mktemp -d)/ca"`, porque a branch desta unidade não está no GitHub. O passo do `curl` que instala o pnpm não precisa ser repetido se o pnpm já estiver na máquina |
+| 14 | O README funciona | Rodar a sequência do README num clone limpo e colar a saída real com os tempos em `execucao.md`. O clone é **do próprio repositório local e da branch da unidade**: `git clone -b unidade/M0.1-monorepo-base . "$(mktemp -d)/ca"`. Sem o `-b`, o clone traz a `main`, que não tem este código. O passo do `curl` que instala o pnpm não precisa ser repetido se o pnpm já estiver na máquina |
 
 ```bash
-for p in apps/api apps/web packages/shared packages/config; do
-  node -e '
-    const fs = require("fs");
-    const p = process.argv[1];
-    const s = JSON.parse(fs.readFileSync(p + "/package.json", "utf8")).scripts || {};
-    for (const k of ["build", "lint", "typecheck", "test"]) {
-      if (!s[k]) { console.error(p + " sem script " + k); process.exit(1); }
-    }
-  ' "$p" || exit 1
-done
-echo "os quatro pacotes têm os quatro scripts"
+check() {                       # $1 = script, $2... = pacotes que têm que aparecer
+  local script="$1"; shift
+  local saida
+  saida="$(pnpm -r "$script" 2>&1)" || { echo "$script falhou"; return 1; }
+  for pacote in "$@"; do
+    grep -q "$pacote $script" <<< "$saida" || { echo "$script nao rodou em $pacote"; return 1; }
+  done
+  echo "$script rodou em: $*"
+}
+
+check build apps/api apps/web packages/shared || exit 1
+check lint apps/api apps/web packages/shared packages/config || exit 1
+check typecheck apps/api apps/web packages/shared || exit 1
+check test apps/api apps/web packages/shared || exit 1
 ```
 
 ## Riscos
@@ -436,3 +503,9 @@ Só para contrato já aprovado que mudou. Cada linha exige novo GATE 1.
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
 | 2026-09-12 | Item 14 do DoD passa a dizer que o clone limpo é do repositório local | A branch da unidade não está no GitHub, e o comando do DoD geral clona de lá. Sem isso o executor trava num item impossível | 2026-09-12, na mesma aprovação do operador |
+| 2026-09-12 | `packages/config` fica só com o script `lint`, e ganha `eslint.config.js` na lista de arquivos | O contrato mandava o pacote rodar quatro scripts e não lhe dava os arquivos que os scripts invocam. Pior: o pacote não tem TypeScript, então `build` e `typecheck` nele só produziriam verde vazio. Reproduzido pelo condutor: `error TS5058: The specified path does not exist: 'tsconfig.build.json'` | — |
+| 2026-09-12 | `apps/api/tsconfig.json` ganha `"types": ["node"]`, e `@types/node` sai de `packages/shared` | O TypeScript 6 não inclui mais sozinho os pacotes de `node_modules/@types`. Reproduzido pelo condutor: `TS2503: Cannot find namespace 'NodeJS'` e `TS2591: Cannot find name 'process'` | — |
+| 2026-09-12 | `.prettierignore` ganha `*.md`, e o `prettier.config.js` passa a ter conteúdo fixado | `prettier --check .` reprovava 23 documentos escritos antes desta unidade, todos em `.claude/`, `docs/` e `CLAUDE.md`. O item 6 do DoD era inatingível. Reformatar documento aprovado está fora do contrato, e o Prettier reescreve tabela de markdown | — |
+| 2026-09-12 | Item 8 do DoD passa a executar os scripts em vez de contá-los no `package.json` | A verificação antiga deu verde num pacote que não construía. Ela contava scripts declarados, não scripts que rodam | — |
+| 2026-09-12 | Item 14 do DoD ganha `-b unidade/M0.1-monorepo-base` no clone | `git clone .` sozinho traz a `main`, que não tem o código da unidade | — |
+| 2026-09-12 | Sai `globals` da tabela de versões. Sai a menção a `--env-file-if-exists`. `loadConfig` passa a tratar valor vazio como padrão | `globals` entrou sem ser usado por ninguém. A API desta unidade não lê arquivo `.env`, e o `.env.example` vai sem valor, então `PORT=` vazio tem que cair no padrão em vez de virar erro | — |
