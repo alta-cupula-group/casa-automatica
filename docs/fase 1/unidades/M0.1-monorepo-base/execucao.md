@@ -3,6 +3,9 @@
 > Executor · Data: `2026-09-12` · Rodada: `1`
 > Contrato aprovado em: condutor `2026-09-12` · operador `2026-09-12`
 
+O registro da rodada 2 está no fim deste documento. O que vem abaixo é a rodada 1,
+preservada como foi escrita.
+
 # Execução — `M0.1-monorepo-base`
 
 ## Veredito do executor
@@ -613,3 +616,408 @@ rm -rf node_modules apps/*/node_modules packages/*/node_modules
 
 O `HEAD` da branch é o único commit de código desta unidade. Nada fora dos arquivos afetados foi
 alterado, então o reset devolve o repositório ao estado de antes da execução.
+
+---
+
+> Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
+> Estado: em revisão
+> Executor · Data: `2026-09-12` · Rodada: `2`
+> Contrato aprovado em: condutor `2026-09-12` · operador `2026-09-12`
+> Contrato reaberto e reaprovado em 2026-09-12. Base: seção `## Rodada 2` do contrato.
+
+# Execução — `M0.1-monorepo-base`, rodada 2
+
+## Veredito do executor
+
+Os catorze itens do DoD do contrato estão atendidos. Os três defeitos do contrato que
+travaram a rodada 1 foram corrigidos no próprio contrato e aplicados aqui. Nenhum remendo
+fora do contrato foi usado. Nenhum bloqueio novo.
+
+## O que ficou pronto
+
+A rodada 2 aplicou os dez pontos da tabela `## Rodada 2` do contrato, e nada além deles.
+Num clone limpo da branch da unidade, a sequência do `README.md` roda inteira e sai com 0:
+
+```
+build EXIT=0
+lint EXIT=0
+typecheck EXIT=0
+test EXIT=0
+format:check EXIT=0
+api ok port=3000 sample=10,99
+```
+
+Mudanças de comportamento observável nesta rodada, duas:
+
+1. `packages/config` roda só `lint`. Ele não constrói nem checa tipos, porque não tem
+   TypeScript. O verde vazio da rodada 1 deixou de existir.
+2. `loadConfig` aceita `PORT` e `NODE_ENV` vazias e cai nos padrões. É o que o
+   `.env.example` produz depois do `cp` que o `README.md` manda fazer.
+
+## Ambiente medido
+
+| Item | Valor |
+| --- | --- |
+| Node | `v26.8.2` |
+| pnpm | `12.4.1` |
+
+O `pnpm install` não pediu `allowBuilds`. A chave continua vazia.
+
+## Arquivos tocados
+
+```
+$ git diff --stat 64da99d..HEAD
+ .prettierignore                  |  1 +
+ README.md                        |  7 ++-----
+ apps/api/src/config.test.ts      | 10 ++++++++--
+ apps/api/src/config.ts           | 28 +++++++++++++++++-----------
+ apps/api/tsconfig.json           |  3 ++-
+ packages/config/eslint.config.js |  2 ++
+ packages/config/package.json     |  9 +--------
+ packages/shared/package.json     |  1 -
+ pnpm-lock.yaml                   | 16 ----------------
+ prettier.config.js               | 11 +----------
+ 10 files changed, 34 insertions(+), 54 deletions(-)
+```
+
+Dez arquivos, um por linha da tabela `## Rodada 2` do contrato, menos a linha 4, que diz
+que `apps/api/package.json` não muda, mais o `pnpm-lock.yaml`, que o contrato manda
+acompanhar a remoção das dependências. Nenhum arquivo fora da lista.
+
+## Definition of Done
+
+### DoD 1 — Instalação reproduzível
+
+Situação: `atendido`
+
+```
+$ pnpm install --frozen-lockfile
+Scope: all 5 workspace projects
+✓ Lockfile passes supply-chain policies (verified 12s ago)
+Lockfile is up to date, resolution step is skipped
+Done in 63ms using pnpm v12.4.1
+EXIT=0
+```
+
+### DoD 2 — Build completo
+
+Situação: `atendido`
+
+```
+$ rm -rf apps/api/dist apps/web/dist packages/shared/dist
+$ pnpm -r build
+packages/shared build$ tsc -p tsconfig.build.json
+packages/shared build: Done
+apps/api build$ tsc -p tsconfig.build.json
+apps/web build$ tsc -p tsconfig.json --noEmit && vite build
+apps/api build: Done
+apps/web build: vite v8.3.0 building client environment for production...
+apps/web build: ✓ 16 modules transformed.
+apps/web build: dist/index.html                  0.33 kB │ gzip:  0.24 kB
+apps/web build: dist/assets/index-BTj6aNul.js  219.98 kB │ gzip: 68.79 kB
+apps/web build: ✓ built in 170ms
+apps/web build: Done
+EXIT=0
+
+$ ls -l apps/api/dist/index.js packages/shared/dist/index.js apps/web/dist/index.html
+-rw-r--r-- 1 markinkkkkj markinkkkkj 230 Sep 12 22:39 apps/api/dist/index.js
+-rw-r--r-- 1 markinkkkkj markinkkkkj 330 Sep 12 22:39 apps/web/dist/index.html
+-rw-r--r-- 1 markinkkkkj markinkkkkj 442 Sep 12 22:39 packages/shared/dist/index.js
+```
+
+`packages/config` não aparece na saída porque deixou de ter o script `build`. É o ponto 1
+da tabela `## Rodada 2`.
+
+### DoD 3 — Lint
+
+Situação: `atendido`
+
+```
+$ pnpm -r lint
+packages/config lint$ eslint .
+packages/config lint: Done
+packages/shared lint$ eslint .
+packages/shared lint: Done
+apps/api lint$ eslint .
+apps/web lint$ eslint .
+apps/api lint: Done
+apps/web lint: Done
+EXIT=0
+```
+
+Os quatro pacotes rodam `lint`. `packages/config` agora tem o `eslint.config.js` que
+faltava.
+
+### DoD 4 — Tipos
+
+Situação: `atendido`
+
+```
+$ pnpm -r typecheck
+packages/shared typecheck$ tsc -p tsconfig.json --noEmit
+packages/shared typecheck: Done
+apps/api typecheck$ tsc -p tsconfig.json --noEmit
+apps/web typecheck$ tsc -p tsconfig.json --noEmit
+apps/api typecheck: Done
+apps/web typecheck: Done
+EXIT=0
+```
+
+`apps/api` passa por causa do `"types": ["node"]`, que é o ponto 3 da tabela.
+
+### DoD 5 — Testes
+
+Situação: `atendido`
+
+```
+$ pnpm -r test
+Scope: 4 of 5 workspace projects
+packages/shared test$ vitest run
+packages/shared test:  RUN  v5.0.0 /home/markinkkkkj/Codes/Casa Automática/packages/shared
+packages/shared test:  Test Files  1 passed (1)
+packages/shared test:       Tests  3 passed (3)
+packages/shared test: Done
+apps/api test$ vitest run
+apps/web test$ vitest run
+apps/api test:  RUN  v5.0.0 /home/markinkkkkj/Codes/Casa Automática/apps/api
+apps/web test:  RUN  v5.0.0 /home/markinkkkkj/Codes/Casa Automática/apps/web
+apps/api test:  Test Files  1 passed (1)
+apps/api test:       Tests  4 passed (4)
+apps/api test: Done
+apps/web test:  Test Files  1 passed (1)
+apps/web test:       Tests  1 passed (1)
+apps/web test: Done
+EXIT=0
+```
+
+Um arquivo de teste por pacote de produto: `apps/api/src/config.test.ts`,
+`apps/web/src/App.test.tsx` e `packages/shared/src/index.test.ts`. O `Scope: 4 of 5` é
+`packages/config` ficando de fora, porque não tem mais o script `test`.
+
+### DoD 6 — Formatação
+
+Situação: `atendido`
+
+```
+$ pnpm format:check
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+O `*.md` no `.prettierignore` e o `prettier.config.js` do contrato fecham o item. Nenhum
+documento foi reformatado.
+
+### DoD 7 — A API roda
+
+Situação: `atendido`
+
+```
+$ node apps/api/dist/index.js
+api ok port=3000 sample=10,99
+EXIT=0
+
+$ pnpm --filter @casa/api start
+$ node dist/index.js
+api ok port=3000 sample=10,99
+EXIT=0
+```
+
+### DoD 8 — Nenhum pacote fica de fora do `pnpm -r`
+
+Situação: `atendido`
+
+O bloco do contrato, rodado literal:
+
+```
+$ bash bloco-do-contrato.sh
+build rodou em: apps/api apps/web packages/shared
+lint rodou em: apps/api apps/web packages/shared packages/config
+typecheck rodou em: apps/api apps/web packages/shared
+test rodou em: apps/api apps/web packages/shared
+EXIT=0
+```
+
+A versão nova executa os scripts. O verde aqui já não convive com um pacote que não
+constrói, que era a falha apontada na rodada 1.
+
+### DoD 9 — Erro de tipo dentro de teste reprova
+
+Situação: `atendido`
+
+Com `const x: number = 'texto';` no fim de `packages/shared/src/index.test.ts`:
+
+```
+$ pnpm --filter @casa/shared typecheck
+$ tsc -p tsconfig.json --noEmit
+src/index.test.ts(18,7): error TS2322: Type 'string' is not assignable to type 'number'.
+[ELIFECYCLE] Command failed with exit code 2.
+EXIT=1
+```
+
+Depois de desfazer:
+
+```
+$ pnpm --filter @casa/shared typecheck
+$ tsc -p tsconfig.json --noEmit
+EXIT=0
+
+$ git status --porcelain packages/shared/src/index.test.ts
+(fim, 0 linhas)
+```
+
+### DoD 10 — Árvore limpa depois do build
+
+Situação: `atendido`
+
+```
+$ pnpm install --frozen-lockfile && pnpm -r build
+$ ls -d apps/api/dist apps/web/dist packages/shared/dist
+apps/api/dist
+apps/web/dist
+packages/shared/dist
+
+$ git status --porcelain
+(fim, 0 linhas)
+```
+
+### DoD 11 — Nada de segredo nem de configuração local versionada
+
+Situação: `atendido`
+
+```
+$ git ls-files | grep -E '(^|/)\.env(\.|$)|(^|/)\.mcp\.json$'
+apps/api/.env.example
+apps/web/.env.example
+
+$ git ls-files | grep -E '\.env\.example$|\.mcp\.json\.example$'
+.mcp.json.example
+apps/api/.env.example
+apps/web/.env.example
+```
+
+### DoD 12 — O exemplo de MCP não carrega o projeto
+
+Situação: `atendido`
+
+```
+$ grep -c "omgheudterjqrjunpack" .mcp.json.example
+0
+$ grep -c "read_only=true" .mcp.json.example
+1
+```
+
+### DoD 13 — O web não lê variável sem prefixo
+
+Situação: `atendido`
+
+```
+$ grep -rn "import.meta.env" apps/web/src
+apps/web/src/App.tsx:4:  const apiUrl = import.meta.env.VITE_API_URL ?? '';
+```
+
+### DoD 14 — O README funciona
+
+Situação: `atendido`
+
+Clone do repositório local, na branch da unidade, como manda o item 14:
+
+```
+$ git clone -b unidade/M0.1-monorepo-base "$SRC" "$D"
+clone em /tmp/tmp.Az0WnScKIH/ca
+
+$ pnpm install --frozen-lockfile
++ eslint 10.10.0
++ prettier 3.9.6
++ typescript 6.0.3
+Done in 160ms using pnpm v12.4.1
+real	0m0.209s
+
+$ cp apps/api/.env.example apps/api/.env
+$ cp apps/web/.env.example apps/web/.env
+
+$ pnpm -r build && pnpm -r lint && pnpm -r typecheck && pnpm -r test && pnpm format:check
+apps/api test:  Test Files  1 passed (1)
+apps/api test:       Tests  4 passed (4)
+apps/web test:  Test Files  1 passed (1)
+apps/web test:       Tests  1 passed (1)
+$ prettier --check .
+Checking formatting...
+All matched files use Prettier code style!
+real	0m13.084s
+SEQ_EXIT=0
+
+$ node apps/api/dist/index.js
+api ok port=3000 sample=10,99
+EXIT=0
+```
+
+A sequência inteira leva treze segundos depois do clone. O passo do `curl` não foi
+repetido, porque o pnpm 12.4.1 já está na máquina desde a rodada 1. O clone descartável foi
+apagado no fim.
+
+### DoD geral da fase
+
+| # | Situação | Evidência |
+| --- | --- | --- |
+| A1 | `atendido` | `64da99d docs(M0.1): contrato aprovado, rodada 2` vem antes de `f41eb98 fix(M0.1): rodada 2 de correções` |
+| A2 | `atendido` | este documento |
+| A3 | `atendido` | o `git diff --stat 64da99d..HEAD` acima bate com a tabela `## Rodada 2` |
+| A4 | `fora deste contrato` | a seção "Fora deste contrato" diz que manter `estado.md` é do condutor e que o item A4 não é do executor |
+| A5 | `atendido` | `fix(M0.1): rodada 2 de correções`, em pt-BR, com o prefixo da regra 03 para rodada de correção |
+| B1 | `atendido` | DoD 1, 2 e 14 acima |
+| B2 | `atendido` | DoD 3 acima |
+| B3 | `atendido` | DoD 4 acima. O `tsconfig.base.json` tem `"strict": true` |
+| B4 | `atendido` | DoD 6 acima |
+| C1 | `atendido` | DoD 5 acima |
+| C2 | `atendido` | `formatCents` tem 3 testes, um por exemplo do contrato. `loadConfig` tem 4: padrões com ambiente vazio, variáveis presentes sem valor, valores vindos do ambiente, e `PORT` não numérica. `App` tem 1 |
+| C3 | `não se aplica` | o contrato não marcou nada como verificação manual |
+| C4 | `atendido` | nenhum teste abre rede. Os três são de função pura ou de render em jsdom |
+| C5 | `atendido` | a correção do ponto 8 da rodada 2 vem com o teste `usa os padrões quando as variáveis vêm sem valor`, que falhava antes dela: `loadConfig({ PORT: '' })` lançava erro |
+| D1, D2 | `não se aplica` | valem a partir de `M1.4-ci-verificacao` |
+| E1 | `atendido` | a varredura no diff da rodada 2 não encontrou nada: `GREP_EXIT=1` |
+| E2 | `atendido` | DoD 11 acima |
+| E3 | `atendido` | `apps/api/src/config.ts` lê `PORT` e `NODE_ENV`, e as duas estão em `apps/api/.env.example` sem valor e com comentário em pt-BR. `apps/web` lê `VITE_API_URL`, que está em `apps/web/.env.example` do mesmo jeito |
+| E4 | `atendido` | DoD 13 acima |
+| F1 | `atendido` | `formatCents`, `loadConfig`, `Config`, `App` |
+| F2 | `atendido` | documentos e commit em pt-BR |
+| F3 | `não se aplica` | vale a partir do M8 |
+| G1 a G6 | `não se aplica` | valem a partir de `M1.2` ou depois |
+| H1 a H4 | `não se aplica` | valem a partir do M2 |
+| I1 | `atendido` | o `README.md` muda no mesmo commit da mudança de comportamento de `loadConfig` |
+| I2 | `atendido` | a seção "Passo manual: o `.mcp.json`" do `README.md`, intocada nesta rodada |
+| J1 | `não se aplica` | vale a partir de `M1.5` |
+
+## Bloqueios e dúvidas
+
+`Nenhum`.
+
+## Encontrado e não tocado
+
+- **`PORT=0` e `PORT=3.5` passam.** O ponto 8 da tabela `## Rodada 2` diz "só valor não
+  numérico em `PORT` é erro". Implementei ao pé da letra: a condição de erro é
+  `!Number.isFinite(Number(rawPort))`. A rodada 1 rejeitava também `0`, negativo e
+  fracionário, e o contrato não mandou manter isso. Consequência observável:
+  `loadConfig({ PORT: '0' })` devolve `port: 0`. Se a intenção era manter a exigência de
+  inteiro maior que zero, é uma linha e um GATE 1. Não decidi sozinho.
+- **O `README.md` saiu da checagem de formatação.** O `*.md` no `.prettierignore` vale para
+  todo o repositório, e o `README.md` é `.md`. Ele deixou de ser conferido pelo
+  `format:check` junto com os documentos de processo. O contrato fixa o `.prettierignore`
+  em bloco de código, então não abri exceção para ele.
+- **As três versões que o contrato deixou em aberto continuam as da rodada 1.**
+  `@types/react` e `@types/react-dom` em `19.3.0`, e `jsdom` em `30.0.1`. Nada mudou nelas,
+  e o `pnpm-lock.yaml` da rodada 2 só perdeu as entradas de `globals`, de `vitest` em
+  `packages/config` e de `@types/node` em `packages/shared`.
+- **`packages/config` não tem teste nem checagem de tipo.** É consequência aceita da
+  decisão do contrato, e está escrita nele. Registro para que ninguém leia o verde de
+  `pnpm -r test` como cobertura dos quatro pacotes.
+
+## Como reverter
+
+```bash
+git revert f41eb98      # desfaz só a rodada 2
+git reset --hard 6759816 && rm -rf node_modules apps/*/node_modules packages/*/node_modules
+```
+
+A primeira linha volta ao estado da rodada 1. A segunda desfaz a unidade inteira.
