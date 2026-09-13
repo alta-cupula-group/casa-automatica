@@ -48,8 +48,8 @@ M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`.
 |---|---|---|---|---|
 | `M0.1-monorepo-base` | M0 | Monorepo pnpm com `apps/api`, `apps/web` e `packages/shared`. TypeScript, ESLint e Prettier compartilhados. Teste de fumaça por app. README de cinco minutos e `.env.example` por app. | — | dividida: fundacional |
 | `M1.1-validar-supabase` | M1 · Banco | Relatório que fecha o `[A VALIDAR]` do limite de dois projetos gratuitos. | — | só exploração, regra 04 |
-| `M1.2-ambientes-e-migracoes` | M1 · Banco | Projetos `dev` e `prod` documentados, com Data API desligada. Drizzle em `apps/api/drizzle`. Comando único de migração para qualquer ambiente. Supabase local documentado como opcional. | `M0.1`, `M1.1` | dividida: infraestrutura, investigação externa |
-| `M1.3-house-e-auditoria` | M1 · Banco | Primeira migração com `house`, tabela de auditoria e trigger, aplicada em `dev` e `prod`. Teste prova a linha de auditoria. | `M1.2` | dividida: schema e entidade central |
+| `M1.2-ambientes-e-migracoes` | M1 · Banco | Um projeto Supabase documentado, com Data API desligada. Drizzle em `apps/api/drizzle`. Comando único de migração para qualquer ambiente. Supabase local documentado como opcional. | `M0.1`, `M1.1` | dividida: infraestrutura, investigação externa |
+| `M1.3-house-e-auditoria` | M1 · Banco | Primeira migração com `house`, tabela de auditoria e trigger, aplicada no projeto. Casa real e casa de teste criadas. Teste prova a linha de auditoria. | `M1.2` | dividida: schema e entidade central |
 | `M1.4-ci-verificacao` | M1 · CI | GitHub Actions roda lint, tipos, testes e build em push e PR. | `M0.1` | dividida: pipeline |
 | `M1.5-compose-e-caddy` | M1 · CI | `docker-compose.yml` com API, web estático e Caddy. Sobe em qualquer máquina com Docker e serve o web em `localhost`. | `M0.1` | dividida: base do deploy |
 | `M1.6-deploy-na-casa` | M1 · CI | Deploy por SSH em push na `main`. Cloudflare Tunnel documentado. Segredos listados no README. Push trivial chega ao domínio. | `M1.4`, `M1.5` | dividida: pipeline de deploy |

@@ -675,7 +675,17 @@ O que este veredito fixa para as próximas unidades:
 - `M1.2` e `M1.6` conectam pelo pooler em modo sessão para migrar, por causa do IPv6.
 - `M1.2` desliga a Data API nos dois ambientes e mede a resposta do endpoint desligado.
 
-Ações do operador no painel, ainda pendentes:
+### Decisão posterior do operador, 2026-09-13
+
+PO1, PO2 e PO3 foram substituídas. A Fase 1 usa **um projeto Supabase só**. O dado de teste
+fica numa casa de teste, no mesmo banco da casa real. Motivo do operador: dois projetos na
+mesma organização não protegem o dado real, e a casa já é a fronteira dos dados. PO4 e PO5
+continuam valendo. A decisão está em `docs/scope-brief.md`, seção 4.
+
+A tabela de ações abaixo ficou parcialmente sem efeito: não há segunda organização nem
+segundo projeto a criar.
+
+Ações do operador no painel, registradas em 2026-09-12:
 
 | # | Ação | Trava o quê |
 |---|---|---|
