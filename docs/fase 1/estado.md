@@ -73,7 +73,7 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 
 | Unidade | Marco | Trilha | Estado | Depende de | Última transição |
 |---|---|---|---|---|---|
-| `M0.1-monorepo-base` | M0 | dividida | `aguardando operador` | — | 2026-09-12, executor devolveu o contrato com três defeitos. Contrato reaberto, novo GATE 1 |
+| `M0.1-monorepo-base` | M0 | dividida | `em execução` | — | 2026-09-12, contrato reaprovado e rodada 2 despachada |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |

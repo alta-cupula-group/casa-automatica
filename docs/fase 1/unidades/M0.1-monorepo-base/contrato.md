@@ -1,7 +1,7 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-12 · Operador aprovou: —
-> Reaberto em 2026-09-12 depois da rodada 1. Ver `## Alterações`.
+> Estado: aprovada
+> Condutor aprovou: 2026-09-12 · Operador aprovou: 2026-09-12
+> Reaberto em 2026-09-12 depois da rodada 1, e reaprovado na mesma data. Ver `## Alterações`.
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M0.1-monorepo-base`
@@ -503,9 +503,9 @@ Só para contrato já aprovado que mudou. Cada linha exige novo GATE 1.
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
 | 2026-09-12 | Item 14 do DoD passa a dizer que o clone limpo é do repositório local | A branch da unidade não está no GitHub, e o comando do DoD geral clona de lá. Sem isso o executor trava num item impossível | 2026-09-12, na mesma aprovação do operador |
-| 2026-09-12 | `packages/config` fica só com o script `lint`, e ganha `eslint.config.js` na lista de arquivos | O contrato mandava o pacote rodar quatro scripts e não lhe dava os arquivos que os scripts invocam. Pior: o pacote não tem TypeScript, então `build` e `typecheck` nele só produziriam verde vazio. Reproduzido pelo condutor: `error TS5058: The specified path does not exist: 'tsconfig.build.json'` | — |
-| 2026-09-12 | `apps/api/tsconfig.json` ganha `"types": ["node"]`, e `@types/node` sai de `packages/shared` | O TypeScript 6 não inclui mais sozinho os pacotes de `node_modules/@types`. Reproduzido pelo condutor: `TS2503: Cannot find namespace 'NodeJS'` e `TS2591: Cannot find name 'process'` | — |
-| 2026-09-12 | `.prettierignore` ganha `*.md`, e o `prettier.config.js` passa a ter conteúdo fixado | `prettier --check .` reprovava 23 documentos escritos antes desta unidade, todos em `.claude/`, `docs/` e `CLAUDE.md`. O item 6 do DoD era inatingível. Reformatar documento aprovado está fora do contrato, e o Prettier reescreve tabela de markdown | — |
-| 2026-09-12 | Item 8 do DoD passa a executar os scripts em vez de contá-los no `package.json` | A verificação antiga deu verde num pacote que não construía. Ela contava scripts declarados, não scripts que rodam | — |
-| 2026-09-12 | Item 14 do DoD ganha `-b unidade/M0.1-monorepo-base` no clone | `git clone .` sozinho traz a `main`, que não tem o código da unidade | — |
-| 2026-09-12 | Sai `globals` da tabela de versões. Sai a menção a `--env-file-if-exists`. `loadConfig` passa a tratar valor vazio como padrão | `globals` entrou sem ser usado por ninguém. A API desta unidade não lê arquivo `.env`, e o `.env.example` vai sem valor, então `PORT=` vazio tem que cair no padrão em vez de virar erro | — |
+| 2026-09-12 | `packages/config` fica só com o script `lint`, e ganha `eslint.config.js` na lista de arquivos | O contrato mandava o pacote rodar quatro scripts e não lhe dava os arquivos que os scripts invocam. Pior: o pacote não tem TypeScript, então `build` e `typecheck` nele só produziriam verde vazio. Reproduzido pelo condutor: `error TS5058: The specified path does not exist: 'tsconfig.build.json'` | 2026-09-12 |
+| 2026-09-12 | `apps/api/tsconfig.json` ganha `"types": ["node"]`, e `@types/node` sai de `packages/shared` | O TypeScript 6 não inclui mais sozinho os pacotes de `node_modules/@types`. Reproduzido pelo condutor: `TS2503: Cannot find namespace 'NodeJS'` e `TS2591: Cannot find name 'process'` | 2026-09-12 |
+| 2026-09-12 | `.prettierignore` ganha `*.md`, e o `prettier.config.js` passa a ter conteúdo fixado | `prettier --check .` reprovava 23 documentos escritos antes desta unidade, todos em `.claude/`, `docs/` e `CLAUDE.md`. O item 6 do DoD era inatingível. Reformatar documento aprovado está fora do contrato, e o Prettier reescreve tabela de markdown | 2026-09-12 |
+| 2026-09-12 | Item 8 do DoD passa a executar os scripts em vez de contá-los no `package.json` | A verificação antiga deu verde num pacote que não construía. Ela contava scripts declarados, não scripts que rodam | 2026-09-12 |
+| 2026-09-12 | Item 14 do DoD ganha `-b unidade/M0.1-monorepo-base` no clone | `git clone .` sozinho traz a `main`, que não tem o código da unidade | 2026-09-12 |
+| 2026-09-12 | Sai `globals` da tabela de versões. Sai a menção a `--env-file-if-exists`. `loadConfig` passa a tratar valor vazio como padrão | `globals` entrou sem ser usado por ninguém. A API desta unidade não lê arquivo `.env`, e o `.env.example` vai sem valor, então `PORT=` vazio tem que cair no padrão em vez de virar erro | 2026-09-12 |
