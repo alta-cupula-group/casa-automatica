@@ -47,8 +47,9 @@ Quatro papéis, descritos em `.claude/rules/01-papeis.md` e implementados em
 - `docs/scope-brief.md` — escopo e decisões de produto do MVP. Fonte de verdade.
 - `docs/handoff.md` — brief original, mantido como histórico. Não é fonte de verdade.
 - `docs/fase 1/roadmap.md` — marcos da Fase 1.
-- `docs/fase 1/dod.md` — Definition of Done geral da fase. Vale por cima de todo contrato. Ainda não existe: é o próximo artefato.
+- `docs/fase 1/dod.md` — Definition of Done geral da fase. Vale por cima de todo contrato. Aprovado pelo operador em 2026-09-12.
 - `docs/fase 1/estado.md` — quadro de estado das unidades.
+- `docs/fase 1/backlog.md` — o que apareceu fora do escopo da fase. Só o operador promove uma linha a unidade.
 - `docs/fase 1/unidades/<id>/` — os cinco documentos de cada unidade de trabalho.
 - `.claude/rules/` — as regras completas. `.claude/templates/` — os moldes dos documentos.
 
