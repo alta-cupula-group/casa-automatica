@@ -1,6 +1,6 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-12 · Operador aprovou: —
+> Estado: aprovada
+> Condutor aprovou: 2026-09-12 · Operador aprovou: 2026-09-12
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M0.1-monorepo-base`
@@ -379,7 +379,7 @@ roda a partir da raiz de um clone limpo, com `pnpm install --frozen-lockfile` fe
 | 11 | Nada de segredo nem de configuração local versionada | `git ls-files` não lista `.env`, `.env.local` nem `.mcp.json`, e lista `apps/api/.env.example`, `apps/web/.env.example` e `.mcp.json.example` |
 | 12 | O exemplo de MCP não carrega o projeto | `grep -c "omgheudterjqrjunpack" .mcp.json.example` devolve 0, e `grep -c "read_only=true" .mcp.json.example` devolve 1 |
 | 13 | O web não lê variável sem prefixo | `grep -rn "import.meta.env" apps/web/src` só mostra nomes que começam com `VITE_` |
-| 14 | O README funciona | Rodar a sequência do README num clone limpo, em diretório temporário, e colar a saída real com os tempos em `execucao.md` |
+| 14 | O README funciona | Rodar a sequência do README num clone limpo e colar a saída real com os tempos em `execucao.md`. O clone é **do próprio repositório local**, com `git clone . "$(mktemp -d)/ca"`, porque a branch desta unidade não está no GitHub. O passo do `curl` que instala o pnpm não precisa ser repetido se o pnpm já estiver na máquina |
 
 ```bash
 for p in apps/api apps/web packages/shared packages/config; do
@@ -435,3 +435,4 @@ Só para contrato já aprovado que mudou. Cada linha exige novo GATE 1.
 
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
+| 2026-09-12 | Item 14 do DoD passa a dizer que o clone limpo é do repositório local | A branch da unidade não está no GitHub, e o comando do DoD geral clona de lá. Sem isso o executor trava num item impossível | 2026-09-12, na mesma aprovação do operador |
