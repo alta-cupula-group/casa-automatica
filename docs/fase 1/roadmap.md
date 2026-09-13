@@ -27,7 +27,7 @@
 ### M1 · Pipeline de CI e deploy
 **Entrega:** GitHub Actions rodando lint, testes e build a cada push e PR; workflow de deploy por SSH para o servidor, disparado em push na `main`; `docker-compose.yml` com API, build estático do web e Caddy; Cloudflare Tunnel documentado; segredos do repositório listados no README (nomes, não valores).
 **Pronto quando:** um push na `main` com uma alteração trivial chega ao domínio da casa sem ninguém tocar no servidor; PR com teste quebrado fica vermelho.
-**Depende de:** M0. Pode andar em paralelo com M1 · Banco.
+**Depende de:** M0. Pode andar em paralelo com M1 mínio da casa sem ninguém tocar no servidor; PR com teste quebrado fica vermelho.· Banco.
 
 ---
 
@@ -59,7 +59,7 @@
 **Depende de:** M3. Pode andar em paralelo com M5 · Despesas.
 
 ### M6 · NFC-e (São Paulo)
-**Pré-requisito pendente:** validar com nota real que a URL do QR abre sem captcha e com itens. Script de validação já existe; falta a URL de uma nota. Se a validação falhar, este marco vira só "leitura da chave de acesso + preenchimento manual" e o scraping sai do MVP.
+**Pré-requisito confirmado:** validado com nota real que a URL do QR abre sem captcha e com itens. Script de validação já existe; URL de uma nota: https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaQRCode.aspx?p=35260942591651268030650730000510021158014173%7C3%7C1. 
 **Entrega:** `invoice_raw` imutável (URL, chave, HTML bruto, data de captura); decodificação da chave (UF, período, CNPJ, número); adaptador `sefaz-sp` isolado atrás de uma interface por UF; despesa gerada em rascunho com itens editáveis (remover, adicionar personalizado, participantes por item); caminho manual sempre disponível.
 **Pronto quando:** teste do adaptador roda contra HTML gravado, não contra o portal; nota real de mercado gera rascunho com todos os itens e total igual ao da nota; falha do portal degrada para manual com mensagem clara, sem erro 500.
 **Depende de:** M5 · Despesas.

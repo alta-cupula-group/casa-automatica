@@ -10,7 +10,7 @@
 |---|---|---|
 | 1 | `docs/fase 1/dod.md` — Definition of Done geral da fase | **resolvida.** Aprovado pelo operador em 2026-09-12, com P1 na opção A e P2 na opção B |
 | 2 | `docs/fase 1/roadmap.md` aprovado pelo operador | **resolvida.** Validado em 2026-09-12. O `docs/scope-brief.md` foi marcado como aprovado na mesma data |
-| 3 | `[A VALIDAR]` portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens | aberto. Bloqueia M6. Fora da Etapa 1 |
+| 3 | `[A VALIDAR]` portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens | confirmado, exemplo: https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaQRCode.aspx?p=35260942591651268030650730000510021158014173%7C3%7C1 |
 | 4 | `[A VALIDAR]` limite de dois projetos ativos no plano gratuito do Supabase | **resolvida.** Validado na unidade `M1.1` e aprovado pelo operador em 2026-09-12. Saiu do `docs/scope-brief.md` |
 | 5 | Fatiamento da Etapa 1 | **resolvida.** Aprovado pelo operador em 2026-09-12 |
 
