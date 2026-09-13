@@ -65,9 +65,10 @@ Um `[A VALIDAR]` é uma hipótese, não um fato. Antes de qualquer unidade que d
 Unidade que depende de `[A VALIDAR]` não aberto fica `bloqueada`. Não se implementa o
 caminho feliz esperando que a validação confirme.
 
-Abertos hoje (`docs/scope-brief.md`):
-- portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens.
+Abertos hoje (`docs/scope-brief.md`): nenhum.
 
 Fechados:
+- portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens. Validado com nota real
+  e confirmado pelo operador em 2026-09-13.
 - limite de dois projetos ativos no plano gratuito do Supabase. Validado e aprovado pelo
   operador em 2026-09-12, na unidade `M1.1-validar-supabase`.

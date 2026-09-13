@@ -69,7 +69,8 @@ Fases 2 a 4 não são projetadas em detalhe agora. A arquitetura só precisa nã
 - **No MVP:** scraping do portal da SEFAZ-SP a partir da URL do QR, extraindo emitente, total e itens. Isolado num adaptador por UF; a chave já diz o estado, então outros estados entram como novos adaptadores sem mexer no resto.
 - A nota é guardada **em bruto e imutável** como veio do portal. A despesa gerada a partir dela é o que se edita: remover itens, adicionar itens personalizados, escolher participantes por item. A auditoria de dados cobre essas edições.
 - **Preenchimento manual é sempre disponível**, como caminho principal e não como exceção. Scraping quebra quando o portal muda.
-- **[VALIDADO]**: Nota abre sem ReCAPTCHA: https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaQRCode.aspx?p=35260942591651268030650730000510021158014173%7C3%7C1
+- **Validado em 12/09/2026** com nota real: a página da SEFAZ-SP abre pela URL do QR sem captcha e com os itens. Nota usada: https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaQRCode.aspx?p=35260942591651268030650730000510021158014173%7C3%7C1
+
 ### 3.3 Calendário básico
 
 - Entidade genérica `Event`: título, início, fim, dia inteiro, participantes, regra de recorrência, módulo de origem.
