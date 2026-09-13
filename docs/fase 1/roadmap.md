@@ -1,7 +1,7 @@
 # Casa Automática — Roadmap de implementação do MVP
 
-> Status: **aguardando validação do operador**.
-> Base: [scope-brief.md](scope-brief.md) v2, aprovado em 11/09/2026 com um item pendente (validação do scraping SEFAZ-SP com nota real).
+> Status: **validado pelo operador em 12/09/2026**. Registrado pelo condutor na mesma data.
+> Base: [../scope-brief.md](../scope-brief.md) v2, aprovado em 11/09/2026 com um item pendente (validação do scraping SEFAZ-SP com nota real).
 > Unidade de planejamento: **marco (M)**, não data. O time trabalha nas horas vagas, então cada marco tem entregáveis verificáveis e um critério de pronto, e nada de prazo fixo. A ordem é obrigatória; marcos com o mesmo número podem andar em paralelo.
 
 ## Como ler

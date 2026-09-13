@@ -1,6 +1,6 @@
 # Casa Automática — Scope Brief v2
 
-> Status: **aguardando aprovação do operador**.
+> Status: **aprovado pelo operador em 11/09/2026**. Segue pendente a validação do scraping da SEFAZ-SP com nota real.
 > Substitui o handoff original (`~/Documents/handoff.md`), incorporando as decisões tomadas em 11/09/2026. Nenhuma implementação começa antes da aprovação explícita deste documento. Pontos ainda não decididos estão marcados como **[A VALIDAR]** e devem ser levados ao operador antes de qualquer trabalho que dependa deles.
 
 ## 1. Contexto e objetivo final
@@ -88,7 +88,7 @@ Fases 2 a 4 não são projetadas em detalhe agora. A arquitetura só precisa nã
 
 ## 4. Arquitetura e infraestrutura
 
-- **Banco:** Supabase (Postgres). Dois projetos gratuitos: `dev` compartilhado na nuvem e `prod`. Supabase local via CLI/Docker é opcional para quem quiser. Migrações versionadas no repositório e aplicadas nos dois ambientes com o mesmo comando. **[A VALIDAR]** no painel: limite de dois projetos ativos no plano gratuito. Projetos gratuitos pausam após 7 dias sem uso; reativar é um clique.
+- **Banco:** Supabase (Postgres). Dois projetos gratuitos: `dev` compartilhado na nuvem e `prod`. Supabase local via CLI/Docker é opcional para quem quiser. Migrações versionadas no repositório e aplicadas nos dois ambientes com o mesmo comando. Validado em 12/09/2026: o plano gratuito permite dois projetos ativos por pessoa, somando as organizações onde ela é Owner ou Admin, e projeto pausado não conta. `dev` e `prod` ficam em organizações gratuitas separadas, porque cota e restrição por uso justo valem para a organização inteira. Evidência em `docs/fase 1/unidades/M1.1-validar-supabase/exploracao.md`. Projetos gratuitos pausam após 7 dias sem uso; reativar é um clique.
 - **API:** Node com Fastify e Zod. REST descrita em OpenAPI, gerada a partir dos schemas. Acesso direto ao Postgres pelo pooler do Supabase, com Drizzle. Valida o JWT do Supabase Auth em cada requisição. Frontend usa o Supabase só para autenticação; dados passam sempre pela API.
 - **Monólito modular:** um único serviço, organizado internamente por módulos (people, finance, calendar, integrations). Sem microsserviços e sem tRPC. Programas em outras linguagens entram como clientes dos contratos (OpenAPI hoje; MQTT nas fases 3 e 4).
 - **Frontend:** React + Vite como PWA mobile-first (câmera para QR, ícone na tela inicial). Capacitor para publicar nas lojas quando houver necessidade, sem reescrita.
