@@ -8,21 +8,27 @@ const DEFAULT_NODE_ENV = 'development';
 
 /**
  * Lê a configuração da API a partir das variáveis de ambiente.
- * PORT precisa ser um inteiro maior que zero. Ausente, vale 3000.
- * NODE_ENV ausente vale 'development'.
+ * PORT ausente ou vazia vale 3000. Valor não numérico é erro.
+ * NODE_ENV ausente ou vazia vale 'development'.
  */
 export function loadConfig(env: NodeJS.ProcessEnv): Config {
   const rawPort = env.PORT;
-  const port = rawPort === undefined ? DEFAULT_PORT : Number(rawPort);
+  const rawNodeEnv = env.NODE_ENV;
 
-  if (!Number.isInteger(port) || port <= 0) {
-    throw new Error(
-      `PORT inválida: "${rawPort}". Informe um número inteiro maior que zero.`,
-    );
+  let port = DEFAULT_PORT;
+  if (rawPort !== undefined && rawPort !== '') {
+    port = Number(rawPort);
+    if (!Number.isFinite(port)) {
+      throw new Error(
+        `PORT inválida: "${rawPort}". Informe um número ou deixe a variável vazia.`,
+      );
+    }
   }
 
-  return {
-    port,
-    nodeEnv: env.NODE_ENV ?? DEFAULT_NODE_ENV,
-  };
+  const nodeEnv =
+    rawNodeEnv === undefined || rawNodeEnv === ''
+      ? DEFAULT_NODE_ENV
+      : rawNodeEnv;
+
+  return { port, nodeEnv };
 }

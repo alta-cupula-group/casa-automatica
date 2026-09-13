@@ -6,6 +6,13 @@ describe('loadConfig', () => {
     expect(loadConfig({})).toEqual({ port: 3000, nodeEnv: 'development' });
   });
 
+  it('usa os padrões quando as variáveis vêm sem valor', () => {
+    expect(loadConfig({ PORT: '', NODE_ENV: '' })).toEqual({
+      port: 3000,
+      nodeEnv: 'development',
+    });
+  });
+
   it('lê os valores que vêm do ambiente', () => {
     expect(loadConfig({ PORT: '8080', NODE_ENV: 'production' })).toEqual({
       port: 8080,
@@ -13,8 +20,7 @@ describe('loadConfig', () => {
     });
   });
 
-  it('lança erro quando PORT não é um inteiro maior que zero', () => {
+  it('lança erro quando PORT não é numérica', () => {
     expect(() => loadConfig({ PORT: 'abc' })).toThrow(/PORT inválida/);
-    expect(() => loadConfig({ PORT: '' })).toThrow(/PORT inválida/);
   });
 });

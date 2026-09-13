@@ -73,11 +73,8 @@ Cada app tem o seu `.env.example`. O arquivo `.env` real nunca é versionado.
 | `apps/api/.env` | `NODE_ENV`     | modo de execução                             |
 | `apps/web/.env` | `VITE_API_URL` | endereço da API que o app consome            |
 
-A API não usa `dotenv`. Para carregar o `apps/api/.env` use o recurso do próprio Node:
-
-```bash
-node --env-file-if-exists=.env dist/index.js
-```
+Nesta etapa nada lê arquivo `.env`. A API lê `process.env` e nada mais. Os dois `cp` da
+seção anterior preparam os arquivos para as etapas seguintes.
 
 O Vite lê `apps/web/.env`, nunca o `.env` da raiz. O `apps/web` só enxerga variáveis com
 prefixo `VITE_`, e nenhuma delas guarda segredo.
