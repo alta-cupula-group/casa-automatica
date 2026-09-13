@@ -1,5 +1,5 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: aprovada
+> Estado: fechada
 > Condutor aprovou: 2026-09-12 · Operador aprovou: 2026-09-12
 > Reaberto em 2026-09-12 depois da rodada 1, e reaprovado na mesma data. Ver `## Alterações`.
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`

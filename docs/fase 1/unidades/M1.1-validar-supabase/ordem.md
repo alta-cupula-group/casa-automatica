@@ -1,5 +1,5 @@
 > Unidade: `M1.1-validar-supabase` · Marco: `M1 · Banco` · Trilha: `só exploração`
-> Estado: em exploração
+> Estado: fechada
 > Emitida por: condutor · Data: 2026-09-12
 
 # Ordem de exploração — `M1.1-validar-supabase`

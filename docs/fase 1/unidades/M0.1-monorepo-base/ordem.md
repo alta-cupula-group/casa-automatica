@@ -1,5 +1,5 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: em exploração
+> Estado: fechada
 > Emitida por: condutor · Data: 2026-09-12
 
 # Ordem de exploração — `M0.1-monorepo-base`

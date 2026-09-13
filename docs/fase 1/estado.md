@@ -10,7 +10,7 @@
 |---|---|---|
 | 1 | `docs/fase 1/dod.md` — Definition of Done geral da fase | **resolvida.** Aprovado pelo operador em 2026-09-12, com P1 na opção A e P2 na opção B |
 | 2 | `docs/fase 1/roadmap.md` aprovado pelo operador | **resolvida.** Validado em 2026-09-12. O `docs/scope-brief.md` foi marcado como aprovado na mesma data |
-| 3 | `[A VALIDAR]` portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens | confirmado, exemplo: https://www.nfce.fazenda.sp.gov.br/NFCeConsultaPublica/Paginas/ConsultaQRCode.aspx?p=35260942591651268030650730000510021158014173%7C3%7C1 |
+| 3 | `[A VALIDAR]` portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens | **resolvida.** Validado pelo operador com nota real em 2026-09-12, sem captcha e com itens. Confirmado em 2026-09-13. O M6 deixa de estar bloqueado |
 | 4 | `[A VALIDAR]` limite de dois projetos ativos no plano gratuito do Supabase | **resolvida.** Validado na unidade `M1.1` e aprovado pelo operador em 2026-09-12. Saiu do `docs/scope-brief.md` |
 | 5 | Fatiamento da Etapa 1 | **resolvida.** Aprovado pelo operador em 2026-09-12 |
 
@@ -23,7 +23,7 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 
 | Marco | Entrega | Unidades | Situação |
 |---|---|---|---|
-| M0 | Fundação do repositório | `M0.1` | fatiado em 2026-09-12 |
+| M0 | Fundação do repositório | `M0.1` | **fechado** em 2026-09-13 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12 |
 | M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12 |
 | M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor |
@@ -62,8 +62,8 @@ Ordem de trabalho:
 
 | Onda | Unidades | Condição para começar |
 |---|---|---|
-| 1 | `M0.1`, `M1.1` | nenhuma. As duas começaram em 2026-09-12 |
-| 2 | `M1.2`, `M1.4`, `M1.5` | `M0.1` fechada. `M1.2` também espera `M1.1` fechada |
+| 1 | `M0.1`, `M1.1` | **fechada** em 2026-09-13 |
+| 2 | `M1.2`, `M1.4`, `M1.5` | liberada em 2026-09-13 |
 | 3 | `M1.3`, `M1.6` | dependências da tabela acima fechadas |
 
 A onda 2 só é explorada depois que `M0.1` fechar. Explorar CI, compose e migrações antes
@@ -73,7 +73,7 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 
 | Unidade | Marco | Trilha | Estado | Depende de | Última transição |
 |---|---|---|---|---|---|
-| `M0.1-monorepo-base` | M0 | dividida | `aguardando operador` | — | 2026-09-13, revisão do condutor aprovou. GATE 2 com o operador |
+| `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |

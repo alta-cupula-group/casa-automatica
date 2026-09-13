@@ -1,5 +1,5 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0`
-> Estado: aguardando operador
+> Estado: fechada
 > Revisor: condutor · Data: 2026-09-13
 
 # Revisão — `M0.1-monorepo-base`
@@ -113,8 +113,11 @@ Opções:
 Recomendação do condutor: A, se a nota abriu também **com os itens**. O registro diz "sem
 ReCAPTCHA", e o roadmap exige as duas coisas.
 
+**Decisão do operador, 2026-09-13: A.** O commit é dele e a nota abriu sem captcha e com
+os itens. O condutor restaurou a linha quebrada do roadmap e completou o registro.
+
 ## GATE 2
 
 - Aprovação técnica: condutor em 2026-09-13
-- Veredito do operador: —
+- Veredito do operador: aprovado em 2026-09-13
 - Ressalva e destino: observação 1 vira item de DoD da primeira unidade do M2

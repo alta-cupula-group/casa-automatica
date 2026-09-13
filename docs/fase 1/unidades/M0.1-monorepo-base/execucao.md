@@ -1,5 +1,5 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: aguardando operador
+> Estado: fechada
 > Executor · Data: `2026-09-12` · Rodada: `2`
 > Contrato aprovado em: condutor `2026-09-12` · operador `2026-09-12`
 

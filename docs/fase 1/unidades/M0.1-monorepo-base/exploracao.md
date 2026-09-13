@@ -1,5 +1,5 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: contrato em rascunho
+> Estado: fechada
 > Explorador · Data: 2026-09-12
 
 # Exploração — `M0.1-monorepo-base`
