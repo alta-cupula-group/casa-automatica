@@ -1,6 +1,6 @@
 > Unidade: `M0.1-monorepo-base` · Marco: `M0` · Trilha: `dividida`
-> Estado: em revisão
-> Executor · Data: `2026-09-12` · Rodada: `1`
+> Estado: aguardando operador
+> Executor · Data: `2026-09-12` · Rodada: `2`
 > Contrato aprovado em: condutor `2026-09-12` · operador `2026-09-12`
 
 O registro da rodada 2 está no fim deste documento. O que vem abaixo é a rodada 1,

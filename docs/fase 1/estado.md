@@ -26,7 +26,7 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 | M0 | Fundação do repositório | `M0.1` | fatiado em 2026-09-12 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12 |
 | M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12 |
-| M2 | Esqueleto da API e autenticação | — | não fatiado |
+| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor |
 | M3 | Módulo Pessoas | — | não fatiado |
 | M4 | Ledger e plano de contas | — | não fatiado |
 | M5 · Despesas | Despesas, divisão e acertos | — | não fatiado |
@@ -73,7 +73,7 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 
 | Unidade | Marco | Trilha | Estado | Depende de | Última transição |
 |---|---|---|---|---|---|
-| `M0.1-monorepo-base` | M0 | dividida | `em execução` | — | 2026-09-12, contrato reaprovado e rodada 2 despachada |
+| `M0.1-monorepo-base` | M0 | dividida | `aguardando operador` | — | 2026-09-13, revisão do condutor aprovou. GATE 2 com o operador |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
