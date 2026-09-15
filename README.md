@@ -28,7 +28,7 @@ O Corepack não existe mais no Node 26. Quem resolve a versão do pnpm é o camp
 ```bash
 curl -fsSL https://get.pnpm.io/install.sh | sh -   # uma vez por máquina
 source ~/.bashrc
-git clone https://github.com/casa-automatica/casa-automatica.git
+git clone https://github.com/alta-cupula-group/casa-automatica.git
 cd casa-automatica
 pnpm install --frozen-lockfile
 cp apps/api/.env.example apps/api/.env

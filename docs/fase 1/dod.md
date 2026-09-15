@@ -13,7 +13,7 @@
 - Um contrato pode endurecer um item. Um contrato não afrouxa um item. Exceção exige aprovação do operador escrita no próprio contrato.
 - A coluna Origem diz de onde veio cada item. `proposta` quer dizer que o brief e o roadmap não fixam o item. Ele passa a valer só com a aprovação deste documento.
 - Os identificadores de unidade citados aqui vêm do fatiamento proposto em `docs/fase 1/estado.md`. Se o fatiamento mudar, este documento acompanha.
-- O repositório `casa-automatica/casa-automatica` é público no GitHub. A seção E existe por causa disso.
+- O repositório `alta-cupula-group/casa-automatica` é público no GitHub. Até 2026-09-15 ele se chamava `casa-automatica/casa-automatica`; o dono renomeou a conta. A seção E existe por causa disso.
 
 ## A. Processo · vale desde já
 
@@ -36,7 +36,7 @@
 
 ```bash
 dir=$(mktemp -d)
-git clone https://github.com/casa-automatica/casa-automatica.git "$dir"
+git clone https://github.com/alta-cupula-group/casa-automatica.git "$dir"
 cd "$dir"
 pnpm install --frozen-lockfile
 pnpm -r build
