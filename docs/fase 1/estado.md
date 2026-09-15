@@ -80,6 +80,6 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
-| `M1.4-ci-verificacao` | M1 · CI | dividida | `em exploração` | `M0.1` | 2026-09-15, ordem emitida. Explorador: Claude Code |
+| `M1.4-ci-verificacao` | M1 · CI | dividida | `contrato em rascunho` | `M0.1` | 2026-09-15, relatório de exploração entregue. Três perguntas ao operador |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `em exploração` | `M0.1` para explorar, `M1.4` para executar | 2026-09-15, ordem emitida. Explorador: Lucas, com Codex ou Cursor |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
