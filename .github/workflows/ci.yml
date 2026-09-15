@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  verificar:
+    name: verificar
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Clonar o repositório
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Detectar mudança só de documentação
+        id: escopo
+        run: |
+          base=$(git merge-base origin/main HEAD)
+          alterados=$(git diff --name-only "$base" HEAD)
+          echo "Arquivos alterados contra a main:"
+          echo "$alterados"
+          if [ -z "$alterados" ]; then
+            echo "Nenhum arquivo alterado contra a main. Roda tudo."
+            echo "so_documentacao=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          so_documentacao=true
+          while IFS= read -r arquivo; do
+            case "$arquivo" in
+              docs/*) ;;
+              *.md) ;;
+              *) so_documentacao=false ;;
+            esac
+          done <<< "$alterados"
+          echo "so_documentacao=$so_documentacao" >> "$GITHUB_OUTPUT"
+          echo "Mudança só de documentação: $so_documentacao"
+
+      - name: Instalar o Node
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: "26"
+
+      - name: Instalar o pnpm
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        uses: pnpm/action-setup@v6.1.0
+
+      - name: Instalar as dependências
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: pnpm -r build
+
+      - name: Lint
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: pnpm -r lint
+
+      - name: Checagem de tipos
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: pnpm -r typecheck
+
+      - name: Testes
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: pnpm -r test
+
+      - name: Formatação
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: pnpm format:check
