@@ -11,11 +11,12 @@ Tudo que a execução precisa está aqui ou nos arquivos nomeados aqui.
 ## O que será construído
 
 Um workflow do GitHub Actions roda lint, checagem de tipos, testes, build e checagem de
-formatação a cada push e a cada pull request. Um hook local de pré-commit roda lint e
-checagem de tipos na máquina de quem commita. Um ruleset protege a `main`: código entra
-só por pull request com o check verde, e push direto e force push são recusados. O
-`README.md` passa a levar uma máquina vazia do zero até os comandos passarem, incluindo a
-instalação do Node.
+formatação a cada push e a cada pull request. Quando o pull request mexe só em
+documentação, o mesmo workflow fecha verde em segundos, sem rodar os cinco comandos. Um
+hook local de pré-commit roda lint e checagem de tipos na máquina de quem commita. Um
+ruleset protege a `main`: código entra só por pull request com o check verde, e push
+direto e force push são recusados. O `README.md` passa a levar uma máquina vazia do zero
+até os comandos passarem, e descreve o fluxo de entrega em um comando.
 
 ## Interfaces e formatos
 
@@ -27,7 +28,18 @@ nome diferente.
 
 Gatilhos: `push` em qualquer branch e `pull_request` com alvo na `main`.
 
-O job roda, nesta ordem, com o repositório já instalado por `pnpm install --frozen-lockfile`:
+O job sempre roda e sempre reporta o check. O primeiro passo compara os arquivos alterados
+contra a `main`. A mudança é **só de documentação** quando todo arquivo alterado casa com
+um destes padrões:
+
+```
+docs/**
+*.md
+```
+
+Numa mudança só de documentação, o job termina verde sem instalar dependência e sem rodar
+comando de verificação. Em qualquer outro caso, o job instala com
+`pnpm install --frozen-lockfile` e roda, nesta ordem:
 
 ```
 pnpm -r build
@@ -62,12 +74,20 @@ hook; isso é comportamento do git, e o `README.md` diz que quem garante é a CI
 Sem lista de bypass. Aprovação de revisor no pull request não é exigida, porque a casa tem
 três pessoas e o gate humano já existe no processo. O ruleset vale para os três admins.
 
-Se a tela ou a API não oferecer ruleset para este repositório, use a proteção clássica de
-branch com as mesmas três regras, e registre a troca em `execucao.md`.
+Se a API não oferecer ruleset para este repositório, use a proteção clássica de branch com
+as mesmas três regras, e registre a troca em `execucao.md`.
 
-**README.** A seção "Como rodar em cinco minutos" passa a instalar o Node antes do pnpm, e
-ganha uma seção curta sobre a CI e o hook: o que roda, e como abrir um pull request pela
-linha de comando.
+**Merge automático.** O repositório passa a permitir merge automático, para o fluxo de
+entrega caber em um comando. Isso é uma configuração do repositório, não um arquivo.
+
+**README.** A seção "Como rodar em cinco minutos" passa a instalar o Node antes do pnpm. O
+arquivo ganha uma seção curta sobre a CI, o hook, o `--no-verify` e o fluxo de entrega:
+
+```bash
+git switch -c <tipo>/<assunto>
+git push -u origin HEAD
+gh pr create --fill && gh pr merge --squash --auto
+```
 
 ## Dependências novas
 
@@ -96,11 +116,11 @@ o executor precisar mexer em `allowBuilds`, o contrato falhou: pare e reporte.
 | `.husky/pre-commit` | criar |
 | `package.json` | alterar: script `prepare` e `devDependency` `husky` |
 | `pnpm-lock.yaml` | alterar: efeito da instalação |
-| `README.md` | alterar: instalação do Node, seção de CI e hook |
+| `README.md` | alterar: instalação do Node, seção de CI, hook e fluxo de entrega |
 | `docs/fase 1/unidades/M1.4-ci-verificacao/execucao.md` | criar |
 
-O ruleset não é arquivo. Ele é configurado no GitHub pela API, com a conta do operador,
-que tem `admin` desde 2026-09-15.
+O ruleset e o merge automático não são arquivos. Os dois são configurados no GitHub pela
+API, com a conta do operador, que tem `admin` desde 2026-09-15.
 
 ## Fora deste contrato
 
@@ -115,16 +135,13 @@ que tem `admin` desde 2026-09-15.
 
 | # | Item | Como verificar | Teste |
 |---|---|---|---|
-| 1 | O workflow roda os cinco comandos num push de branch e termina verde | `gh run list --branch unidade/M1.4-ci-verificacao` mostra `completed success`; `gh run view <id> --log` mostra os cinco comandos | verificação manual, com a saída em `execucao.md` |
-| 2 | O check se chama `CI / verificar` | `gh api repos/alta-cupula-group/casa-automatica/commits/<sha>/check-runs --jq '.check_runs[].name'` devolve `verificar` no workflow `CI` | verificação manual |
-| 3 | Pull request com teste quebrado fica vermelho | num commit de teste quebrado, o mesmo comando do item 1 mostra `failure`; o PR mostra o check vermelho. O commit quebrado não fica na branch final | verificação manual |
-| 4 | O hook recusa commit com erro de lint ou de tipo | com um erro de tipo proposital, `git commit` sai com código diferente de zero e a saída mostra o comando que falhou. O erro é desfeito depois | verificação manual |
-| 5 | O hook funciona num clone novo, sem passo manual | num clone limpo em diretório temporário, `pnpm install --frozen-lockfile` e depois `git config core.hooksPath` devolve o caminho do husky | verificação manual |
-| 6 | Push direto na `main` é recusado pelo GitHub | `git push origin HEAD:main` de um commit qualquer sai com erro citando a regra; a saída vai para `execucao.md` | verificação manual |
-| 7 | Merge na `main` exige o check verde | o pull request desta unidade mostra o check exigido; merge só acontece com ele verde | verificação manual |
-| 8 | Uma máquina vazia completa o README | num container `ubuntu:24.04` sem Node e sem pnpm, seguir o README na ordem leva `pnpm -r build` a sair com código 0 | verificação manual, com a saída em `execucao.md` |
-| 9 | Os cinco comandos passam localmente depois da mudança | `pnpm -r build && pnpm -r lint && pnpm -r typecheck && pnpm -r test && pnpm format:check` sai com código 0 | comando |
-| 10 | O `README.md` descreve a CI, o hook, o `--no-verify` e como abrir pull request pela linha de comando | leitura do `README.md` | verificação manual |
+| 1 | O workflow roda os cinco comandos num push de branch, termina verde, e o check se chama `CI / verificar` | `gh run list --branch unidade/M1.4-ci-verificacao` mostra `completed success`; `gh api repos/alta-cupula-group/casa-automatica/commits/<sha>/check-runs --jq '.check_runs[].name'` devolve `verificar`; o log mostra os cinco comandos | verificação manual, saída em `execucao.md` |
+| 2 | A `main` recusa push direto e recusa merge com check vermelho | `git push origin HEAD:main` sai com erro citando a regra; num pull request com teste quebrado, o check fica `failure` e o botão de merge fica bloqueado. O commit quebrado não fica na branch final | verificação manual, saída em `execucao.md` |
+| 3 | Um pull request que toca só documentação fecha verde sem rodar os cinco comandos | num pull request que altera só um arquivo em `docs/`, o log do job não contém `pnpm -r build`, e o check termina verde | verificação manual, saída em `execucao.md` |
+| 4 | O hook recusa commit com erro de lint ou de tipo, e funciona num clone novo sem passo manual | com um erro de tipo proposital, `git commit` sai com código diferente de zero; num clone limpo em diretório temporário, depois de `pnpm install --frozen-lockfile`, `git config core.hooksPath` devolve o caminho do husky. O erro é desfeito depois | verificação manual, saída em `execucao.md` |
+| 5 | Uma máquina vazia completa o README | num container `ubuntu:24.04` sem Node e sem pnpm, seguir o README na ordem leva `pnpm -r build` a sair com código 0 | verificação manual, saída em `execucao.md` |
+| 6 | Os cinco comandos passam localmente depois da mudança | `pnpm -r build && pnpm -r lint && pnpm -r typecheck && pnpm -r test && pnpm format:check` sai com código 0 | comando |
+| 7 | O `README.md` descreve a CI, o hook, o `--no-verify` e o fluxo de entrega em um comando | leitura do `README.md` | verificação manual |
 
 O DoD geral em `docs/fase 1/dod.md` vale por cima deste e não precisa ser repetido aqui.
 A seção D passa a valer a partir desta unidade.
@@ -135,7 +152,8 @@ A seção D passa a valer a partir desta unidade.
 |---|---|---|
 | O ruleset bloqueia o próprio executor antes do fim da unidade | `git push` recusado na `main` no meio do trabalho | é o comportamento esperado. Trabalhe na branch da unidade e entre por pull request |
 | A API não oferece ruleset neste plano | erro na chamada de criação | use a proteção clássica com as mesmas três regras e registre a troca |
-| O check exigido nunca reporta, e o pull request fica esperando para sempre | PR parado com check pendente | confira o nome do check com o item 2 antes de exigi-lo no ruleset |
+| O check exigido nunca reporta, e o pull request fica esperando para sempre | pull request parado com check pendente | confira o nome do check com o item 1 antes de exigi-lo no ruleset |
+| O atalho de documentação deixa passar mudança de código | o log do job não roda os comandos num pull request que mexe em código | o padrão de caminhos é fechado: `docs/**` e `*.md`. Qualquer outro caminho roda tudo |
 | O job herda um Node diferente do `engines` | erro de tipo ou de sintaxe que não acontece localmente | fixe a versão do Node no passo de setup |
 | Pull request vindo de fork não roda sem aprovação | check pendente com aviso de aprovação | não trate nesta unidade. Registre em `execucao.md` |
 
@@ -155,5 +173,6 @@ Resposta: `sim` · Verificado em: `2026-09-15`
 
 ## Perguntas ao operador
 
-Nenhuma. As três decisões desta unidade estão no veredito do operador em `exploracao.md`,
-registrado em 2026-09-15: `husky`, ruleset, e organização com transferência.
+Nenhuma. As decisões desta unidade estão no veredito do operador em `exploracao.md`,
+registrado em 2026-09-15: `husky`, ruleset, organização com transferência, atalho de
+documentação na CI e DoD agrupado.
