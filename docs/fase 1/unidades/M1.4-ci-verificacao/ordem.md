@@ -30,8 +30,8 @@ a CI verde.
 aqui, e a proteção da `main` muda como todo mundo trabalha.
 
 A auto-suficiência do contrato importa porque o executor precisa ver o workflow rodando
-de verdade no GitHub, e o contrato tem que dizer como ele prova isso sem admin da
-organização.
+de verdade no GitHub, e o contrato tem que dizer como ele prova isso sem ser dono do
+repositório.
 
 ## Perguntas a responder
 
@@ -51,7 +51,7 @@ organização.
 4. **P4** — Como se protege a `main` neste repositório: proteção clássica de branch ou
    ruleset? Para cada forma, diga o que ela exige do plano gratuito num repositório
    público, quais opções bloqueiam merge com CI vermelha, push direto e force push, e
-   se o dono da organização também fica sujeito. Cite a documentação oficial.
+   se o dono do repositório também fica sujeito. Cite a documentação oficial.
 5. **P5** — Quem consegue configurar essa proteção? O dono do repositório é a conta
    pessoal `casa-automatica`. A conta do operador, `markinkkkkj`, é colaboradora com
    `write`, segundo `gh api repos/casa-automatica/casa-automatica/collaborators/markinkkkkj/permission`
@@ -87,7 +87,7 @@ organização.
 - `package.json` da raiz e `README.md`, seção "Como rodar em cinco minutos".
 - Documentação oficial do GitHub Actions, de rulesets e de proteção de branch.
 - Documentação oficial do pnpm sobre integração contínua.
-- `gh api`, para permissões, organização e checks.
+- `gh api`, para permissões, dono do repositório e checks.
 
 ## Branch
 
