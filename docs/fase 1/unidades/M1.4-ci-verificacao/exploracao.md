@@ -645,3 +645,21 @@ Opções:
   pela conta `casa-automatica` · consequência: moradores podem virar `admin` do
   repositório sem ser `Owner` da organização, no mesmo padrão já usado para o Supabase;
   URL antiga redireciona automaticamente.
+
+## Veredito do operador
+
+Respondido em 2026-09-15. Registrado pelo condutor na mesma data, a partir da resposta do
+operador. O operador aceitou as recomendações do condutor.
+
+| Pergunta | Decisão |
+|---|---|
+| P1 | **A**. O hook local usa `husky` |
+| P2 | **B**. A `main` é protegida por ruleset. Se a tela do GitHub não oferecer ruleset no plano gratuito, cai para a proteção clássica |
+| P3 | **B**. Uma organização gratuita nova recebe o repositório por transferência. Ficam admin do repositório: `markinkkkkj`, `LucasGiazzi`, `casa-automatica` e a conta do terceiro morador, ainda a informar |
+| Achado 2 | O `README.md` passa a instalar o Node numa máquina vazia. Entra no escopo e no DoD desta unidade |
+
+Achado 1 resolvido fora do ciclo: `.claude/settings.json` foi formatado no commit
+`7f2dcc3`, e `pnpm format:check` voltou a passar na `main`.
+
+Pendente antes do contrato: o nome da organização nova. Ele entra na URL do repositório,
+no `README.md` e no bloco de clone do item B1 de `docs/fase 1/dod.md`.
