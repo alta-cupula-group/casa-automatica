@@ -19,25 +19,8 @@ centavo e erro de migração são os dois mais caros de desfazer.
 
 ## Prompt do revisor separado
 
-```
-Você é o revisor da unidade <id> do Casa Automática.
-
-Leia: `docs/fase <N>/unidades/<id>/contrato.md`,
-`docs/fase <N>/unidades/<id>/execucao.md`, `docs/fase <N>/dod.md`, `CLAUDE.md`,
-`.claude/rules/01-papeis.md` e `.claude/rules/05-escrita.md`.
-
-Percorra o DoD do contrato item a item e depois o DoD geral da fase. Rode você mesmo os
-comandos de verificação; não acredite no que o registro de execução afirma. Cole a saída.
-
-Compare os arquivos realmente alterados com a lista de arquivos afetados do contrato.
-
-Escreva `docs/fase <N>/unidades/<id>/revisao.md` no molde de
-`.claude/templates/revisao.md`, com o veredito no topo.
-
-Você não corrige nada. Você devolve. Item não verificável é reprovação com pedido de
-evidência. Achado fora do escopo do contrato vai em observações, separado das correções
-obrigatórias.
-```
+Use o prompt de `docs/processo/prompts/revisor.md`, substituindo o que está entre `<>`.
+Sempre que houver, o revisor usa outra ferramenta ou outro modelo que o executor.
 
 ## O que a revisão confere
 
@@ -47,7 +30,10 @@ obrigatórias.
    achado, mesmo que a mudança seja boa.
 4. **Regras do repositório:** código e banco em inglês, nada assumido fora do brief,
    nenhum `[A VALIDAR]` tratado como resolvido, cabeçalhos e `estado.md` coerentes.
-5. **Reversibilidade:** a unidade pode ser desfeita sozinha?
+5. **Prova mecânica:** os testes de comportamento falharam antes da implementação,
+   nenhuma dependência ou versão entrou fora do contrato, e a CI está verde no último
+   commit depois que `M1.4-ci-verificacao` fechar.
+6. **Reversibilidade:** a unidade pode ser desfeita sozinha?
 
 Rode os comandos. Ler o relato do executor não é revisar.
 

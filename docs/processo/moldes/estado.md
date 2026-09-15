@@ -2,7 +2,7 @@
 
 > Fonte de verdade do andamento. Atualizado pelo condutor a cada transição.
 > O estado aqui e o cabeçalho de cada documento de unidade têm que bater.
-> Estados possíveis: `.claude/rules/02-ciclo.md`.
+> Estados possíveis: `docs/processo/02-ciclo.md`.
 
 ## Pendências de fase
 
@@ -15,7 +15,7 @@ fatiamento.
 | 2 | `docs/fase N/dod.md` aprovado pelo operador | ... |
 
 Item `[A VALIDAR]` vira ordem de exploração própria antes da unidade que depende dele.
-Ver `.claude/rules/04-decisoes.md`.
+Ver `docs/processo/04-decisoes.md`.
 
 ## Marcos
 

@@ -22,8 +22,21 @@ variáveis de ambiente. Nomes em inglês, como manda o repositório.
 // exemplo do formato esperado
 ```
 
+Não escreva conteúdo de arquivo de configuração. Descreva o efeito esperado e deixe o DoD
+conferir.
+
 Decisão de produto ou de modelagem que sustenta isto: aponte a linha de
 `docs/scope-brief.md`. Não copie a decisão para cá; duas fontes de verdade divergem.
+
+## Dependências novas
+
+Lista fechada. O executor não adiciona pacote nem muda versão fora dela.
+
+| Pacote | Versão | De onde saiu a versão |
+|---|---|---|
+| `nome` | `x.y.z` | saída de `pnpm view <pacote> version` ou linha do lockfile |
+
+`Nenhuma`, se for o caso.
 
 ## Arquivos afetados
 
@@ -43,10 +56,12 @@ executor de aproveitar a viagem.
 Cada item é verificável por um comando ou por uma observação objetiva. "Funciona bem"
 não é item.
 
-| # | Item | Como verificar |
-|---|---|---|
-| 1 | ... | `<comando>` e o que esperar da saída |
-| 2 | ... | ... |
+| # | Item | Como verificar | Teste |
+|---|---|---|---|
+| 1 | ... | `<comando>` e o que esperar da saída | arquivo e nome do teste que vai provar o item, ou `verificação manual` com a evidência esperada |
+| 2 | ... | ... | ... |
+
+No máximo dez itens. Se precisar de mais, a unidade está mal fatiada.
 
 O DoD geral em `docs/fase N/dod.md` vale por cima deste e não precisa ser repetido aqui.
 

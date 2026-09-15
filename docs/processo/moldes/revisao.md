@@ -1,6 +1,6 @@
 > Unidade: `<id>` · Marco: `<M?>`
 > Estado: `em correção | fechada`
-> Revisor: `condutor | revisor separado` · Data: `<AAAA-MM-DD>`
+> Revisor: `condutor | revisor separado` · Ferramenta: `<ferramenta e modelo>` · Data: `<AAAA-MM-DD>`
 
 # Revisão — `<id>`
 
@@ -38,6 +38,10 @@ mudança seja boa.
 - Nada assumido fora do brief: `ok | não`
 - Nenhum `[A VALIDAR]` tratado como resolvido: `ok | não`
 - Cabeçalhos e `estado.md` coerentes: `ok | não`
+- Testes de comportamento falharam antes da implementação: `ok | não`
+- Nenhuma dependência ou versão fora do contrato: `ok | não`
+- CI verde no último commit, depois de `M1.4-ci-verificacao`: `ok | não | não se aplica`
+- Em unidade de risco, ferramenta ou modelo diferente do executor: `ok | não havia outro | não se aplica`
 
 ### Correções exigidas
 

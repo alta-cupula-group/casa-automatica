@@ -11,6 +11,7 @@ Identificador: `M<marco>.<sequência>-<slug>`. Exemplos: `M0.1-monorepo-base`,
 
 Uma unidade está bem fatiada quando:
 - cabe num contrato que uma pessoa lê em cinco minutos;
+- o DoD do contrato tem no máximo dez itens;
 - tem um critério de pronto verificável sem depender de outra unidade em andamento;
 - pode ser revertida sozinha, sem desmontar o que já fechou.
 
@@ -29,13 +30,16 @@ ordem  →  exploração  →  contrato  →  [GATE 1]  →  execução  →  re
    altera código.
 3. **Contrato.** O condutor escreve `contrato.md` a partir da exploração: o que será
    construído, interfaces e formatos, arquivos afetados, o que fica de fora, riscos, e o
-   DoD verificável.
+   DoD verificável. O contrato descreve comportamento e verificação, não conteúdo de
+   arquivo, como manda a regra 05.
 4. **GATE 1 — contrato aprovado.** Duas aprovações: condutor e operador, com data no
    cabeçalho. Sem as duas, nenhuma linha de código.
-5. **Execução.** O executor implementa e registra em `execucao.md`.
+5. **Execução.** O executor escreve primeiro os testes dos itens de comportamento do DoD
+   e registra que falham. Depois implementa e registra tudo em `execucao.md`.
 6. **Revisão.** O revisor confere contra o DoD e escreve `revisao.md`.
 7. **GATE 2 — entrega aprovada.** Condutor aprova tecnicamente, operador dá o veredito.
-   Reprovação vira rodada de correção, numerada dentro do próprio `revisao.md`.
+   Reprovação vira rodada de correção, numerada dentro do próprio `revisao.md`. Depois que
+   `M1.4-ci-verificacao` fechar, entrega sem CI verde não chega ao GATE 2.
 8. **Fechada.** `estado.md` atualizado, commit de fechamento.
 
 ## Trilhas
@@ -56,7 +60,8 @@ Escolher quando **todas** forem verdadeiras:
 ### Trilha dividida
 
 Um agente explora e encerra. Depois da aprovação, um agente **novo, com contexto zerado**,
-executa lendo só o contrato, as regras e os arquivos que o contrato nomeia.
+executa lendo só o contrato, as regras e os arquivos que o contrato nomeia. Em ferramenta
+sem subagente, o agente novo é uma conversa nova, como descreve a regra 06.
 
 Escolher quando **qualquer uma** for verdadeira:
 - a unidade é fundacional ou define contrato que outras unidades vão consumir: schema,
@@ -115,4 +120,6 @@ em quem fez. Reabrir o contrato exige novo GATE 1.
 - Executor ampliando escopo, mesmo com boa intenção.
 - Revisor consertando o que revisou.
 - Unidade fechada com item de DoD não verificado.
+- Item de DoD dado como atendido sem saída de comando ou resultado de CI.
+- Código de comportamento escrito antes do teste que o prova.
 - Documento de unidade apagado. Unidade abandonada continua no repositório.

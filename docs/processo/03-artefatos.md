@@ -3,7 +3,12 @@
 ## Árvore
 
 ```
+AGENTS.md                     porta de entrada para qualquer ferramenta de IA
+CLAUDE.md                     só carrega AGENTS.md e as regras no Claude Code
 docs/
+  processo/                   as regras 01 a 06
+    moldes/                   os moldes dos documentos
+    prompts/                  o prompt de cada papel
   scope-brief.md              escopo e decisões de produto do MVP (fonte de verdade)
   handoff.md                  brief original, histórico, não é fonte de verdade
   fase 1/
@@ -22,7 +27,7 @@ docs/
 
 Fases seguintes repetem a estrutura em `docs/fase N/`.
 
-Os cinco documentos usam os moldes de `.claude/templates/`. Documento que ainda não
+Os cinco documentos usam os moldes de `docs/processo/moldes/`. Documento que ainda não
 existe simplesmente não está lá; não se cria arquivo vazio.
 
 ## Cabeçalho obrigatório
@@ -34,6 +39,9 @@ Todo documento de unidade começa com um bloco de citação:
 > Estado: aguardando operador
 > Condutor aprovou: 2026-09-12 · Operador aprovou: —
 ```
+
+Exploração, execução e revisão acrescentam ao cabeçalho a ferramenta e o modelo que as
+produziram.
 
 O estado no cabeçalho e o estado em `estado.md` têm que bater. Divergência é erro.
 
@@ -75,3 +83,6 @@ fechamento carrega só documentação.
 
 Branch por unidade quando a execução for longa ou arriscada: `unidade/M0.1-monorepo-base`.
 Unidade curta pode ir direto na `main`. Quem decide é o condutor, e a decisão fica na ordem.
+
+Depois que `M1.4-ci-verificacao` fechar, a proteção da `main` definida no contrato dela
+vale por cima do parágrafo anterior.

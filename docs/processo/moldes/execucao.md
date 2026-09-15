@@ -1,6 +1,6 @@
 > Unidade: `<id>` · Marco: `<M?>` · Trilha: `única | dividida`
 > Estado: em revisão
-> Executor · Data: `<AAAA-MM-DD>` · Rodada: `1`
+> Executor · Ferramenta: `<ferramenta e modelo>` · Data: `<AAAA-MM-DD>` · Rodada: `1`
 > Contrato aprovado em: condutor `<data>` · operador `<data>`
 
 # Execução — `<id>`
@@ -8,6 +8,16 @@
 ## O que ficou pronto
 
 Até uma página, em comportamento observável. O que passa a funcionar e como se usa.
+
+## Testes antes da implementação
+
+Os testes dos itens de comportamento do DoD, rodados antes de qualquer código da unidade.
+A saída tem que mostrar que eles falham.
+
+```
+$ <comando de teste>
+<saída real com as falhas>
+```
 
 ## Arquivos tocados
 
@@ -34,6 +44,13 @@ $ <comando>
 
 ### DoD geral da fase
 Item a item, no mesmo formato.
+
+### CI
+Depois que `M1.4-ci-verificacao` fechar: o resultado da CI no último commit da unidade.
+```
+$ gh run list --commit <sha>
+<saída real>
+```
 
 ## Bloqueios e dúvidas
 

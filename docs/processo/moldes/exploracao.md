@@ -1,6 +1,6 @@
 > Unidade: `<id>` · Marco: `<M?>` · Trilha: `única | dividida`
 > Estado: contrato em rascunho
-> Explorador · Data: `<AAAA-MM-DD>`
+> Explorador · Ferramenta: `<ferramenta e modelo>` · Data: `<AAAA-MM-DD>`
 
 # Exploração — `<id>`
 
@@ -21,6 +21,9 @@ Escrito por último, lido primeiro.
 ```
 
 **Confiança:** `fato verificado | hipótese`
+
+Versão de dependência e comportamento de biblioteca só são fato verificado com o comando,
+o arquivo de tipos instalado ou a documentação oficial da versão instalada.
 
 ### P2 — ...
 

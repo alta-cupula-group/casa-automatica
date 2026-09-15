@@ -17,17 +17,21 @@ contrato não venceu o GATE 1 e o que falta.
 
 ## Como rodar
 
-**Trilha dividida** (o padrão): despache um agente `executor` novo com o prompt da skill
-`conduzir-fase`, passo 7. Ele recebe o caminho do contrato e nada do seu contexto. Não
+**Trilha dividida** (o padrão): despache um agente `executor` novo com o prompt de
+`docs/processo/prompts/executor.md`. Ele recebe o caminho do contrato e nada do seu contexto. Não
 repasse a exploração, não resuma a conversa com o operador, não antecipe conclusões.
 O contrato tem que bastar — é esse o teste.
 
 **Trilha única:** o mesmo agente que explorou continua, com o prompt de mudança de papel
-do passo 7. O contrato manda por cima da exploração dele.
+de `docs/processo/prompts/executor-trilha-unica.md`. O contrato manda por cima da
+exploração dele.
 
 ## Limites da execução
 
+- Escrever primeiro os testes dos itens de comportamento do DoD e registrar a falha.
 - Implementar exatamente o contrato. Nada a mais.
+- Conferir API de biblioteca nos tipos instalados ou na documentação oficial, não na memória.
+- Não adicionar dependência nem mudar versão fora do contrato.
 - Escrever apenas nos caminhos da lista de arquivos afetados, mais o `execucao.md`.
   Arquivo fora da lista é mudança de escopo: parar e reportar.
 - Não alterar o DoD. Item impossível ou errado é bloqueio, não convite para reescrever.
@@ -36,7 +40,7 @@ do passo 7. O contrato manda por cima da exploração dele.
 
 ## O registro de execução
 
-`docs/fase N/unidades/<id>/execucao.md`, no molde de `.claude/templates/execucao.md`:
+`docs/fase N/unidades/<id>/execucao.md`, no molde de `docs/processo/moldes/execucao.md`:
 
 - o que foi construído, em comportamento observável;
 - a lista real de arquivos criados e alterados;

@@ -22,6 +22,13 @@ zerado. Os dois precisam entender na primeira leitura.
   evita o executor "aproveitar e já fazer".
 - **Evidência, não afirmação.** Exploração e execução mostram a saída do comando, o trecho
   do arquivo, a URL consultada.
+- **Contrato descreve comportamento, não conteúdo de arquivo.** Interface pública, nome
+  de tabela e coluna, e comando de verificação entram no contrato. Conteúdo de arquivo de
+  configuração não entra: o executor chega nele, e o DoD confere o efeito.
+- **Nada de memória sobre ferramenta.** Versão de dependência sai do lockfile ou do
+  registro do pacote, com o comando. Comportamento de biblioteca sai dos tipos instalados
+  ou da documentação oficial da versão instalada, com o caminho ou a URL. Afirmação sem
+  essa origem se marca como hipótese.
 - **Não repita o brief.** Referencie `docs/scope-brief.md` e siga. Copiar decisão de
   produto para dentro do contrato cria duas fontes de verdade que vão divergir.
 - **Escreva o que descobriu que estava errado.** Exploração que só confirma o esperado
@@ -32,9 +39,9 @@ zerado. Os dois precisam entender na primeira leitura.
 | Documento | Alvo |
 |---|---|
 | `ordem.md` | meia página |
-| `exploracao.md` | o que precisar, com as respostas primeiro e o material bruto no fim |
+| `exploracao.md` | resumo e respostas em até três páginas. Material bruto no fim, só o que sustenta uma resposta |
 | `contrato.md` | duas páginas. Se passar disso, a unidade está mal fatiada |
-| `execucao.md` | uma página mais a saída dos comandos |
+| `execucao.md` | uma página mais a saída dos comandos. Saída longa se reduz ao comando, ao código de saída e às linhas que provam o item |
 | `revisao.md` | o DoD item a item, mais o veredito |
 
 ## Perguntas ao operador

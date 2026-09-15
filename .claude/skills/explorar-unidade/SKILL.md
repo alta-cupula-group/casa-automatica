@@ -12,11 +12,11 @@ existir, pare e devolva ao condutor.
 
 ## Como rodar
 
-Despache o agente `explorador` com o prompt da skill `conduzir-fase`, passo 4. Ele é
+Despache o agente `explorador` com o prompt de `docs/processo/prompts/explorador.md`. Ele é
 auto-suficiente de propósito: quem explora não precisa do contexto de quem conduz.
 
 Quando a exploração for curta e você já for o condutor na mesma sessão, pode fazer aqui
-mesmo, mas siga as regras do `.claude/agents/explorador.md` como se fosse outro agente:
+mesmo, mas siga o prompt de `docs/processo/prompts/explorador.md` como se fosse outro agente:
 nenhuma alteração no repositório fora do `exploracao.md`.
 
 ## O que o relatório precisa entregar
@@ -31,7 +31,9 @@ nenhuma alteração no repositório fora do `exploracao.md`.
 6. **Não descoberto:** o que ficou sem resposta e por quê.
 7. **Perguntas ao operador**, no formato da regra 05.
 
-Separe fato verificado de hipótese sua. Marque a hipótese como hipótese.
+Separe fato verificado de hipótese sua. Marque a hipótese como hipótese. Versão de
+dependência e comportamento de biblioteca só são fato com comando, tipos instalados ou
+documentação oficial da versão instalada.
 
 ## Sinais de exploração fraca
 

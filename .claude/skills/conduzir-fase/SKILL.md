@@ -16,12 +16,13 @@ Argumento esperado: o trecho a conduzir. Exemplos: `fase 1`, `M0`, `M5 · Despes
 Leia, nesta ordem:
 
 ```
-CLAUDE.md
-.claude/rules/01-papeis.md
-.claude/rules/02-ciclo.md
-.claude/rules/03-artefatos.md
-.claude/rules/04-decisoes.md
-.claude/rules/05-escrita.md
+AGENTS.md
+docs/processo/01-papeis.md
+docs/processo/02-ciclo.md
+docs/processo/03-artefatos.md
+docs/processo/04-decisoes.md
+docs/processo/05-escrita.md
+docs/processo/06-ferramentas.md
 docs/scope-brief.md
 docs/fase N/roadmap.md
 docs/fase N/dod.md            (se não existir, ele é a primeira coisa a produzir)
@@ -55,35 +56,15 @@ Na dúvida, dividida.
 
 ## Passo 3 — Emitir a ordem
 
-Crie `docs/fase N/unidades/<id>/ordem.md` a partir de `.claude/templates/ordem.md`.
+Crie `docs/fase N/unidades/<id>/ordem.md` a partir de `docs/processo/moldes/ordem.md`.
 A ordem tem que ser respondível por quem nunca viu sua conversa com o operador.
 
 Estado: `em exploração`. Commit: `docs(<id>): ordem de exploração`.
 
 ## Passo 4 — Despachar o explorador
 
-Despache o agente `explorador` com este prompt, substituindo o que está entre `<>`:
-
-```
-Você é o explorador da unidade <id> do Casa Automática.
-
-Sua ordem está em `docs/fase <N>/unidades/<id>/ordem.md`. Leia-a inteira e responda
-uma a uma as perguntas dela.
-
-Leia também, antes de começar: `CLAUDE.md`, `.claude/rules/01-papeis.md`,
-`.claude/rules/04-decisoes.md`, `.claude/rules/05-escrita.md` e `docs/scope-brief.md`.
-
-Escreva o resultado em `docs/fase <N>/unidades/<id>/exploracao.md`, no molde de
-`.claude/templates/exploracao.md`. Esse é o único arquivo do repositório que você pode
-criar ou alterar.
-
-Não altere código, configuração ou dependência. Não escreva o contrato. Não decida
-nenhum ponto que a ordem marque como decisão do operador; transforme-o em pergunta com
-opções e custo.
-
-Termine com um resumo de no máximo dez linhas: o que responde a ordem, o que ficou
-aberto, o que precisa do operador.
-```
+Despache o agente `explorador` com o prompt de `docs/processo/prompts/explorador.md`,
+substituindo o que está entre `<>`. Não acrescente nada da sua conversa com o operador.
 
 Ao receber o relatório, leia-o inteiro. Se ele não responder a ordem, devolva com o que
 falta antes de escrever o contrato.
@@ -92,7 +73,7 @@ Estado: `contrato em rascunho`. Commit: `docs(<id>): relatório de exploração`
 
 ## Passo 5 — Escrever o contrato
 
-`docs/fase N/unidades/<id>/contrato.md`, a partir de `.claude/templates/contrato.md`.
+`docs/fase N/unidades/<id>/contrato.md`, a partir de `docs/processo/moldes/contrato.md`.
 
 O contrato precisa ter, sem exceção:
 - o que será construído, em comportamento observável;
@@ -100,7 +81,11 @@ O contrato precisa ter, sem exceção:
 - a lista fechada de arquivos afetados;
 - o que fica **fora**;
 - o DoD, cada item verificável por um comando ou uma observação objetiva;
-- riscos e o que fazer se cada um acontecer.
+- riscos e o que fazer se cada um acontecer;
+- as dependências novas, cada versão com a origem: comando ou lockfile.
+
+O contrato descreve comportamento e verificação, não conteúdo de arquivo. O DoD tem no
+máximo dez itens, e cada item de comportamento aponta o teste que vai prová-lo.
 
 Depois, aplique o **teste de auto-suficiência**:
 
@@ -124,55 +109,21 @@ nunca só um comentário.
 
 ## Passo 7 — Despachar o executor
 
-**Trilha dividida.** Agente `executor` novo, com este prompt e nada mais:
+**Trilha dividida.** Agente `executor` novo, com o prompt de
+`docs/processo/prompts/executor.md` e nada mais.
 
-```
-Você é o executor da unidade <id> do Casa Automática.
+**Trilha única.** O mesmo agente que explorou continua, com o prompt de
+`docs/processo/prompts/executor-trilha-unica.md`.
 
-Seu contrato está em `docs/fase <N>/unidades/<id>/contrato.md`. Ele foi aprovado pelo
-condutor e pelo operador. Confirme as duas datas no cabeçalho antes de escrever qualquer
-linha; se faltar uma, pare e reporte.
-
-Leia: o contrato inteiro, `CLAUDE.md`, `.claude/rules/01-papeis.md`,
-`.claude/rules/04-decisoes.md`, `.claude/rules/05-escrita.md`,
-`docs/fase <N>/dod.md` e os arquivos que o contrato nomeia. Nada além disso.
-
-Implemente exatamente o que o contrato descreve. Escreva os testes que o DoD exige e
-rode todos os comandos de verificação.
-
-Registre em `docs/fase <N>/unidades/<id>/execucao.md`, no molde de
-`.claude/templates/execucao.md`, com o DoD item a item e a saída real de cada comando.
-
-Não amplie escopo, não altere o DoD, não delegue, não toque em arquivo fora da lista de
-arquivos afetados do contrato. Contrato ambíguo ou errado: pare, escreva o bloqueio em
-`execucao.md` e devolva.
-
-Você não tem acesso à exploração desta unidade e não deve pedi-la.
-```
-
-**Trilha única.** O mesmo agente que explorou continua, com este prompt:
-
-```
-O contrato da unidade <id> foi aprovado pelo condutor e pelo operador. Ele está em
-`docs/fase <N>/unidades/<id>/contrato.md`.
-
-Você muda de papel agora: era explorador, passa a executor. Leia
-`.claude/agents/executor.md` e siga as regras de lá.
-
-O contrato manda por cima da sua exploração. Onde ele divergir do que você descobriu,
-vale o contrato; a divergência vira um bloqueio que você reporta, não algo que você
-resolve sozinho.
-
-Implemente o contrato, rode o DoD, registre em
-`docs/fase <N>/unidades/<id>/execucao.md`.
-```
+Nos dois casos, o executor escreve primeiro os testes do DoD e registra a falha.
 
 Estado: `em execução`.
 
 ## Passo 8 — Revisão e GATE 2
 
 Decida quem revisa, pela regra 01. Unidade que mexe em schema, contrato de API, dinheiro
-ou deploy vai para um agente `revisor` separado. Use a skill `revisar-entrega`.
+ou deploy vai para um agente `revisor` separado, de preferência com outra ferramenta ou
+outro modelo que o executor. Use a skill `revisar-entrega`.
 
 Reprovado: estado `em correção`, rodada numerada em `revisao.md`, devolva ao executor só
 a lista de correções. **Na terceira reprovação, pare e reabra o contrato.**

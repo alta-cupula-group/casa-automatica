@@ -18,5 +18,5 @@ Documento que ainda não existe simplesmente não está aqui. Não se cria arqui
 Documento de unidade **nunca é apagado**, nem quando a unidade é abandonada. O histórico
 de por que algo não foi feito vale tanto quanto o de por que foi.
 
-O ciclo, as trilhas e os gates estão em `.claude/rules/02-ciclo.md`. Os moldes estão em
-`.claude/templates/`.
+O ciclo, as trilhas e os gates estão em `docs/processo/02-ciclo.md`. Os moldes estão em
+`docs/processo/moldes/`.

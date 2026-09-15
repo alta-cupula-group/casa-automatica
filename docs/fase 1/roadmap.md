@@ -1,6 +1,7 @@
 # Casa Automática — Roadmap de implementação do MVP
 
 > Status: **validado pelo operador em 12/09/2026**. Registrado pelo condutor na mesma data.
+> Alterado pelo operador em 15/09/2026: M1 · CI ganhou checagem de tipos na CI, git hook local e proteção da `main`, para que a verificação não dependa do relato de nenhuma ferramenta de IA.
 > Base: [../scope-brief.md](../scope-brief.md) v2, aprovado em 11/09/2026. A validação do scraping da SEFAZ-SP com nota real foi concluída em 12/09/2026.
 > Unidade de planejamento: **marco (M)**, não data. O time trabalha nas horas vagas, então cada marco tem entregáveis verificáveis e um critério de pronto, e nada de prazo fixo. A ordem é obrigatória; marcos com o mesmo número podem andar em paralelo.
 
@@ -25,8 +26,8 @@
 **Depende de:** M0.
 
 ### M1 · Pipeline de CI e deploy
-**Entrega:** GitHub Actions rodando lint, testes e build a cada push e PR; workflow de deploy por SSH para o servidor, disparado em push na `main`; `docker-compose.yml` com API, build estático do web e Caddy; Cloudflare Tunnel documentado; segredos do repositório listados no README (nomes, não valores).
-**Pronto quando:** um push na `main` com uma alteração trivial chega ao domínio da casa sem ninguém tocar no servidor; PR com teste quebrado fica vermelho.
+**Entrega:** GitHub Actions rodando lint, checagem de tipos, testes e build a cada push e PR; git hook local que roda lint e checagem de tipos antes do commit; proteção da `main` que só aceita código com a CI verde; workflow de deploy por SSH para o servidor, disparado em push na `main`; `docker-compose.yml` com API, build estático do web e Caddy; Cloudflare Tunnel documentado; segredos do repositório listados no README (nomes, não valores).
+**Pronto quando:** um push na `main` com uma alteração trivial chega ao domínio da casa sem ninguém tocar no servidor; PR com teste quebrado fica vermelho e não entra na `main`; commit com erro de lint ou de tipo é barrado na máquina de quem commitou.
 **Depende de:** M0. Pode andar em paralelo com M1 · Banco.
 
 ---

@@ -2,7 +2,7 @@
 
 > Fonte de verdade do andamento. Atualizado pelo condutor a cada transição.
 > O estado aqui e o cabeçalho de cada documento de unidade têm que bater.
-> Estados possíveis: `.claude/rules/02-ciclo.md`.
+> Estados possíveis: `docs/processo/02-ciclo.md`.
 
 ## Pendências de fase
 
@@ -13,9 +13,10 @@
 | 3 | `[A VALIDAR]` portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens | **resolvida.** Validado pelo operador com nota real em 2026-09-12, sem captcha e com itens. Confirmado em 2026-09-13. O M6 deixa de estar bloqueado |
 | 4 | `[A VALIDAR]` limite de dois projetos ativos no plano gratuito do Supabase | **resolvida.** Validado na unidade `M1.1` e aprovado pelo operador em 2026-09-12. Saiu do `docs/scope-brief.md` |
 | 5 | Fatiamento da Etapa 1 | **resolvida.** Aprovado pelo operador em 2026-09-12 |
+| 6 | Verificação mecânica antes do resto da onda 2 | **resolvida.** Decisão do operador em 2026-09-15. `M1.4` ganha git hook local e proteção da `main`, e passa a ser explorada antes de `M1.2` e `M1.5`. Roadmap alterado na mesma data |
 
 Item `[A VALIDAR]` vira ordem de exploração própria antes da unidade que depende dele.
-Ver `.claude/rules/04-decisoes.md`.
+Ver `docs/processo/04-decisoes.md`.
 
 ## Marcos
 
@@ -50,7 +51,7 @@ M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`.
 | `M1.1-validar-supabase` | M1 · Banco | Relatório que fecha o `[A VALIDAR]` do limite de dois projetos gratuitos. | — | só exploração, regra 04 |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | Um projeto Supabase documentado, com Data API desligada. Drizzle em `apps/api/drizzle`. Comando único de migração para qualquer ambiente. Supabase local documentado como opcional. | `M0.1`, `M1.1` | dividida: infraestrutura, investigação externa |
 | `M1.3-house-e-auditoria` | M1 · Banco | Primeira migração com `house`, tabela de auditoria e trigger, aplicada no projeto. Casa real e casa de teste criadas. Teste prova a linha de auditoria. | `M1.2` | dividida: schema e entidade central |
-| `M1.4-ci-verificacao` | M1 · CI | GitHub Actions roda lint, tipos, testes e build em push e PR. | `M0.1` | dividida: pipeline |
+| `M1.4-ci-verificacao` | M1 · CI | GitHub Actions roda lint, tipos, testes e build em push e PR. Git hook local roda lint e tipos antes do commit. A `main` só aceita código com a CI verde. A ferramenta do hook e a forma da proteção saem da exploração. | `M0.1` | dividida: pipeline |
 | `M1.5-compose-e-caddy` | M1 · CI | `docker-compose.yml` com API, web estático e Caddy. Sobe em qualquer máquina com Docker e serve o web em `localhost`. | `M0.1` | dividida: base do deploy |
 | `M1.6-deploy-na-casa` | M1 · CI | Deploy por SSH em push na `main`. Cloudflare Tunnel documentado. Segredos listados no README. Push trivial chega ao domínio. | `M1.4`, `M1.5` | dividida: pipeline de deploy |
 
@@ -63,7 +64,8 @@ Ordem de trabalho:
 | Onda | Unidades | Condição para começar |
 |---|---|---|
 | 1 | `M0.1`, `M1.1` | **fechada** em 2026-09-13 |
-| 2 | `M1.2`, `M1.4`, `M1.5` | liberada em 2026-09-13 |
+| 2a | `M1.4` | liberada em 2026-09-13 |
+| 2b | `M1.2`, `M1.5` | `M1.4` fechada. Decisão do operador em 2026-09-15 |
 | 3 | `M1.3`, `M1.6` | dependências da tabela acima fechadas |
 
 A onda 2 só é explorada depois que `M0.1` fechar. Explorar CI, compose e migrações antes
@@ -77,6 +79,6 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
-| `M1.4-ci-verificacao` | M1 · CI | dividida | `planejada` | `M0.1` | 2026-09-12, fatiada |
+| `M1.4-ci-verificacao` | M1 · CI | dividida | `planejada` | `M0.1` | 2026-09-15, escopo ampliado pelo operador |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `planejada` | `M0.1` | 2026-09-12, fatiada |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |

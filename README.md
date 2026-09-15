@@ -10,7 +10,7 @@ produto e um de configuração.
 | `@casa/shared` | `packages/shared` | código compartilhado entre `api` e `web` |
 | `@casa/config` | `packages/config` | configuração de ESLint compartilhada     |
 
-O processo de trabalho está em `CLAUDE.md` e em `.claude/rules/`. O escopo do produto está
+O processo de trabalho está em `AGENTS.md` e em `docs/processo/`, e vale para qualquer ferramenta de IA. O escopo do produto está
 em `docs/scope-brief.md`.
 
 ## Requisitos
