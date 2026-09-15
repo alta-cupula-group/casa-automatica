@@ -1,6 +1,6 @@
 > Unidade: `M1.4-ci-verificacao` · Marco: `M1 · CI` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-15 · Operador aprovou: `—`
+> Estado: aprovada
+> Condutor aprovou: 2026-09-15 · Operador aprovou: 2026-09-15
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M1.4-ci-verificacao`
