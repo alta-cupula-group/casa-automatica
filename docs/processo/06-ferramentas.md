@@ -46,5 +46,6 @@ que só uma ferramenta tem.
   configuração, e ela fica fora do repositório quando carrega dado pessoal.
 - Credencial, token e identificador de projeto nunca são versionados.
   `.mcp.json.example` mostra o formato sem valores.
-- Servidor MCP com acesso ao Supabase roda somente leitura, em qualquer ferramenta.
+- Servidor MCP com acesso ao Supabase roda somente leitura e aponta só para o projeto
+  `dev`, em qualquer ferramenta. Nenhuma ferramenta de IA se conecta ao `prod`.
   Mudança no banco passa pelas migrações versionadas.

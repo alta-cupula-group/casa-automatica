@@ -13,6 +13,7 @@
 | 3 | `[A VALIDAR]` portal da SEFAZ-SP abre pela URL do QR sem captcha e com itens | **resolvida.** Validado pelo operador com nota real em 2026-09-12, sem captcha e com itens. Confirmado em 2026-09-13. O M6 deixa de estar bloqueado |
 | 4 | `[A VALIDAR]` limite de dois projetos ativos no plano gratuito do Supabase | **resolvida.** Validado na unidade `M1.1` e aprovado pelo operador em 2026-09-12. Saiu do `docs/scope-brief.md` |
 | 5 | Fatiamento da Etapa 1 | **resolvida.** Aprovado pelo operador em 2026-09-12 |
+| 7 | Volta de `dev` e `prod` | **resolvida.** Decisão do operador em 2026-09-15. Volta o veredito de 12/09 da `M1.1`: `dev` é o projeto que já existia, `prod` limpo em organização separada, casa de teste só no `dev`, migração passa por local, `dev` e `prod` com exportação do `prod` antes, MCP só no `dev`. Brief, roadmap e regra 06 alterados na mesma data |
 | 6 | Verificação mecânica antes do resto da onda 2 | **resolvida.** Decisão do operador em 2026-09-15. `M1.4` ganha git hook local e proteção da `main`, e passa a ser explorada antes de `M1.2` e `M1.5`. Roadmap alterado na mesma data |
 
 Item `[A VALIDAR]` vira ordem de exploração própria antes da unidade que depende dele.
@@ -49,8 +50,8 @@ M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`.
 |---|---|---|---|---|
 | `M0.1-monorepo-base` | M0 | Monorepo pnpm com `apps/api`, `apps/web` e `packages/shared`. TypeScript, ESLint e Prettier compartilhados. Teste de fumaça por app. README de cinco minutos e `.env.example` por app. | — | dividida: fundacional |
 | `M1.1-validar-supabase` | M1 · Banco | Relatório que fecha o `[A VALIDAR]` do limite de dois projetos gratuitos. | — | só exploração, regra 04 |
-| `M1.2-ambientes-e-migracoes` | M1 · Banco | Um projeto Supabase documentado, com Data API desligada. Drizzle em `apps/api/drizzle`. Comando único de migração para qualquer ambiente. Supabase local documentado como opcional. | `M0.1`, `M1.1` | dividida: infraestrutura, investigação externa |
-| `M1.3-house-e-auditoria` | M1 · Banco | Primeira migração com `house`, tabela de auditoria e trigger, aplicada no projeto. Casa real e casa de teste criadas. Teste prova a linha de auditoria. | `M1.2` | dividida: schema e entidade central |
+| `M1.2-ambientes-e-migracoes` | M1 · Banco | Projetos `dev` e `prod` em organizações gratuitas separadas, documentados, com Data API desligada nos dois. Drizzle em `apps/api/drizzle`. Comando único de migração para qualquer ambiente. Supabase local documentado como opcional. | `M0.1`, `M1.1` | dividida: infraestrutura, investigação externa |
+| `M1.3-house-e-auditoria` | M1 · Banco | Primeira migração com `house`, tabela de auditoria e trigger, aplicada em `dev` e `prod`, nessa ordem, com exportação do `prod` antes. Casa de teste criada no `dev` e casa real no `prod`. Teste prova a linha de auditoria. | `M1.2` | dividida: schema e entidade central |
 | `M1.4-ci-verificacao` | M1 · CI | GitHub Actions roda lint, tipos, testes e build em push e PR. Git hook local roda lint e tipos antes do commit. A `main` só aceita código com a CI verde. A ferramenta do hook e a forma da proteção saem da exploração. | `M0.1` | dividida: pipeline |
 | `M1.5-compose-e-caddy` | M1 · CI | `docker-compose.yml` com API, web estático e Caddy. Sobe em qualquer máquina com Docker e serve o web em `localhost`. | `M0.1` | dividida: base do deploy |
 | `M1.6-deploy-na-casa` | M1 · CI | Deploy por SSH em push na `main`. Cloudflare Tunnel documentado. Segredos listados no README. Push trivial chega ao domínio. | `M1.4`, `M1.5` | dividida: pipeline de deploy |

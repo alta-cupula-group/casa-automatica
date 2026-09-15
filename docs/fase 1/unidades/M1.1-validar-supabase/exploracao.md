@@ -685,6 +685,17 @@ continuam valendo. A decisão está em `docs/scope-brief.md`, seção 4.
 A tabela de ações abaixo ficou parcialmente sem efeito: não há segunda organização nem
 segundo projeto a criar.
 
+### Decisão posterior do operador, 2026-09-15
+
+A decisão de 2026-09-13 foi revertida. Voltam PO1, PO2 e PO3 do veredito de 12/09: o
+projeto que já existia é o `dev`, o `prod` nasce limpo numa organização gratuita separada,
+e o `dev` fica na nuvem. PO4 e PO5 seguem valendo. Decisões novas da mesma data: a casa de
+teste existe só no `dev`; migração passa por Postgres local, `dev` e `prod`, com exportação
+do `prod` antes; o MCP do Supabase aponta só para o `dev`. A decisão está em
+`docs/scope-brief.md`, seção 4.
+
+A tabela de ações abaixo volta a valer inteira.
+
 Ações do operador no painel, registradas em 2026-09-12:
 
 | # | Ação | Trava o quê |

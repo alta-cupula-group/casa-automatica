@@ -1,7 +1,7 @@
 # Casa Automática — Roadmap de implementação do MVP
 
 > Status: **validado pelo operador em 12/09/2026**. Registrado pelo condutor na mesma data.
-> Alterado pelo operador em 15/09/2026: M1 · CI ganhou checagem de tipos na CI, git hook local e proteção da `main`, para que a verificação não dependa do relato de nenhuma ferramenta de IA.
+> Alterado pelo operador em 15/09/2026: M1 · Banco volta a ter dois projetos Supabase, `dev` e `prod`, com a casa de teste só no `dev`. M1 · CI ganhou checagem de tipos na CI, git hook local e proteção da `main`, para que a verificação não dependa do relato de nenhuma ferramenta de IA.
 > Base: [../scope-brief.md](../scope-brief.md) v2, aprovado em 11/09/2026. A validação do scraping da SEFAZ-SP com nota real foi concluída em 12/09/2026.
 > Unidade de planejamento: **marco (M)**, não data. O time trabalha nas horas vagas, então cada marco tem entregáveis verificáveis e um critério de pronto, e nada de prazo fixo. A ordem é obrigatória; marcos com o mesmo número podem andar em paralelo.
 
@@ -21,8 +21,8 @@
 **Depende de:** nada.
 
 ### M1 · Banco e ambientes
-**Entrega:** um projeto Supabase documentado, com Data API desligada; migrações versionadas com Drizzle em `apps/api/drizzle`; comando único para aplicar migrações em qualquer ambiente; Supabase local via CLI documentado como opcional; primeira migração criando `house` e a tabela de auditoria com seu trigger.
-**Pronto quando:** a migração inicial aplica no projeto sem intervenção manual, depois de passar num Postgres local; a casa real e a casa de teste existem; uma alteração de teste numa tabela auditada gera linha na auditoria.
+**Entrega:** dois projetos Supabase, `dev` e `prod`, em organizações gratuitas separadas e documentados, com Data API desligada em ambos; migrações versionadas com Drizzle em `apps/api/drizzle`; comando único para aplicar migrações em qualquer ambiente; Supabase local via CLI documentado como opcional; primeira migração criando `house` e a tabela de auditoria com seu trigger.
+**Pronto quando:** a migração inicial passa num Postgres local, depois aplica em `dev` e em `prod` sem intervenção manual, com o `prod` exportado antes; a casa de teste existe no `dev` e a casa real existe no `prod`; uma alteração de teste numa tabela auditada gera linha na auditoria.
 **Depende de:** M0.
 
 ### M1 · Pipeline de CI e deploy
@@ -81,12 +81,12 @@
 
 ### M9 · Telas de Pessoas
 **Entrega:** lista e cadastro de pessoas com etiquetas; entrada e saída de morador; convite e aceite.
-**Pronto quando:** os três moradores estão cadastrados e logados na casa real; um visitante de teste existe sem login.
+**Pronto quando:** os três moradores estão cadastrados e logados na casa real, no `prod`; um visitante de teste existe sem login.
 **Depende de:** M8.
 
 ### M9 · Telas de Financeiro
 **Entrega:** lançar despesa com divisão por lançamento; lista e detalhe; saldos, ranking e sugestão de próximo pagador; acertos com QR Pix e confirmação manual; fechamento e extrato; gestão da árvore de centros de custo.
-**Pronto quando:** um mês real de despesas dos moradores é lançado e fechado na casa real sem workaround; QR Pix pago de verdade por um morador e confirmado manualmente.
+**Pronto quando:** um mês real de despesas dos moradores é lançado e fechado na casa real, no `prod`, sem workaround; QR Pix pago de verdade por um morador e confirmado manualmente.
 **Depende de:** M8. Pode andar em paralelo com M9 · Pessoas.
 
 ### M10 · Calendário e NFC-e no app
@@ -106,8 +106,9 @@
 | Risco | Marco | Mitigação |
 |---|---|---|
 | Portal SEFAZ-SP com captcha ou mudança de layout | M6 | Validação prévia; adaptador isolado; testes contra HTML gravado; manual como padrão |
-| Projeto Supabase pausar por inatividade | M1 | Documentado; reativação é um clique; uso diário da casa mantém ativo |
-| Migração errada atingir o dado real, já que há um projeto só | M1 · Banco | Migração passa antes num Postgres local; exportação do banco antes de cada migração |
+| Projeto Supabase `dev` pausar por inatividade | M1 | Documentado; reativação é um clique; migrações reaplicáveis. O `prod` fica ativo pelo uso diário da casa |
+| Migração errada atingir o dado real no `prod` | M1 · Banco | Migração passa antes num Postgres local e no `dev`; exportação do `prod` antes de cada migração |
+| Ferramenta de IA ler ou escrever dado real | M1 · Banco | MCP do Supabase só no `dev`, somente leitura, pela regra 06 |
 | Servidor fraco (notebook antigo) | M1 · CI | Compose enxuto, sem serviço além de API, web estático e Caddy |
 | Rateio com centavos errados | M5 | Teste de propriedade: soma das partes = total, sempre |
 | Rota nova sem contrato atualizado | M7 | CI compara OpenAPI gerado com o commitado |
