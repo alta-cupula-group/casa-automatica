@@ -10,6 +10,7 @@ docs/
     roadmap.md                marcos M0–M11
     dod.md                    Definition of Done geral da fase
     estado.md                 quadro de estado das unidades
+    backlog.md                o que apareceu fora do escopo da fase
     unidades/
       M0.1-monorepo-base/
         ordem.md              o pedido do condutor
