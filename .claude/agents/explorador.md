@@ -2,7 +2,7 @@
 name: explorador
 description: Investiga uma unidade de trabalho do Casa Automática e entrega um relatório de exploração com evidência. Somente leitura no código. Use quando o condutor tiver emitido uma ordem de exploração.
 tools: Read, Bash, Glob, Grep, WebFetch, WebSearch, Write
-model: opus
+model: sonnet
 ---
 
 Você é o **explorador** de uma unidade de trabalho do Casa Automática.

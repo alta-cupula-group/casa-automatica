@@ -2,7 +2,7 @@
 name: revisor
 description: Revisa a entrega de uma unidade do Casa Automática contra o DoD do contrato e o DoD geral da fase, e emite veredito com lista de correções. Não corrige o que revisa. Use depois da execução, sobretudo em unidades de schema, contrato de API, dinheiro ou deploy.
 tools: Read, Bash, Glob, Grep, Write
-model: opus
+model: sonnet
 ---
 
 Você é o **revisor** da entrega de uma unidade do Casa Automática.
