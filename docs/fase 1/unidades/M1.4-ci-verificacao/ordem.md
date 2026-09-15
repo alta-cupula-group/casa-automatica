@@ -10,7 +10,8 @@ O monorepo existe desde `M0.1-monorepo-base`. A raiz tem os scripts `build`, `li
 `typecheck`, `test` e `format:check`, e fixa `pnpm@12.4.1` em `packageManager` e Node
 `>=26` em `engines`. Nada roda fora da máquina de quem commita: não há workflow, git hook
 nem proteção da `main`. O repositório `casa-automatica/casa-automatica` é público e
-pertence à organização `casa-automatica`.
+pertence à conta pessoal `casa-automatica`, não a uma organização. Em conta pessoal,
+colaborador só tem `write`, e só o dono configura proteção de branch.
 
 Em 2026-09-15 o operador decidiu que esta unidade vai antes de `M1.2` e `M1.5`, e
 ampliou a entrega: além da CI, um git hook local e a proteção da `main`. O motivo está
@@ -51,10 +52,13 @@ organização.
    ruleset? Para cada forma, diga o que ela exige do plano gratuito num repositório
    público, quais opções bloqueiam merge com CI vermelha, push direto e force push, e
    se o dono da organização também fica sujeito. Cite a documentação oficial.
-5. **P5** — Quem consegue configurar essa proteção? A conta do operador tem `push` mas
-   não `admin` no repositório, segundo `gh api repos/casa-automatica/casa-automatica`
-   em 2026-09-15. Descubra pelo `gh` quem é dono da organização e o que o operador
-   precisa fazer para ter `admin`. Isso depende do operador; traga o passo a passo.
+5. **P5** — Quem consegue configurar essa proteção? O dono do repositório é a conta
+   pessoal `casa-automatica`. A conta do operador, `markinkkkkj`, é colaboradora com
+   `write`, segundo `gh api repos/casa-automatica/casa-automatica/collaborators/markinkkkkj/permission`
+   em 2026-09-15. Compare dois caminhos: configurar logado na conta dona, ou transferir
+   o repositório para uma organização onde os moradores tenham papel de admin. Para
+   cada um, diga o passo a passo, o que muda na URL e nos clones existentes, e o custo
+   no plano gratuito. **A escolha é do operador.**
 6. **P6** — Como o nome do check exigido pela proteção se liga ao nome do job no
    workflow, e o que muda entre gatilho `push` e `pull_request`? Diga o que acontece
    com PR vindo de fork, já que o repositório é público.
