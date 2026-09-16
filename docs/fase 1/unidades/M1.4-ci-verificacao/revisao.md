@@ -271,6 +271,6 @@ na rodada 2 de correções e não precisa mais de decisão do condutor.
   - achado do condutor, actions presas por tag e workflow sem `permissions`: **linha 2 do
     backlog**, com destino ao contrato de `M1.6-deploy-na-casa`.
 
-Fica aberta uma decisão do operador que não pertence a esta unidade: o `README.md` instala o
-Node pelo script da NodeSource com `sudo`. Até o operador decidir, o texto continua como
-está.
+Decisão do operador em 2026-09-16, sobre um ponto que não pertence ao DoD desta unidade: o
+`README.md` continua instalando o Node pelo script da NodeSource com `curl` e `sudo`. O texto
+fica como o executor escreveu.
