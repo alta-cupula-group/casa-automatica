@@ -79,9 +79,10 @@ material que não entra no contrato.
 
 ## Branch
 
-`unidade/M1.5-compose-e-caddy` para a execução. A exploração entra direto na `main`,
-porque é só documento. Se a `main` já estiver protegida quando o relatório ficar pronto,
-ele entra por PR.
+`unidade/M1.5-compose-e-caddy` para a execução. A `main` está protegida por ruleset desde
+2026-09-16, então nada entra nela direto. O relatório de exploração entra por pull request,
+a partir de uma branch `docs/M1.5-exploracao`. Como ele mexe só em `docs/`, a CI fecha verde
+em segundos.
 
 ## Depende de
 

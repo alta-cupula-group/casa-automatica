@@ -704,3 +704,28 @@ Ações do operador no painel, registradas em 2026-09-12:
 | 2 | Desligar `Enable Data API` nos dois projetos | `M1.2` |
 | 3 | Informar a região de cada projeto | `M1.2` |
 | 4 | Adicionar os outros dois moradores como Developer | nada. Pode esperar |
+
+### Decisão posterior do operador, 2026-09-16
+
+O operador apagou o projeto `omgheudterjqrjunpack` e qualquer outro projeto Supabase
+anterior. A decisão de 2026-09-15 continua inteira: dois projetos gratuitos, `dev` e
+`prod`, em organizações separadas, `dev` na nuvem, moradores como Developer, MCP só no
+`dev`. Muda só o ponto de partida. A PO1 perde o referente: não há projeto herdado, e
+`dev` e `prod` nascem os dois limpos.
+
+Evidência de que o projeto não existe mais, colhida em 2026-09-16:
+
+```
+$ getent hosts supabase.com
+216.150.1.193   supabase.com
+
+$ getent hosts omgheudterjqrjunpack.supabase.co
+$ echo $?
+2
+```
+
+Em 2026-09-12 esse mesmo comando devolvia dois IPs da Cloudflare, como está registrado
+acima no material bruto.
+
+A tabela de ações do operador no painel volta a valer, com a linha 1 ampliada: agora são
+duas organizações e dois projetos a criar, não um.
