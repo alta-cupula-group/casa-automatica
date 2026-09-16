@@ -1,6 +1,6 @@
 > Unidade: `M1.4-ci-verificacao` · Marco: `M1 · CI` · Trilha: `dividida`
 > Estado: em revisão
-> Executor · Ferramenta: `Claude Code · modelo claude-opus-5` · Data: `2026-09-15` · Rodada: `1`
+> Executor · Ferramenta: `Claude Code · modelo claude-opus-5` · Data: `2026-09-15` · Rodada: `2`
 > Contrato aprovado em: condutor `2026-09-15` · operador `2026-09-15`
 
 # Execução — `M1.4-ci-verificacao`
@@ -23,8 +23,23 @@ regras: `pull_request`, `required_status_checks` com o contexto `verificar` e `n
 
 O `README.md` instala o Node antes do pnpm e ganhou a seção "CI, hook e entrega".
 
-Duas coisas do contrato não ficaram prontas. Estão em Bloqueios: o merge automático do
-repositório e a evidência do atalho de documentação.
+Uma coisa do contrato não ficou pronta: a evidência do item 3 do DoD, o atalho de
+documentação. Está em Bloqueios, B2. O merge automático do repositório era o bloqueio B1 da
+rodada 1, e o condutor o resolveu em 2026-09-15.
+
+## Rodada 2
+
+A revisão reprovou a rodada 1 por causa do item 3 do DoD, marcado como `não verificado`. A
+rodada 2 fez três correções:
+
+1. Rodou a evidência do item 3 num pull request de verdade. O resultado divergiu do esperado.
+   A explicação e o log estão no item 3 do DoD e no bloqueio B2.
+2. Corrigiu a frase errada da rodada 1 sobre o evento `pull_request`. O revisor tem razão: o
+   workflow roda em pull request do mesmo repositório mesmo sem o arquivo existir na `main`.
+3. Atualizou o bloqueio B1, que deixou de existir.
+
+A rodada 2 não mexeu em código, em configuração do GitHub nem no contrato. Ela só rodou uma
+verificação e reescreveu três trechos deste documento.
 
 ## Testes antes da implementação
 
@@ -208,13 +223,93 @@ unidade/M1.4-ci-verificacao
 ### DoD 3 — pull request que toca só documentação fecha verde sem rodar os cinco comandos
 Situação: `não verificado`
 
-O motivo está em Bloqueios, item 2. Um pull request só de documentação com alvo na `main` não
-dispara este workflow enquanto a `main` não tiver o arquivo `.github/workflows/ci.yml`, porque
-o evento `pull_request` usa o workflow do commit de merge. O merge desta unidade na `main` não
-foi executado por mim.
+A rodada 1 justificou este item com uma frase errada. Ela dizia que o evento `pull_request`
+só roda o workflow depois que ele existir na `main`. A revisão desmentiu isso, e os runs
+`35035022211` e `35035619690` provam o contrário. Conferi os dois:
 
-O que deu para verificar é a lógica do passo de detecção, rodada fora do GitHub Actions com o
-mesmo corpo de script do workflow, contra commits reais deste repositório:
+```
+$ gh run view 35035022211 --json event,headBranch,conclusion,headSha
+{"conclusion":"success","event":"pull_request","headBranch":"unidade/M1.4-ci-verificacao","headSha":"0ab7df09633614434d0dc8998feb8aa6403ab7a7"}
+
+$ gh run view 35035619690 --json event,headBranch,conclusion,headSha
+{"conclusion":"success","event":"pull_request","headBranch":"unidade/M1.4-ci-verificacao","headSha":"8b12fa5f2737b637d58293d9f878f48efdc8cafd"}
+
+$ git ls-tree -r origin/main --name-only | grep -i workflow
+codigo do grep: 1
+```
+
+Os dois rodaram pelo evento `pull_request`, no pull request `#1`, com a `main` ainda sem o
+arquivo. Em pull request do mesmo repositório, o workflow vem do commit de merge, que já
+contém o arquivo da branch. A frase errada foi retirada.
+
+O motivo real é outro, e a rodada 2 o mediu. Está em Bloqueios, B2.
+
+Evidência da rodada 2. Branch descartável `teste/ci-so-docs`, tirada de `8b12fa5`, que já tem
+o `.github/workflows/ci.yml`, com um único arquivo novo em `docs/`, e pull request `#4` com
+alvo na `main`:
+
+```
+$ git diff --name-only origin/main HEAD
+.github/workflows/ci.yml
+.husky/pre-commit
+README.md
+docs/fase 1/unidades/M1.4-ci-verificacao/execucao.md
+docs/teste-ci-so-docs.md
+package.json
+pnpm-lock.yaml
+
+$ gh pr create --base main --head teste/ci-so-docs
+https://github.com/alta-cupula-group/casa-automatica/pull/4
+
+$ gh run list --branch teste/ci-so-docs
+completed	success	teste: prova do atalho de documentação da CI	CI	teste/ci-so-docs	pull_request	35040417139	31s	2026-09-16T00:32:16Z
+completed	success	docs: arquivo descartável para provar o atalho de documentação	CI	teste/ci-so-docs	push	35040414486	27s	2026-09-16T00:32:14Z
+```
+
+O check fechou verde, mas pelo caminho errado. O passo de detecção viu os sete arquivos, não
+um:
+
+```
+$ gh run view 35040417139 --log
+verificar	Detectar mudança só de documentação	Arquivos alterados contra a main:
+verificar	Detectar mudança só de documentação	.github/workflows/ci.yml
+verificar	Detectar mudança só de documentação	.husky/pre-commit
+verificar	Detectar mudança só de documentação	README.md
+verificar	Detectar mudança só de documentação	docs/fase 1/unidades/M1.4-ci-verificacao/execucao.md
+verificar	Detectar mudança só de documentação	docs/teste-ci-so-docs.md
+verificar	Detectar mudança só de documentação	package.json
+verificar	Detectar mudança só de documentação	pnpm-lock.yaml
+verificar	Detectar mudança só de documentação	Mudança só de documentação: false
+```
+
+As cinco etapas rodaram, o oposto do que o item pede:
+
+```
+$ gh api repos/alta-cupula-group/casa-automatica/actions/runs/35040417139/jobs --jq '.jobs[] | {name, conclusion, steps: [.steps[] | {name, conclusion}]}'
+{"conclusion":"success","name":"verificar","steps":[{"conclusion":"success","name":"Set up job"},{"conclusion":"success","name":"Clonar o repositório"},{"conclusion":"success","name":"Detectar mudança só de documentação"},{"conclusion":"success","name":"Instalar o Node"},{"conclusion":"success","name":"Instalar o pnpm"},{"conclusion":"success","name":"Instalar as dependências"},{"conclusion":"success","name":"Build"},{"conclusion":"success","name":"Lint"},{"conclusion":"success","name":"Checagem de tipos"},{"conclusion":"success","name":"Testes"},{"conclusion":"success","name":"Formatação"},{"conclusion":"success","name":"Post Instalar o pnpm"},{"conclusion":"success","name":"Post Instalar o Node"},{"conclusion":"success","name":"Post Clonar o repositório"},{"conclusion":"success","name":"Complete job"}]}
+```
+
+O pull request de teste foi fechado e a branch apagada:
+
+```
+$ gh pr close 4 --delete-branch
+✓ Closed pull request alta-cupula-group/casa-automatica#4 (teste: prova do atalho de documentação da CI)
+✓ Deleted branch teste/ci-so-docs
+
+$ gh api repos/alta-cupula-group/casa-automatica/branches --jq '.[].name'
+docs/estado-m1-4-em-revisao
+main
+unidade/M0.1-monorepo-base
+unidade/M1.4-ci-verificacao
+```
+
+O workflow fez o que o contrato manda. O contrato diz que qualquer caminho fora de `docs/**`
+e `*.md` roda tudo, e o `.github/workflows/ci.yml` é um desses caminhos. Enquanto a `main` não
+tiver o arquivo, todo pull request que carrega o workflow também carrega uma mudança fora dos
+dois padrões, e o atalho nunca dispara. O item 3 não é verificável antes do merge. Ver B2.
+
+O que a rodada 1 já tinha verificado é a lógica do passo de detecção, rodada fora do GitHub
+Actions com o mesmo corpo de script do workflow, contra commits reais deste repositório:
 
 ```
 # caso A: commit só de documentação (595fc29, "docs(M1.4): contrato aprovado")
@@ -242,8 +337,9 @@ Nenhum arquivo alterado contra a main. Roda tudo.
 so_documentacao=false
 ```
 
-Isto não é a verificação que o DoD pede. O item continua `não verificado` até alguém abrir um
-pull request só de documentação depois que a `main` tiver o workflow.
+Isto não é a verificação que o DoD pede. O item continua `não verificado`. A verificação que o
+DoD pede fica disponível no primeiro pull request só de documentação aberto depois que o
+workflow chegar à `main`.
 
 ### DoD 4 — o hook recusa commit com erro de lint ou de tipo, e funciona num clone novo
 Situação: `atendido`
@@ -377,10 +473,10 @@ O commit que traz este `execucao.md` é posterior ao registro. A execução dele
 
 ## Bloqueios e dúvidas
 
-### B1 — o merge automático do repositório não foi ligado
+### B1 — o merge automático do repositório · `resolvido na rodada 2`
 
-O contrato pede que o repositório passe a permitir merge automático. As duas formas de fazer
-isso foram recusadas pelo sistema de permissão da ferramenta, não pelo GitHub:
+Na rodada 1 o merge automático continuou desligado. As duas formas de ligar foram recusadas
+pelo sistema de permissão da ferramenta, não pelo GitHub:
 
 ```
 $ gh api -X PATCH repos/alta-cupula-group/casa-automatica -F allow_auto_merge=true
@@ -388,28 +484,48 @@ Permission for this action was denied
 
 $ gh repo edit alta-cupula-group/casa-automatica --enable-auto-merge
 Permission for this action was denied
-
-$ gh api repos/alta-cupula-group/casa-automatica --jq .allow_auto_merge
-false
 ```
 
-Consequência: o `gh pr merge --squash --auto` do fluxo de entrega que está no `README.md`
-falha enquanto a configuração estiver desligada. Quem tem `admin` liga com o primeiro comando
-acima, ou em Settings, Pull Requests, Allow auto-merge. Eu não mudei o `README.md` para
-esconder isso, porque o texto descreve o fluxo que o contrato fixou.
+O condutor ligou a configuração em 2026-09-15. O bloqueio deixou de existir:
 
-### B2 — o merge do pull request `#1` na `main` não foi executado
+```
+$ gh api repos/alta-cupula-group/casa-automatica --jq .allow_auto_merge
+true
+```
 
-A tentativa de fechar o pull request da unidade foi recusada pelo sistema de permissão:
+O `gh pr merge --squash --auto` do fluxo de entrega que está no `README.md` agora tem a
+configuração de que precisa.
+
+### B2 — o item 3 do DoD não é verificável antes do merge · `aberto`
+
+A tentativa de fechar o pull request da unidade foi recusada pelo sistema de permissão, e o
+merge não é do executor:
 
 ```
 $ gh pr merge 1 --squash
 Permission for this action was denied. Reason: Merge Without Review
 ```
 
-O pull request `#1` está aberto, com o check `CI / verificar` verde e `mergeStateStatus`
-`CLEAN`. Isso combina com o processo: o GATE 2 é do condutor e do operador. A consequência é o
-DoD 3, que só dá para verificar depois que o workflow chegar à `main`.
+O pull request `#1` está aberto, com o check `CI / verificar` verde. O GATE 2 é do condutor e
+do operador.
+
+A rodada 2 mediu a consequência disso no item 3 do DoD, com o pull request `#4`. O resultado
+divergiu do esperado: as cinco etapas rodaram. O motivo não é defeito do workflow. É que todo
+pull request capaz de disparar este workflow hoje carrega o próprio
+`.github/workflows/ci.yml`, um caminho que não casa com `docs/**` nem com `*.md`. O contrato
+manda rodar tudo nesse caso, e foi o que aconteceu.
+
+Não existe pull request contra a `main` que seja só de documentação e ao mesmo tempo traga o
+workflow. Por isso paro aqui, como a rodada 2 mandou. O item 3 fica `não verificado` e a
+unidade fica bloqueada até o condutor decidir entre, por exemplo:
+
+- **A** — fechar o GATE 2 com o item 3 pendente, e verificá-lo no primeiro pull request só de
+  documentação depois do merge · custo: a unidade fecha com um item verificado fora dela ·
+  consequência: a evidência existe, com um dia de atraso.
+- **B** — mudar o DoD ou o contrato para outra forma de verificação · custo: novo GATE 1 ·
+  consequência: a unidade não fecha hoje.
+
+Quem escolhe é o condutor com o operador. Eu não mudo o DoD.
 
 ### B3 — o contrato não fixa como instalar o Node no `README.md`
 
