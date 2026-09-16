@@ -93,8 +93,9 @@ Fases 2 a 4 não são projetadas em detalhe agora. A arquitetura só precisa nã
 - **Monólito modular:** um único serviço, organizado internamente por módulos (people, finance, calendar, integrations). Sem microsserviços e sem tRPC. Programas em outras linguagens entram como clientes dos contratos (OpenAPI hoje; MQTT nas fases 3 e 4).
 - **Frontend:** React + Vite como PWA mobile-first (câmera para QR, ícone na tela inicial). Capacitor para publicar nas lojas quando houver necessidade, sem reescrita.
 - **Repositório:** monorepo com pnpm workspaces: `apps/web`, `apps/api`, `packages/*` (tipos, schemas Zod, cliente gerado do OpenAPI).
+- **Onde o repositório vive:** `alta-cupula-group/casa-automatica`, público, numa organização gratuita do GitHub. Decidido pelo operador em 15/09/2026, substituindo a conta pessoal que era dona antes. Motivo: em conta pessoal, colaborador só tem `write`, e só o dono configura proteção de branch. Os moradores são admin do repositório, no mesmo padrão já usado nas organizações do Supabase. A `main` é protegida por ruleset, sem lista de bypass: código entra por pull request com a CI verde, e push direto e force push são recusados. A forma dessa proteção está no contrato da unidade `M1.4-ci-verificacao`.
 - **Hospedagem:** servidor em casa com Docker Compose, Caddy como proxy reverso e TLS automático, Cloudflare Tunnel para expor o domínio sem abrir portas. API e build do frontend no mesmo domínio.
-- **Testes e CI desde o início:** pipeline roda testes a cada push. Deploy automático por SSH do CI para o servidor. Fazem parte do DoD.
+- **Testes e CI desde o início:** pipeline roda lint, checagem de tipos, testes e build a cada push e a cada pull request. Um hook local recusa commit com erro de lint ou de tipo. Deploy automático por SSH do CI para o servidor. Fazem parte do DoD.
 - **Recursos limitados:** o servidor atual é um notebook antigo. Nada no MVP pode exigir GPU ou muita memória.
 
 ## 5. Portas que a arquitetura deixa abertas (sem implementar agora)
