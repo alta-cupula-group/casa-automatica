@@ -15,13 +15,15 @@ Compose, Caddy como proxy reverso com TLS, Cloudflare Tunnel para expor o domín
 frontend no mesmo domínio. O item J1 do `docs/fase 1/dod.md` limita o compose a três
 serviços: API, web estático e Caddy.
 
-O servidor roda Proxmox VE, com o node `pve` num notebook de dois núcleos, 24 GB de RAM e
-um disco de 94 GB, e um segundo node `pve2` ainda fora do cluster. A aplicação roda num
-guest próprio, nunca no host. Em 16/09/2026 o guest `casa-automatica` é um container LXC
-Debian 13, com 2 vCPU, 4 GB de RAM e 25 GB de disco, e já tem Docker 29.8.1 e Compose
-v5.5.1 funcionando. O operador avalia trocar esse container por uma máquina virtual. A
-mesma máquina hospeda o servidor de Minecraft da casa, então CPU, disco e rede são
-disputados.
+O servidor roda Proxmox VE, em cluster com dois nodes. O node `pve` é um notebook com
+i5-7200U de dois núcleos e quatro threads, 23 GiB de RAM e um disco de 894 GB. O node
+`pve2` é um desktop com i5-4440 de quatro núcleos e 11,6 GiB de RAM, e hospeda o servidor
+de Minecraft da casa e uma máquina de desenvolvimento.
+
+A aplicação roda numa **máquina virtual** do node `pve`, nunca no host. O operador decidiu
+isso em 16/09/2026: a VM tem kernel próprio, então um comprometimento dela não alcança o
+hipervisor. A VM se chama `casa-automatica`, roda Debian 13, e tem 2 vCPU, 4 GiB de RAM e
+32 GB de disco. Ela é o alvo desta unidade.
 
 Esta exploração pode acontecer agora. A execução espera `M1.4-ci-verificacao` fechar,
 por decisão do operador em 2026-09-15: código novo só nasce com CI e proteção da `main`.
@@ -39,10 +41,10 @@ material que não entra no contrato.
 
 ## Perguntas a responder
 
-1. **P1** — Quanto o guest da Casa Automática tem de CPU, memória e disco, e qual versão
-   de Docker e de Compose está instalada nele? Rode os comandos dentro do guest e mostre a
-   saída. Diga também o que sobra no node `pve` depois dos outros guests, e se a escolha
-   entre container LXC e máquina virtual muda alguma coisa para o compose.
+1. **P1** — Qual versão de Docker e de Compose a VM tem instalada, e quanto sobra de CPU,
+   memória e disco para os containers depois do sistema? Rode os comandos dentro da VM e
+   mostre a saída. Diga o que muda para o compose por ser máquina virtual e não container,
+   se é que muda alguma coisa.
 2. **P2** — Como se constrói uma imagem só do `apps/api` num monorepo pnpm, levando
    `packages/shared` e nada de `apps/web`? Compare `pnpm deploy` com outras formas da
    documentação oficial do pnpm. Meça o tamanho da imagem e o tempo de build de cada
