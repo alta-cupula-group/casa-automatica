@@ -109,7 +109,7 @@
 | Projeto Supabase `dev` pausar por inatividade | M1 | Documentado; reativação é um clique; migrações reaplicáveis. O `prod` fica ativo pelo uso diário da casa |
 | Migração errada atingir o dado real no `prod` | M1 · Banco | Migração passa antes num Postgres local e no `dev`; exportação do `prod` antes de cada migração |
 | Ferramenta de IA ler ou escrever dado real | M1 · Banco | MCP do Supabase só no `dev`, somente leitura, pela regra 06 |
-| Servidor fraco (notebook antigo) | M1 · CI | Compose enxuto, sem serviço além de API, web estático e Caddy |
+| Servidor fraco e compartilhado com outros serviços da casa | M1 · CI | Compose enxuto, sem serviço além de API, web estático e Caddy. Limite de memória no guest do Proxmox |
 | Rateio com centavos errados | M5 | Teste de propriedade: soma das partes = total, sempre |
 | Rota nova sem contrato atualizado | M7 | CI compara OpenAPI gerado com o commitado |
 | Perda de credencial SSH de deploy | M1 · CI | Chave dedicada só para deploy, listada no README, revogável |

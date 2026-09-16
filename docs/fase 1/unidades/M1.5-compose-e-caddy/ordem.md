@@ -12,9 +12,16 @@ arquivos estáticos. Não existe Dockerfile, Caddyfile nem `docker-compose.yml`.
 
 O `docs/scope-brief.md`, seção 4, fixa a hospedagem: servidor em casa com Docker
 Compose, Caddy como proxy reverso com TLS, Cloudflare Tunnel para expor o domínio, API e
-frontend no mesmo domínio. O servidor é um notebook antigo, e o brief proíbe qualquer
-coisa que exija GPU ou muita memória. O item J1 do `docs/fase 1/dod.md` limita o compose
-a três serviços: API, web estático e Caddy.
+frontend no mesmo domínio. O item J1 do `docs/fase 1/dod.md` limita o compose a três
+serviços: API, web estático e Caddy.
+
+O servidor roda Proxmox VE, com o node `pve` num notebook de dois núcleos, 24 GB de RAM e
+um disco de 94 GB, e um segundo node `pve2` ainda fora do cluster. A aplicação roda num
+guest próprio, nunca no host. Em 16/09/2026 o guest `casa-automatica` é um container LXC
+Debian 13, com 2 vCPU, 4 GB de RAM e 25 GB de disco, e já tem Docker 29.8.1 e Compose
+v5.5.1 funcionando. O operador avalia trocar esse container por uma máquina virtual. A
+mesma máquina hospeda o servidor de Minecraft da casa, então CPU, disco e rede são
+disputados.
 
 Esta exploração pode acontecer agora. A execução espera `M1.4-ci-verificacao` fechar,
 por decisão do operador em 2026-09-15: código novo só nasce com CI e proteção da `main`.
@@ -32,9 +39,10 @@ material que não entra no contrato.
 
 ## Perguntas a responder
 
-1. **P1** — Quanto o servidor tem de CPU, memória, disco e qual versão de Docker e de
-   Compose está instalada? Rode os comandos no próprio notebook e mostre a saída. Diga o
-   que sobra para a API e o Caddy depois do sistema.
+1. **P1** — Quanto o guest da Casa Automática tem de CPU, memória e disco, e qual versão
+   de Docker e de Compose está instalada nele? Rode os comandos dentro do guest e mostre a
+   saída. Diga também o que sobra no node `pve` depois dos outros guests, e se a escolha
+   entre container LXC e máquina virtual muda alguma coisa para o compose.
 2. **P2** — Como se constrói uma imagem só do `apps/api` num monorepo pnpm, levando
    `packages/shared` e nada de `apps/web`? Compare `pnpm deploy` com outras formas da
    documentação oficial do pnpm. Meça o tamanho da imagem e o tempo de build de cada
@@ -47,10 +55,12 @@ material que não entra no contrato.
    operador. Traga as opções com consequência para o M2 e para o Cloudflare Tunnel.**
 5. **P5** — O que muda no Caddy entre servir `localhost` nesta unidade e ficar atrás do
    Cloudflare Tunnel em `M1.6`? Diga quem termina o TLS em cada caso e o que precisa
-   ficar preparado aqui para `M1.6` não reescrever o Caddyfile.
-6. **P6** — O que o compose precisa ter para o notebook: política de reinício, limite de
-   memória, healthcheck, e como as variáveis de `apps/api/.env.example` chegam ao
-   container sem entrar na imagem. Cite os itens E1 a E3 do `docs/fase 1/dod.md`.
+   ficar preparado aqui para `M1.6` não reescrever o Caddyfile. Considere que a casa
+   pretende hospedar outros serviços no mesmo servidor, e que as portas 80 e 443 da rede
+   local só podem pertencer a um deles. Diga o que isso exige do Caddyfile desta unidade.
+6. **P6** — O que o compose precisa ter para esse guest: política de reinício, limite de
+   memória dentro dos 4 GB, healthcheck, e como as variáveis de `apps/api/.env.example`
+   chegam ao container sem entrar na imagem. Cite os itens E1 a E3 do `docs/fase 1/dod.md`.
 7. **P7** — Quais itens do critério de pronto dão para automatizar em teste sem rede,
    como manda o item C4 do DoD, e quais ficam como verificação manual do item C3? Diga
    como se testa que o compose sobe e responde, e se isso cabe no CI de `M1.4`.
@@ -74,8 +84,10 @@ material que não entra no contrato.
 - `docs/fase 1/dod.md`, seções C, E e J.
 - `apps/api/package.json`, `apps/api/.env.example`, `apps/web/vite.config.ts`, `README.md`.
 - Documentação oficial do pnpm sobre `deploy` e Docker, do Caddy e do Docker Compose.
-- Os comandos do próprio notebook: `nproc`, `free -h`, `df -h`, `docker version`,
+- Os comandos dentro do guest: `nproc`, `free -h`, `df -h`, `docker version`,
   `docker compose version`.
+- No host do Proxmox, `pct config` ou `qm config` do guest, e `pvesh get /nodes` para o
+  que sobra no node.
 
 ## Branch
 
