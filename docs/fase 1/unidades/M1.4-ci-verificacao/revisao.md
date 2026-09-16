@@ -1,5 +1,5 @@
 > Unidade: `M1.4-ci-verificacao` · Marco: `M1 · CI`
-> Estado: `em revisão`
+> Estado: `fechada`
 > Revisor: `revisor separado` · Ferramenta: `Claude Code, modelo claude-sonnet-5` · Data: `2026-09-15`
 > Rodada 2 · Revisor: `revisor separado` · Ferramenta: `Claude Code, modelo claude-sonnet-5` · Data: `2026-09-16`
 
@@ -258,8 +258,19 @@ na rodada 2 de correções e não precisa mais de decisão do condutor.
 
 ## GATE 2
 
-- Aprovação técnica: revisor em 2026-09-16
-- Veredito do operador: pendente
-- Ressalva e destino: nenhuma correção obrigatória. Observações 1 e 3 da rodada 1, renumeradas
-  1 e 3 nesta rodada, aguardam decisão do condutor sobre virar item de backlog ou de DoD de
-  outra unidade
+- Aprovação técnica: revisor em 2026-09-16, e condutor em 2026-09-16
+- Veredito do operador: `aprovado` em 2026-09-16
+- Ressalva e destino:
+  - observação 1, aprovação extra para pull request não atribuído do Copilot: **nada**. A
+    documentação oficial do GitHub limita a regra a pull request aberto pelo Copilot com a
+    identidade do app, e ela não tem efeito quando o ruleset exige zero aprovações, que é o
+    caso aqui;
+  - observação 2, pull request vindo de fork: **nada**. O contrato já previa registrar sem
+    tratar;
+  - observação 3, o `README.md` não diz como recriar o ruleset: **linha 1 do backlog**;
+  - achado do condutor, actions presas por tag e workflow sem `permissions`: **linha 2 do
+    backlog**, com destino ao contrato de `M1.6-deploy-na-casa`.
+
+Fica aberta uma decisão do operador que não pertence a esta unidade: o `README.md` instala o
+Node pelo script da NodeSource com `sudo`. Até o operador decidir, o texto continua como
+está.

@@ -29,7 +29,7 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 |---|---|---|---|
 | M0 | Fundação do repositório | `M0.1` | **fechado** em 2026-09-13 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12 |
-| M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12 |
+| M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12. `M1.4` fechada em 2026-09-16 |
 | M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor |
 | M3 | Módulo Pessoas | — | não fatiado |
 | M4 | Ledger e plano de contas | — | não fatiado |
@@ -68,7 +68,7 @@ Ordem de trabalho:
 |---|---|---|
 | 1 | `M0.1`, `M1.1` | **fechada** em 2026-09-13 |
 | 2a | `M1.4` | liberada em 2026-09-13 |
-| 2b | `M1.2`, `M1.5` | exploração liberada em 2026-09-15; execução só com `M1.4` fechada. Decisão do operador em 2026-09-15 |
+| 2b | `M1.2`, `M1.5` | liberada em 2026-09-16, com `M1.4` fechada. O operador pediu para não começar ainda |
 | 3 | `M1.3`, `M1.6` | dependências da tabela acima fechadas |
 
 A onda 2 só é explorada depois que `M0.1` fechar. Explorar CI, compose e migrações antes
@@ -82,6 +82,6 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
-| `M1.4-ci-verificacao` | M1 · CI | dividida | `em revisão` | `M0.1` | 2026-09-16, rodada 3 de correções entregue no pull request `#5`. Revisão na rodada 2 |
+| `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `em exploração` | `M0.1` para explorar, `M1.4` para executar | 2026-09-15, ordem emitida. Explorador: Lucas, com Codex ou Cursor |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
