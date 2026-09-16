@@ -1,17 +1,21 @@
 > Unidade: `M1.4-ci-verificacao` · Marco: `M1 · CI`
-> Estado: `em correção`
+> Estado: `em revisão`
 > Revisor: `revisor separado` · Ferramenta: `Claude Code, modelo claude-sonnet-5` · Data: `2026-09-15`
+> Rodada 2 · Revisor: `revisor separado` · Ferramenta: `Claude Code, modelo claude-sonnet-5` · Data: `2026-09-16`
 
 # Revisão — `M1.4-ci-verificacao`
 
 ## Veredito
 
-`reprovado`
+`aprovado`
 
-O DoD do contrato tem um item, o 3, marcado como `não verificado` pelo próprio executor, e
-esta revisão não conseguiu produzir a evidência que falta dentro dos limites impostos a ela.
-Não verificável é reprovação. Todo o resto do DoD do contrato e do DoD geral foi conferido e
-está `atendido`.
+A rodada 3 de correção entregou a evidência real do item 3 do DoD, produzida depois do merge
+do pull request `#1` na `main`. Verifiquei essa evidência com os meus próprios comandos, sem
+me apoiar no relato de `execucao.md`, e ela se confirma: um pull request que altera só
+arquivos em `docs/` fechou verde sem rodar nenhum dos cinco comandos. As outras duas correções
+da rodada 1, a frase sobre o evento `pull_request` e o registro do bloqueio B1, também foram
+feitas. O escopo dos arquivos, as dependências e o DoD geral da fase continuam corretos depois
+do merge na `main`. Veredito completo na Rodada 2, abaixo.
 
 ## Rodada 1
 
@@ -133,8 +137,129 @@ Achados fora das correções obrigatórias, para o condutor decidir o destino.
    README precisa do comando de recriação do ruleset ou se `execucao.md` já basta como registro
    operacional, conforme I2 do DoD geral pede.
 
+## Rodada 2
+
+Revisão da correção entregue na rodada 3 de `execucao.md`, referente à única correção
+exigida na rodada 1: a evidência real do item 3 do DoD, a frase sobre o evento
+`pull_request` e o registro do bloqueio B1.
+
+### O que mudou desde a rodada 1
+
+Nada de código, configuração do GitHub ou contrato mudou entre a rodada 1 e agora. Duas
+coisas mudaram no repositório, e as duas foram feitas pelo operador, fora do escopo do
+executor:
+
+1. O operador mergeou o pull request `#1` na `main`, em `2026-09-16T01:17:26Z`, por rebase.
+   Confirmado por mim: `git ls-tree -r origin/main --name-only | grep -i workflow` devolve
+   `.github/workflows/ci.yml`.
+2. O operador ligou `allow_auto_merge` no repositório. Confirmado por mim:
+   `gh api repos/alta-cupula-group/casa-automatica --jq .allow_auto_merge` devolve `true`.
+
+Com o workflow na `main`, o atalho de documentação passou a ser verificável, porque um
+pull request que altera só `docs/**` ou `*.md` deixou de carregar, por tabela, um caminho
+fora desses dois padrões.
+
+### DoD do contrato
+
+| # | Item | Veredito | Evidência |
+|---|---|---|---|
+| 1 a 2, 4 a 7 | Sem mudança desde a rodada 1 | atendido | nenhum arquivo de código, hook, workflow, ruleset ou README mudou entre a rodada 1 e agora. `git show --stat` dos commits `1c67e70`, `ab2877b`, `fe3138c`, `9385576` e `77eb881` mostra que só `execucao.md`, `revisao.md` e `estado.md` foram tocados desde o commit `cdda696`. A evidência da rodada 1 para estes seis itens continua válida. Refiz por conta própria os itens 4 e 6, num clone limpo de `origin/main` num diretório à parte: `pnpm install --frozen-lockfile` ativou o `prepare`, `pnpm -r build && pnpm -r lint && pnpm -r typecheck && pnpm -r test && pnpm format:check` saiu com código 0, e um commit com erro de tipo proposital em `apps/api/src/config.ts` saiu com `husky - pre-commit script failed (code 1)` e código 1 |
+| 3 | Pull request que toca só documentação fecha verde sem rodar os cinco comandos | **atendido** | verifiquei a evidência do pull request `#3` com os meus próprios comandos, contra a API do GitHub, sem usar o texto de `execucao.md` como prova: `gh pr view 3 --json files,baseRefName,headRefName` mostra `base: main`, `head: docs/estado-m1-4-em-revisao`, e os dois únicos arquivos alterados dentro de `docs/`. `gh run view 35043509797 --json event,headSha,conclusion` mostra `event: pull_request`, `conclusion: success`, para o `headSha` `340d1c8...`. `gh api .../actions/runs/35043509797/jobs` mostra as etapas Instalar o Node, Instalar o pnpm, Instalar as dependências, Build, Lint, Checagem de tipos, Testes e Formatação todas com `conclusion: skipped`. `gh run view 35043509797 --log \| grep -c "Run pnpm"` devolve `0`. `gh api .../commits/340d1c8.../check-runs` mostra `verificar` com `conclusion: success`. A condição do item — pull request só de documentação, fechando verde, sem rodar os cinco comandos — está provada por evidência real, não por raciocínio sobre o comportamento do GitHub Actions |
+
+### Correções da rodada 1 conferidas
+
+1. **Evidência do item 3.** Feita e verificada de forma independente acima.
+2. **Frase sobre o evento `pull_request`.** A frase que a rodada 1 apontou como incorreta
+   não está mais afirmada como fato em `execucao.md`. O texto atual, no item 3 do DoD,
+   descreve a frase antiga como errada, cita a correção da revisão de rodada 1, e mantém os
+   runs `35035022211` e `35035619690` como prova de que o evento `pull_request` roda mesmo
+   sem o arquivo na `main`. `grep -n "só roda o workflow depois que ele existir" execucao.md`
+   encontra a frase só dentro desse trecho histórico, que explica que ela foi retirada, e não
+   como afirmação corrente do documento.
+3. **Bloqueio B1.** `execucao.md` registra B1 como `resolvido na rodada 2`, com a saída de
+   `gh api repos/alta-cupula-group/casa-automatica --jq .allow_auto_merge` mostrando `true`.
+   Conferi o mesmo comando eu mesmo: `true`.
+
+### Escopo, depois do merge na `main`
+
+```
+$ git diff --stat 595fc29..origin/main
+ .github/workflows/ci.yml                                              |  74 +++
+ .husky/pre-commit                                                     |   1 +
+ README.md                                                             |  41 +-
+ docs/fase 1/estado.md                                                 |   2 +-
+ docs/fase 1/unidades/M1.4-ci-verificacao/execucao.md                  | 640 +++++++++
+ docs/fase 1/unidades/M1.4-ci-verificacao/revisao.md                   | 140 +++
+ package.json                                                          |   2 +
+ pnpm-lock.yaml                                                        |  10 +
+ 8 files changed, 908 insertions(+), 2 deletions(-)
+```
+
+Os cinco arquivos de código e configuração batem exatamente com a lista de arquivos afetados
+do contrato. Os três documentos restantes são os documentos da própria unidade e `estado.md`,
+que a regra A3 do DoD geral permite. Nenhum commit das rodadas 2 e 3 tocou arquivo fora de
+`execucao.md`, `revisao.md` e `estado.md`, confirmado em `git show --stat` de cada um.
+
+### Dependências, depois do merge na `main`
+
+`husky@9.1.7` em `package.json` e `pnpm-lock.yaml`, a única `devDependency` nova. As três
+actions do workflow seguem fixadas nas versões do contrato:
+`actions/checkout@v7.0.1`, `actions/setup-node@v7.0.0`, `pnpm/action-setup@v6.1.0`. Nenhuma
+versão fora do contrato.
+
+### DoD geral da fase, depois do merge na `main`
+
+| # | Item | Veredito | Evidência |
+|---|---|---|---|
+| A1 | Contrato aprovado antes do código | atendido | `git log --oneline origin/main` mostra `595fc29 docs(M1.4): contrato aprovado` antes de `cdda696 feat(M1.4): ...` |
+| A3 | Diff toca só os arquivos do contrato | atendido | ver Escopo acima |
+| A4 | Estado no cabeçalho bate com `estado.md` | atendido | `estado.md` traz `em revisão` para `M1.4-ci-verificacao`; o cabeçalho de `execucao.md` traz `Estado: em revisão` |
+| B1 a B4, C1 | Build, lint, typecheck, formatação e testes passam | atendido | reproduzido por mim num clone limpo de `origin/main`: `pnpm install --frozen-lockfile` seguido de `pnpm -r build && pnpm -r lint && pnpm -r typecheck && pnpm -r test && pnpm format:check` saiu com código 0 |
+| D1 | Pipeline verde no último commit da unidade | atendido | `gh run list --commit $(git rev-parse origin/main)` mostra `completed success` para o commit `9385576`, o mais recente da `main` até agora |
+| E1 | Nenhum segredo no diff | atendido | `git diff 595fc29..origin/main -- .github/workflows/ci.yml .husky/pre-commit README.md package.json pnpm-lock.yaml \| grep -nEi 'password\|secret\|token\|service_role\|private key\|postgres(ql)?://[^ ]*:[^ ]*@'` não encontrou nada, código de saída 1 |
+| I1 | README muda no mesmo commit da mudança de instalação/comando | atendido | `.github/workflows/ci.yml`, `.husky/pre-commit`, `package.json` e `README.md` estão todos no commit `cdda696` |
+
+Os demais itens do DoD geral não mudaram desde a rodada 1 e continuam com o mesmo veredito
+registrado lá.
+
+### Regras do repositório
+
+- Código e banco em inglês: `ok`
+- Nada assumido fora do brief: `ok`. A frase incorreta sobre o evento `pull_request` foi
+  corrigida, não mantida como fato
+- Nenhum `[A VALIDAR]` tratado como resolvido: `ok`
+- Cabeçalhos e `estado.md` coerentes: `ok`
+- Testes de comportamento falharam antes da implementação: `ok`, sem mudança desde a rodada 1
+- Nenhuma dependência ou versão fora do contrato: `ok`
+- CI verde no último commit, depois de `M1.4-ci-verificacao`: `ok`. `9385576`, o commit mais
+  recente da `main`, está `success`
+- Em unidade de risco, ferramenta ou modelo diferente do executor: `ok`. Executor usou Claude
+  Code com `claude-opus-5`; esta revisão usa Claude Code com `claude-sonnet-5`
+
+### Correções exigidas
+
+Nenhuma.
+
+### Observações
+
+As observações 1, 3 e 4 da rodada 1 continuam de pé, sem mudança, e continuam para o
+condutor decidir o destino:
+
+1. O ruleset nasceu com `require_extra_approval_for_unattributed_changes: true`, um padrão do
+   GitHub não pedido pelo contrato. Não testado.
+2. O workflow não trata pull request vindo de fork, como o contrato pediu para registrar.
+   Ficou registrado em `execucao.md`, sem tratamento, como o contrato previu.
+3. A ressalva de I2, o `README.md` não traz o comando de recriação do ruleset, e o registro
+   operacional vive só em `execucao.md`. Fica para o condutor decidir se isso precisa entrar
+   no `README.md` ou em outro documento de operação.
+
+A observação 2 da rodada 1, sobre o registro do bloqueio B1 estar desatualizado, foi resolvida
+na rodada 2 de correções e não precisa mais de decisão do condutor.
+
 ## GATE 2
 
-- Aprovação técnica: pendente. Esta revisão reprova a rodada 1
+- Aprovação técnica: revisor em 2026-09-16
 - Veredito do operador: pendente
-- Ressalva e destino: nenhuma nesta rodada. Observações 1 a 4 aguardam decisão do condutor
+- Ressalva e destino: nenhuma correção obrigatória. Observações 1 e 3 da rodada 1, renumeradas
+  1 e 3 nesta rodada, aguardam decisão do condutor sobre virar item de backlog ou de DoD de
+  outra unidade
