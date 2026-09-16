@@ -1,6 +1,6 @@
 > Unidade: `M1.4-ci-verificacao` · Marco: `M1 · CI` · Trilha: `dividida`
 > Estado: em revisão
-> Executor · Ferramenta: `Claude Code · modelo claude-opus-5` · Data: `2026-09-15` · Rodada: `2`
+> Executor · Ferramenta: `Claude Code · modelo claude-opus-5` · Data: `2026-09-15` · Rodada: `3`
 > Contrato aprovado em: condutor `2026-09-15` · operador `2026-09-15`
 
 # Execução — `M1.4-ci-verificacao`
@@ -23,9 +23,19 @@ regras: `pull_request`, `required_status_checks` com o contexto `verificar` e `n
 
 O `README.md` instala o Node antes do pnpm e ganhou a seção "CI, hook e entrega".
 
-Uma coisa do contrato não ficou pronta: a evidência do item 3 do DoD, o atalho de
-documentação. Está em Bloqueios, B2. O merge automático do repositório era o bloqueio B1 da
-rodada 1, e o condutor o resolveu em 2026-09-15.
+Os sete itens do DoD do contrato estão atendidos. Os dois bloqueios das rodadas anteriores,
+B1 e B2, deixaram de existir.
+
+## Rodada 3
+
+O operador decidiu o caminho A da rodada 2, com uma diferença: a unidade não fecha com item
+pendente. O merge veio primeiro, a prova veio depois. A rodada 3 fez uma correção só:
+
+1. Registrou a evidência do item 3 do DoD, tirada do run `35043509797`, do pull request `#3`.
+   O item passou de `não verificado` para `atendido`. O bloqueio B2 passou a `resolvido`.
+
+A rodada 3 não mexeu em código, em configuração do GitHub, no contrato nem no DoD. Ela só
+conferiu um run que já existia e reescreveu dois trechos deste documento.
 
 ## Rodada 2
 
@@ -221,7 +231,61 @@ unidade/M1.4-ci-verificacao
 ```
 
 ### DoD 3 — pull request que toca só documentação fecha verde sem rodar os cinco comandos
-Situação: `não verificado`
+Situação: `atendido` na rodada 3
+
+A evidência veio do pull request `#3`, `docs(M1.4): unidade em revisão`, que alterou dois
+arquivos, os dois dentro de `docs/`:
+
+```
+$ gh pr view 3 --json number,state,mergedAt,mergedBy,files --jq '{number, state, mergedAt, mergedBy: .mergedBy.login, files: [.files[].path]}'
+{"files":["docs/fase 1/estado.md","docs/fase 1/unidades/M1.4-ci-verificacao/revisao.md"],"mergedAt":"2026-09-16T01:18:45Z","mergedBy":"markinkkkkj","number":3,"state":"MERGED"}
+```
+
+O job terminou em nove segundos:
+
+```
+$ gh run view 35043509797 --json event,headBranch,headSha,conclusion,displayTitle
+{"conclusion":"success","displayTitle":"docs(M1.4): unidade em revisão","event":"pull_request","headBranch":"docs/estado-m1-4-em-revisao","headSha":"340d1c8448ece3b2d96abcdda16b480671d9461d"}
+
+$ gh run list --branch docs/estado-m1-4-em-revisao
+completed	success	docs(M1.4): unidade em revisão	CI	docs/estado-m1-4-em-revisao	pull_request	35043509797	9s	2026-09-16T01:17:47Z
+completed	success	docs(M1.4): revisão reprovou na rodada 1	CI	docs/estado-m1-4-em-revisao	push	35043507179	5s	2026-09-16T01:17:45Z
+```
+
+O passo de detecção viu só os dois arquivos de documentação e ligou o atalho:
+
+```
+$ gh run view 35043509797 --log
+verificar	Detectar mudança só de documentação	Arquivos alterados contra a main:
+verificar	Detectar mudança só de documentação	docs/fase 1/estado.md
+verificar	Detectar mudança só de documentação	docs/fase 1/unidades/M1.4-ci-verificacao/revisao.md
+verificar	Detectar mudança só de documentação	Mudança só de documentação: true
+```
+
+A instalação e os cinco comandos saíram como `skipped`:
+
+```
+$ gh api repos/alta-cupula-group/casa-automatica/actions/runs/35043509797/jobs --jq '.jobs[] | {name, conclusion, steps: [.steps[] | {name, conclusion}]}'
+{"conclusion":"success","name":"verificar","steps":[{"conclusion":"success","name":"Set up job"},{"conclusion":"success","name":"Clonar o repositório"},{"conclusion":"success","name":"Detectar mudança só de documentação"},{"conclusion":"skipped","name":"Instalar o Node"},{"conclusion":"skipped","name":"Instalar o pnpm"},{"conclusion":"skipped","name":"Instalar as dependências"},{"conclusion":"skipped","name":"Build"},{"conclusion":"skipped","name":"Lint"},{"conclusion":"skipped","name":"Checagem de tipos"},{"conclusion":"skipped","name":"Testes"},{"conclusion":"skipped","name":"Formatação"},{"conclusion":"success","name":"Post Clonar o repositório"},{"conclusion":"success","name":"Complete job"}]}
+```
+
+Nenhum comando `pnpm` aparece no log inteiro do run:
+
+```
+$ gh run view 35043509797 --log | grep -cE "Run pnpm|pnpm -r build|pnpm format:check"
+0
+```
+
+O check `CI / verificar` fechou verde no commit do pull request:
+
+```
+$ gh api repos/alta-cupula-group/casa-automatica/commits/340d1c8448ece3b2d96abcdda16b480671d9461d/check-runs --jq '.check_runs[] | {name, status, conclusion}'
+{"conclusion":"success","name":"verificar","status":"completed"}
+{"conclusion":"success","name":"verificar","status":"completed"}
+```
+
+O que segue é o histórico das rodadas 1 e 2 deste item, mantido porque explica por que a
+evidência demorou.
 
 A rodada 1 justificou este item com uma frase errada. Ela dizia que o evento `pull_request`
 só roda o workflow depois que ele existir na `main`. A revisão desmentiu isso, e os runs
@@ -306,7 +370,8 @@ unidade/M1.4-ci-verificacao
 O workflow fez o que o contrato manda. O contrato diz que qualquer caminho fora de `docs/**`
 e `*.md` roda tudo, e o `.github/workflows/ci.yml` é um desses caminhos. Enquanto a `main` não
 tiver o arquivo, todo pull request que carrega o workflow também carrega uma mudança fora dos
-dois padrões, e o atalho nunca dispara. O item 3 não é verificável antes do merge. Ver B2.
+dois padrões, e o atalho nunca dispara. Enquanto a `main` não teve o arquivo, o item 3 não foi
+verificável. O merge resolveu isso, e a prova está no começo deste item.
 
 O que a rodada 1 já tinha verificado é a lógica do passo de detecção, rodada fora do GitHub
 Actions com o mesmo corpo de script do workflow, contra commits reais deste repositório:
@@ -337,9 +402,8 @@ Nenhum arquivo alterado contra a main. Roda tudo.
 so_documentacao=false
 ```
 
-Isto não é a verificação que o DoD pede. O item continua `não verificado`. A verificação que o
-DoD pede fica disponível no primeiro pull request só de documentação aberto depois que o
-workflow chegar à `main`.
+Isto não era a verificação que o DoD pede. Ela serviu só enquanto a evidência real não existia.
+A verificação que o DoD pede chegou na rodada 3, com o pull request `#3`.
 
 ### DoD 4 — o hook recusa commit com erro de lint ou de tipo, e funciona num clone novo
 Situação: `atendido`
@@ -496,36 +560,44 @@ true
 O `gh pr merge --squash --auto` do fluxo de entrega que está no `README.md` agora tem a
 configuração de que precisa.
 
-### B2 — o item 3 do DoD não é verificável antes do merge · `aberto`
+### B2 — o item 3 do DoD não era verificável antes do merge · `resolvido na rodada 3`
 
-A tentativa de fechar o pull request da unidade foi recusada pelo sistema de permissão, e o
-merge não é do executor:
+Nas rodadas 1 e 2 o merge do pull request `#1` não aconteceu. A tentativa do executor foi
+recusada pelo sistema de permissão, e o merge não é do executor:
 
 ```
 $ gh pr merge 1 --squash
 Permission for this action was denied. Reason: Merge Without Review
 ```
 
-O pull request `#1` está aberto, com o check `CI / verificar` verde. O GATE 2 é do condutor e
-do operador.
+Sem o workflow na `main`, todo pull request capaz de disparar o workflow carregava o próprio
+`.github/workflows/ci.yml`, um caminho que não casa com `docs/**` nem com `*.md`. O atalho de
+documentação nunca disparava, e o item 3 não tinha como ser verificado. A rodada 2 mediu isso
+com o pull request `#4` e parou.
 
-A rodada 2 mediu a consequência disso no item 3 do DoD, com o pull request `#4`. O resultado
-divergiu do esperado: as cinco etapas rodaram. O motivo não é defeito do workflow. É que todo
-pull request capaz de disparar este workflow hoje carrega o próprio
-`.github/workflows/ci.yml`, um caminho que não casa com `docs/**` nem com `*.md`. O contrato
-manda rodar tudo nesse caso, e foi o que aconteceu.
+O operador decidiu o caminho A da rodada 2, com uma diferença: a unidade não fecha com item
+pendente. O merge veio primeiro, a prova veio depois, e o GATE 2 só acontece com o item 3
+verificado. O operador, `markinkkkkj`, fez o merge do pull request `#1` em 2026-09-16, às
+`01:17:26Z`, por rebase, e apagou a branch da unidade:
 
-Não existe pull request contra a `main` que seja só de documentação e ao mesmo tempo traga o
-workflow. Por isso paro aqui, como a rodada 2 mandou. O item 3 fica `não verificado` e a
-unidade fica bloqueada até o condutor decidir entre, por exemplo:
+```
+$ gh pr view 1 --json number,state,mergedAt,mergedBy,mergeCommit --jq '{number, state, mergedAt, mergedBy: .mergedBy.login, mergeCommit: .mergeCommit.oid}'
+{"mergeCommit":"1c67e7049049e28f5fd7c5ce00a713e724efde47","mergedAt":"2026-09-16T01:17:26Z","mergedBy":"markinkkkkj","number":1,"state":"MERGED"}
 
-- **A** — fechar o GATE 2 com o item 3 pendente, e verificá-lo no primeiro pull request só de
-  documentação depois do merge · custo: a unidade fecha com um item verificado fora dela ·
-  consequência: a evidência existe, com um dia de atraso.
-- **B** — mudar o DoD ou o contrato para outra forma de verificação · custo: novo GATE 1 ·
-  consequência: a unidade não fecha hoje.
+$ git log --oneline origin/main -6
+ab2877b docs(M1.4): revisão reprovou na rodada 1
+fe3138c docs(M1.4): unidade em revisão
+1c67e70 fix(M1.4): rodada 2 de correções
+18d70d0 docs(M1.4): registro de execução
+cdda696 feat(M1.4): CI de verificação, hook de pré-commit e README de máquina vazia
+595fc29 docs(M1.4): contrato aprovado
 
-Quem escolhe é o condutor com o operador. Eu não mudo o DoD.
+$ git ls-tree -r origin/main --name-only | grep -i workflow
+.github/workflows/ci.yml
+```
+
+Com o workflow na `main`, o pull request `#3`, só de documentação, produziu a evidência do
+item 3. Ela está no DoD 3. O bloqueio deixou de existir.
 
 ### B3 — o contrato não fixa como instalar o Node no `README.md`
 
