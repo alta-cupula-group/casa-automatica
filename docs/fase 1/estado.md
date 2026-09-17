@@ -17,6 +17,7 @@
 | 7 | Volta de `dev` e `prod` | **resolvida.** Decisão do operador em 2026-09-15. Volta o veredito de 12/09 da `M1.1`: `dev` é o projeto que já existia, `prod` limpo em organização separada, casa de teste só no `dev`, migração passa por local, `dev` e `prod` com exportação do `prod` antes, MCP só no `dev`. Brief, roadmap e regra 06 alterados na mesma data |
 | 8 | Processo reestruturado para qualquer ferramenta de IA | **resolvida.** Pedido do operador em 2026-09-15, fora do ciclo de unidade, porque muda o processo e não o produto. As regras saíram de `.claude/` para `docs/processo/`, o `AGENTS.md` virou a porta de entrada, o `CLAUDE.md` só carrega o `AGENTS.md`, e nasceu a regra 06. As regras 01, 02, 03 e 05 ganharam teste antes do código, evidência de versão e de API de biblioteca, e limite de dez itens de DoD. Motivo: um morador desenvolve com Codex e Cursor, e a garantia de qualidade passa a ser mecânica. Commits `382ff9a` e `47ca0d4` |
 | 9 | Repositório na organização `alta-cupula-group` | **resolvida.** Decisão do operador em 2026-09-15. A conta pessoal dona virou organização, o repositório foi transferido, e os moradores viraram admin. Registrado em `docs/scope-brief.md`, seção 4 |
+| 11 | Relatório de exploração da `M1.2` sem ordem | **resolvida.** Em 2026-09-17 apareceu, fora do controle de versão, um relatório de exploração da `M1.2` assinado por Claude Code em 2026-09-15. Nenhuma ordem o pediu, e ninguém o revisou. Decisão do operador: o arquivo sai do repositório e vira material bruto, guardado na máquina onde foi encontrado. A `M1.2` roda pelo ciclo normal quando for aberta, e quem explorar pode citar esse material. Parte dele está velha: os projetos Supabase foram apagados e recriados em 2026-09-16 |
 | 10 | Projetos Supabase apagados e recriados | **resolvida.** Em 2026-09-16 o operador apagou os projetos antigos, inclusive o que servia de `dev`, e criou tudo de novo no mesmo dia: duas organizações gratuitas separadas, `Alta Cúpula` com `casa-automatica-prod` em São Paulo, e `Alta Cúpula Dev` com `casa-automatica-dev` em Oregon. Data API desligada nos dois. Os outros dois moradores entraram nas duas organizações. Nomes e regiões em `docs/scope-brief.md`, seção 4. A `M1.2` deixa de estar travada |
 
 Item `[A VALIDAR]` vira ordem de exploração própria antes da unidade que depende dele.
@@ -69,7 +70,8 @@ Ordem de trabalho:
 |---|---|---|
 | 1 | `M0.1`, `M1.1` | **fechada** em 2026-09-13 |
 | 2a | `M1.4` | liberada em 2026-09-13 |
-| 2b | `M1.2`, `M1.5` | liberada em 2026-09-16, com `M1.4` fechada. O operador pediu para não começar ainda |
+| 2b | `M1.5` | **em andamento.** O operador liberou a exploração em 2026-09-17 e a conduz ele mesmo |
+| 2c | `M1.2` | liberada, não começou. Sem ordem emitida |
 | 3 | `M1.3`, `M1.6` | dependências da tabela acima fechadas |
 
 A onda 2 só é explorada depois que `M0.1` fechar. Explorar CI, compose e migrações antes
@@ -84,5 +86,5 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
-| `M1.5-compose-e-caddy` | M1 · CI | dividida | `em exploração` | `M0.1` para explorar, `M1.4` para executar | 2026-09-17, ordem atualizada com a VM. Explorador: o operador, com Claude Code, na máquina do outro morador |
+| `M1.5-compose-e-caddy` | M1 · CI | dividida | `em exploração` | `M0.1` para explorar, `M1.4` fechada | 2026-09-17, exploração em andamento com P1 a P3 respondidos. Explorador: o operador, com Claude Code, na máquina do outro morador |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
