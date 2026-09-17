@@ -729,3 +729,11 @@ acima no material bruto.
 
 A tabela de ações do operador no painel volta a valer, com a linha 1 ampliada: agora são
 duas organizações e dois projetos a criar, não um.
+
+### Ações concluídas em 2026-09-16
+
+O operador criou as duas organizações gratuitas e os dois projetos no mesmo dia, desligou a
+Data API nos dois e adicionou os outros moradores. O `prod` nasceu primeiro no Canadá e foi
+recriado em São Paulo, com o banco ainda vazio, depois que o condutor apontou o custo de
+latência. Nomes e regiões estão em `docs/scope-brief.md`, seção 4. Nenhuma ação de painel
+fica pendente.
