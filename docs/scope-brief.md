@@ -86,6 +86,23 @@ Fases 2 a 4 não são projetadas em detalhe agora. A arquitetura só precisa nã
 - **Auditoria de dados:** tabela de auditoria alimentada por trigger no Postgres, registrando quem alterou o quê e quando. Lançamentos do ledger já são imutáveis; a auditoria cobre cadastros, categorias, edições de despesa e de notas.
 - **Idioma:** código, tabelas e colunas em inglês. Textos de interface em pt-BR numa pasta de i18n desde o início.
 
+### 3.5 Segurança
+
+Decidido pelo operador em 20/09/2026.
+
+- **Sessão amarrada ao cookie.** Remover o cookie de sessão do navegador desloga
+  completamente. Nenhuma outra forma de manter o usuário autenticado sobrevive à remoção
+  do cookie: o frontend não guarda estado de login independente dele, e cada requisição à
+  API prova a sessão pelo próprio cookie, não por cache do cliente.
+- **Nenhum segredo alcançável pelo navegador.** Variável de ambiente com prefixo de
+  segredo, como `sk_` ou `key_`, nunca aparece no bundle do frontend nem em resposta de
+  rede. Vale por cima do item E4 do DoD da fase, que já limita `apps/web` a variáveis
+  `VITE_` sem segredo; esta linha é o requisito de produto que sustenta aquele item.
+- **Rate limit na API.** A API limita o número de requisições por origem, para impedir
+  força bruta contra autenticação e sobrecarga do servidor por excesso de requisições. A
+  forma exata (janela, limite, armazenamento do contador) fica para o contrato da unidade
+  que implementar a API, guiada pelos recursos limitados da seção 4.
+
 ## 4. Arquitetura e infraestrutura
 
 - **Banco:** Supabase (Postgres). **Dois projetos gratuitos, `dev` e `prod`**, decidido pelo operador em 15/09/2026. A decisão volta ao veredito de 12/09/2026 da unidade `M1.1` e substitui a de um projeto só, de 13/09/2026. Os dois projetos nascem limpos. Em 16/09/2026 o operador apagou o projeto que existia antes, `omgheudterjqrjunpack`, que a unidade `M1.1` tinha designado como `dev`. O `dev` é compartilhado na nuvem entre os moradores. O `prod` fica numa organização gratuita separada, para que cota e restrição por uso justo do `dev` não atinjam o `prod`. Os outros moradores entram nas organizações como Developer. Toda migração passa num Postgres local, depois no `dev`, e só então no `prod`. O `prod` é exportado antes de cada migração, porque o plano gratuito não faz backup. Testes automatizados rodam contra Postgres local, nunca contra `dev` ou `prod`. Toda consulta filtra por casa. Nenhuma ferramenta de IA se conecta ao `prod`: o MCP do Supabase aponta só para o `dev`, somente leitura. Os dois ambientes existem desde 16/09/2026:
