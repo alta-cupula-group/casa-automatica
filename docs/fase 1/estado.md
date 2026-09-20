@@ -86,5 +86,5 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
-| `M1.5-compose-e-caddy` | M1 · CI | dividida | `aprovada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 1 vencido. Condutor e operador aprovaram o contrato, com a Opção A de P3 confirmada. Pronta para a execução |
+| `M1.5-compose-e-caddy` | M1 · CI | dividida | `em revisão` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, execução rodada 1 entregue. Docker não roda nesta máquina (sem WSL); itens 3, 4, 5, 6 e 9 do DoD não verificados localmente. Achado do executor: healthcheck do `caddy` quebra quando `DOMAIN` ≠ `localhost` — correção do contrato em avaliação antes da revisão formal |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
