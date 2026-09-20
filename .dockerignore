@@ -1,0 +1,6 @@
+# Nada daqui entra no contexto de build das imagens.
+**/node_modules
+**/dist
+.git
+**/.env
+**/.env.*

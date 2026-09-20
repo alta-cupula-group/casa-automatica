@@ -1,0 +1,12 @@
+{
+	auto_https off
+}
+
+http://{$DOMAIN:localhost} {
+	root * /srv/web
+	file_server
+}
+
+http://api.{$DOMAIN:localhost} {
+	reverse_proxy api:{$API_PORT:3000}
+}

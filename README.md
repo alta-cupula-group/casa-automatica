@@ -15,10 +15,11 @@ em `docs/scope-brief.md`.
 
 ## Requisitos
 
-| Ferramenta | Versão          |
-| ---------- | --------------- |
-| Node       | 26 ou mais nova |
-| pnpm       | 12.4.1          |
+| Ferramenta | Versão                                      |
+| ---------- | ------------------------------------------- |
+| Node       | 26 ou mais nova                             |
+| pnpm       | 12.4.1                                      |
+| Docker     | com o subcomando `compose`, só para a pilha |
 
 O Corepack não existe mais no Node 26. Quem resolve a versão do pnpm é o campo
 `packageManager` do `package.json` da raiz.
@@ -64,10 +65,45 @@ Para rodar a API depois do build:
 pnpm --filter @casa/api start
 ```
 
-A saída esperada é uma linha e código de saída 0:
+A API imprime uma linha e fica escutando até você interrompê-la com `Ctrl+C`. Ela responde
+`200` com o corpo `ok` em qualquer rota. A porta vem de `PORT`, e vale `3000` sem ela.
 
 ```
 api ok port=3000 sample=10,99
+```
+
+## Subir a casa inteira com Docker
+
+```bash
+cp .env.example .env   # opcional; sem ele, o domínio é localhost
+docker compose up --build --wait
+```
+
+O `docker compose` sobe dois serviços, e nada além deles:
+
+| Serviço | O que faz                                                             |
+| ------- | --------------------------------------------------------------------- |
+| `api`   | processo Node de `apps/api`                                           |
+| `caddy` | serve os estáticos de `apps/web` e faz proxy reverso para o `api`      |
+
+Os dois respondem na porta `80` do host, sob o mesmo domínio:
+
+```bash
+curl -f http://localhost/                        # o app web
+curl -f -H "Host: api.localhost" http://localhost/   # a API
+```
+
+Trocar de domínio não pede edição de `infra/caddy/Caddyfile` nem de `docker-compose.yml`.
+Basta definir `DOMAIN` no `.env` da raiz. Com `DOMAIN=casaautomatica.app`, o web responde em
+`casaautomatica.app` e a API em `api.casaautomatica.app`.
+
+O Caddy roda com `auto_https off` e só escuta em `http`. Quem termina TLS público é a
+Cloudflare, a partir do marco de deploy. O Caddy nunca é alcançável direto da internet.
+
+Para derrubar tudo:
+
+```bash
+docker compose down
 ```
 
 ## CI, hook e entrega
@@ -106,14 +142,17 @@ O merge automático entra sozinho assim que o check fica verde.
 
 Cada app tem o seu `.env.example`. O arquivo `.env` real nunca é versionado.
 
-| Arquivo         | Variável       | O que é                                      |
-| --------------- | -------------- | -------------------------------------------- |
-| `apps/api/.env` | `PORT`         | porta HTTP que a API vai usar a partir do M2 |
-| `apps/api/.env` | `NODE_ENV`     | modo de execução                             |
-| `apps/web/.env` | `VITE_API_URL` | endereço da API que o app consome            |
+| Arquivo         | Variável       | O que é                                           |
+| --------------- | -------------- | ------------------------------------------------- |
+| `.env`          | `DOMAIN`       | domínio público do sistema; vazio vale `localhost` |
+| `.env`          | `PORT`         | porta HTTP do container da API; vazia vale `3000` |
+| `apps/api/.env` | `PORT`         | porta HTTP da API rodando fora do container       |
+| `apps/api/.env` | `NODE_ENV`     | modo de execução                                  |
+| `apps/web/.env` | `VITE_API_URL` | endereço da API que o app consome                 |
 
-Nesta etapa nada lê arquivo `.env`. A API lê `process.env` e nada mais. Os dois `cp` da
-seção anterior preparam os arquivos para as etapas seguintes.
+Fora do Docker, nenhum app lê arquivo `.env`. A API lê `process.env` e nada mais. O `.env`
+da raiz é lido pelo `docker compose`, e ele é opcional: sem o arquivo, o compose usa os
+valores padrão.
 
 O Vite lê `apps/web/.env`, nunca o `.env` da raiz. O `apps/web` só enxerga variáveis com
 prefixo `VITE_`, e nenhuma delas guarda segredo.
