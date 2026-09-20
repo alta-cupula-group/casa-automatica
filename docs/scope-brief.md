@@ -102,6 +102,22 @@ Decidido pelo operador em 20/09/2026.
   força bruta contra autenticação e sobrecarga do servidor por excesso de requisições. A
   forma exata (janela, limite, armazenamento do contador) fica para o contrato da unidade
   que implementar a API, guiada pelos recursos limitados da seção 4.
+- **Proteção contra CSRF.** Consequência direta da sessão por cookie: a API recusa
+  requisição que muda estado (`POST`/`PUT`/`PATCH`/`DELETE`) sem prova de que veio do
+  próprio frontend, não só de um navegador com o cookie válido. A forma (`SameSite`
+  estrito, token CSRF, checagem de origem, ou combinação) fica para o contrato da unidade
+  de autenticação.
+- **Isolamento por casa também no banco.** A seção 4 já exige que toda consulta filtre por
+  `house` na camada da API. Esta linha soma uma segunda camada, no próprio Postgres: Row
+  Level Security do Supabase nas tabelas centrais, para que um bug na API não vaze dado de
+  uma casa para outra. As duas camadas existem juntas; nenhuma substitui a outra.
+- **Cabeçalhos HTTP de segurança.** Caddy e a API respondem com cabeçalhos que reduzem
+  ataque comum de navegador: política de conteúdo (CSP), HSTS, e o que impede a página
+  rodar dentro de um `iframe` de outro site. A lista exata de cabeçalhos e valores fica
+  para o contrato da unidade que os implementar.
+- **Auditoria de dependências vulneráveis.** O pipeline de CI verifica periodicamente se
+  alguma dependência do repositório tem vulnerabilidade conhecida publicada. A ferramenta
+  e a frequência ficam para o contrato da unidade que implementar isso.
 
 ## 4. Arquitetura e infraestrutura
 

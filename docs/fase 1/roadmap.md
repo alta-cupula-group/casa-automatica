@@ -21,8 +21,8 @@
 **Depende de:** nada.
 
 ### M1 · Banco e ambientes
-**Entrega:** dois projetos Supabase, `dev` e `prod`, em organizações gratuitas separadas e documentados, com Data API desligada em ambos; migrações versionadas com Drizzle em `apps/api/drizzle`; comando único para aplicar migrações em qualquer ambiente; Supabase local via CLI documentado como opcional; primeira migração criando `house` e a tabela de auditoria com seu trigger.
-**Pronto quando:** a migração inicial passa num Postgres local, depois aplica em `dev` e em `prod` sem intervenção manual, com o `prod` exportado antes; a casa de teste existe no `dev` e a casa real existe no `prod`; uma alteração de teste numa tabela auditada gera linha na auditoria.
+**Entrega:** dois projetos Supabase, `dev` e `prod`, em organizações gratuitas separadas e documentados, com Data API desligada em ambos; migrações versionadas com Drizzle em `apps/api/drizzle`; comando único para aplicar migrações em qualquer ambiente; Supabase local via CLI documentado como opcional; primeira migração criando `house` e a tabela de auditoria com seu trigger; Row Level Security por `house` nas tabelas centrais, como o `docs/scope-brief.md`, seção 3.5, exige.
+**Pronto quando:** a migração inicial passa num Postgres local, depois aplica em `dev` e em `prod` sem intervenção manual, com o `prod` exportado antes; a casa de teste existe no `dev` e a casa real existe no `prod`; uma alteração de teste numa tabela auditada gera linha na auditoria; consulta direta ao Postgres com outra `house` não retorna linha, mesmo sem filtro na query.
 **Depende de:** M0.
 
 ### M1 · Pipeline de CI e deploy
@@ -35,8 +35,9 @@
 ## Etapa 2 — API
 
 ### M2 · Esqueleto da API e autenticação
-**Entrega:** Fastify + Zod com geração de OpenAPI em `docs/openapi.json` a partir dos schemas; validação do JWT do Supabase Auth em todas as rotas; middleware que resolve usuário → `person` → morador ativo da `house`; rota `GET /health`; erro padronizado; módulo `people` vazio como modelo de estrutura de módulo; sessão amarrada a cookie e rate limit na API, como o `docs/scope-brief.md`, seção 3.5, exige.
-**Pronto quando:** uma requisição sem token recebe 401, com token válido de morador ativo recebe 200 em `/health`; OpenAPI gerado valida num linter; teste de integração sobe a API contra o Postgres local; remover o cookie de sessão do navegador desloga, sem outro estado de login sobrevivendo; requisição repetida além do limite recebe 429.
+**Entrega:** Fastify + Zod com geração de OpenAPI em `docs/openapi.json` a partir dos schemas; validação do JWT do Supabase Auth em todas as rotas; middleware que resolve usuário → `person` → morador ativo da `house`; rota `GET /health`; erro padronizado; módulo `people` vazio como modelo de estrutura de módulo; sessão amarrada a cookie, proteção contra CSRF e rate limit na API, como o
+`docs/scope-brief.md`, seção 3.5, exige.
+**Pronto quando:** uma requisição sem token recebe 401, com token válido de morador ativo recebe 200 em `/health`; OpenAPI gerado valida num linter; teste de integração sobe a API contra o Postgres local; remover o cookie de sessão do navegador desloga, sem outro estado de login sobrevivendo; requisição repetida além do limite recebe 429; requisição que muda estado sem prova de origem própria recebe 403.
 **Depende de:** M1 (ambos).
 
 ### M3 · Módulo Pessoas
