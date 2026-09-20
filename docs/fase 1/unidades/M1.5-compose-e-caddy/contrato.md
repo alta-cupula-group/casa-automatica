@@ -120,12 +120,27 @@ services:
       api:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      test:
+        [
+          "CMD-SHELL",
+          'wget --no-verbose --tries=1 --spider --header="Host: ${DOMAIN:-localhost}" http://localhost/ || exit 1',
+        ]
       interval: 10s
       timeout: 3s
       retries: 3
       start_period: 5s
 ```
+O teste manda o cabeçalho `Host` certo porque o Caddy roteia por `Host`, não por IP. Com
+`CMD` simples e `wget --spider http://localhost/`, o `Host` da requisição seria
+`localhost` sempre — bate com o bloco de site só enquanto `DOMAIN` for `localhost`. Com
+`DOMAIN=casaautomatica.app`, esse `Host` fixo não bate com nenhum bloco, o Caddy devolve
+404, e o serviço nunca fica `healthy`. `${DOMAIN:-localhost}`, com o valor padrão, porque
+quem interpola essa variável dentro do texto do `test` é o próprio Compose, ao resolver o
+`docker-compose.yml` — não o shell dentro do container — e o Compose não herda o valor do
+bloco `environment:` de baixo. Sem o `:-localhost` aqui, rodar `docker compose up` sem
+`DOMAIN` no ambiente (o caso padrão, testado pelo item 3 do DoD) resolveria a variável
+para string vazia, e o `wget` mandaria `Host: ` vazio — quebrando exatamente do jeito que
+esta correção deveria consertar.
 `env_file` com `required: false` porque o `.env` real não é versionado (E2); sem essa
 flag, `docker compose up` falha em qualquer máquina limpa, inclusive no CI. A imagem
 `wget` do healthcheck do `caddy` existe porque a imagem oficial `caddy` é baseada em
@@ -234,3 +249,5 @@ Só para contrato já aprovado que mudou. Cada linha exige novo GATE 1.
 
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
+| 2026-09-20 | Healthcheck do `caddy` passa de `CMD wget --spider http://localhost/` para `CMD-SHELL` com `--header="Host: $DOMAIN"` | Achado do executor na rodada 1: o teste antigo fixa `Host: localhost`, que não bate com o bloco de site quando `DOMAIN` é outro valor, e o serviço nunca fica `healthy` fora do domínio padrão | 2026-09-20 |
+| 2026-09-20 | O `$DOMAIN` da linha acima ganha valor padrão: `${DOMAIN:-localhost}` | Achado do executor ao aplicar a correção anterior: quem interpola essa variável é o Compose, não o shell do container, e sem `:-localhost` o `Host` sai vazio quando ninguém define `DOMAIN` — exatamente o caso padrão que o item 3 do DoD testa | 2026-09-20 |

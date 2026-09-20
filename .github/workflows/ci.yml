@@ -72,3 +72,53 @@ jobs:
       - name: Formatação
         if: steps.escopo.outputs.so_documentacao != 'true'
         run: pnpm format:check
+
+      - name: smoke-compose
+        if: steps.escopo.outputs.so_documentacao != 'true'
+        run: |
+          set -euo pipefail
+
+          echo "== DoD 1 — o compose só declara api e caddy =="
+          servicos=$(docker compose config --services | sort | paste -sd' ' -)
+          echo "$servicos"
+          test "$servicos" = "api caddy"
+
+          echo "== DoD 7 — orçamento de memória dos dois serviços =="
+          docker compose config | grep -E '^[[:space:]]*mem_limit:'
+          docker compose config | awk '
+            /^[[:space:]]*mem_limit:/ {
+              valor = $2
+              gsub(/"/, "", valor)
+              fator = 1
+              if (valor ~ /[gG]$/) fator = 1024 * 1024 * 1024
+              else if (valor ~ /[mM]$/) fator = 1024 * 1024
+              else if (valor ~ /[kK]$/) fator = 1024
+              gsub(/[^0-9]/, "", valor)
+              total += valor * fator
+              n += 1
+            }
+            END {
+              printf "servicos_com_mem_limit=%d total_bytes=%d\n", n, total
+              if (n != 2) exit 1
+              if (total > 1073741824) exit 1
+            }'
+
+          echo "== DoD 8 — nenhum segredo do .env entra na imagem =="
+          ! grep -nE '^[[:space:]]*(COPY|ADD)[^#]*\.env' apps/api/Dockerfile infra/caddy/Dockerfile
+          ! grep -nE '^[[:space:]]*ARG[[:space:]]' apps/api/Dockerfile infra/caddy/Dockerfile
+          echo "nenhuma ocorrência de COPY .env nem de ARG nos dois Dockerfiles"
+
+          echo "== DoD 3 — a pilha sobe com os dois serviços saudáveis =="
+          docker compose up -d --build --wait --wait-timeout 300
+
+          echo "== DoD 4 — o web estático responde na raiz do domínio padrão =="
+          curl -f -s http://localhost/
+
+          echo "== DoD 5 — a API responde no subdomínio do mesmo domínio =="
+          test "$(curl -f -s -H 'Host: api.localhost' http://localhost/)" = "ok"
+
+          echo "== DoD 9 — o down não deixa nada residual =="
+          docker compose down
+          restantes=$(docker compose ps -a --format '{{.Name}}')
+          test -z "$restantes"
+          echo "docker compose ps -a vazio para o projeto"

@@ -1,0 +1,47 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file:
+      - path: .env
+        required: false
+    mem_limit: 512m
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('node:http').get('http://localhost:' + (process.env.PORT || 3000) + '/', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  caddy:
+    build:
+      context: .
+      dockerfile: infra/caddy/Dockerfile
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+      API_PORT: ${PORT:-3000}
+    ports:
+      - "80:80"
+    mem_limit: 256m
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'wget --no-verbose --tries=1 --spider --header="Host: ${DOMAIN:-localhost}" http://localhost/ || exit 1',
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
