@@ -31,7 +31,7 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 |---|---|---|---|
 | M0 | Fundação do repositório | `M0.1` | **fechado** em 2026-09-13 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12 |
-| M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12. `M1.4` fechada em 2026-09-16 |
+| M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12. `M1.4` fechada em 2026-09-16, `M1.5` fechada em 2026-09-20 |
 | M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor |
 | M3 | Módulo Pessoas | — | não fatiado |
 | M4 | Ledger e plano de contas | — | não fatiado |
@@ -70,7 +70,7 @@ Ordem de trabalho:
 |---|---|---|
 | 1 | `M0.1`, `M1.1` | **fechada** em 2026-09-13 |
 | 2a | `M1.4` | liberada em 2026-09-13 |
-| 2b | `M1.5` | **em andamento.** O operador liberou a exploração em 2026-09-17 e a conduz ele mesmo |
+| 2b | `M1.5` | **fechada** em 2026-09-20 |
 | 2c | `M1.2` | liberada, não começou. Sem ordem emitida |
 | 3 | `M1.3`, `M1.6` | dependências da tabela acima fechadas |
 
@@ -86,5 +86,5 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
-| `M1.5-compose-e-caddy` | M1 · CI | dividida | `em revisão` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, execução rodada 1 entregue. Docker não roda nesta máquina (sem WSL); itens 3, 4, 5, 6 e 9 do DoD não verificados localmente. Achado do executor: healthcheck do `caddy` quebra quando `DOMAIN` ≠ `localhost` — correção do contrato em avaliação antes da revisão formal |
+| `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
