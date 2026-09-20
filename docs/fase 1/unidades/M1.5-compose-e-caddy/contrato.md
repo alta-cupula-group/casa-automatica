@@ -1,6 +1,6 @@
 > Unidade: `M1.5-compose-e-caddy` · Marco: `M1 · CI` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-20 · Operador aprovou: —
+> Estado: aprovada
+> Condutor aprovou: 2026-09-20 · Operador aprovou: 2026-09-20
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M1.5-compose-e-caddy`
@@ -225,8 +225,8 @@ Resposta: `sim` · Verificado em: `2026-09-20`
 Nenhuma. As duas decisões que exigiam o operador já estão registradas em
 `exploracao.md`: domínio (`casaautomatica.app`, P4) e o stub HTTP de `apps/api`
 (pergunta ao operador P1, opção B). A escolha entre as opções de P3 (Caddy servindo o
-web direto, ou container próprio) é decisão técnica local do condutor, explicada em
-"Fora deste contrato" — o operador pode vetá-la aqui, no GATE 1, se discordar.
+web direto, ou container próprio) foi proposta pelo condutor como Opção A e confirmada
+pelo operador em 2026-09-20, nesta mesma conversa de aprovação.
 
 ## Alterações
 
