@@ -86,5 +86,5 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-12, fatiada |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-12, fatiada |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
-| `M1.5-compose-e-caddy` | M1 · CI | dividida | `contrato em rascunho` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, exploração original de 2026-09-17 perdida (sem registro em nenhuma máquina) e refeita do zero. P1 a P8 respondidos, com decisão do operador sobre domínio (`casaautomatica.app`) e sobre o stub HTTP de `apps/api`. Pronta para o contrato |
+| `M1.5-compose-e-caddy` | M1 · CI | dividida | `aguardando operador` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, contrato escrito e aprovado pelo condutor. Espera aprovação do operador (GATE 1) |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
