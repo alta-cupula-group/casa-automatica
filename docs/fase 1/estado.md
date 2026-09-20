@@ -31,8 +31,8 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 |---|---|---|---|
 | M0 | Fundação do repositório | `M0.1` | **fechado** em 2026-09-13 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12 |
-| M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6` | fatiado em 2026-09-12. `M1.4` fechada em 2026-09-16, `M1.5` fechada em 2026-09-20 |
-| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor |
+| M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6`, `M1.7` | fatiado em 2026-09-12, `M1.7` acrescentada em 2026-09-20. `M1.4` fechada em 2026-09-16, `M1.5` fechada em 2026-09-20 |
+| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor. Herda de `docs/scope-brief.md` §3.5 (2026-09-20): sessão amarrada a cookie e rate limit viram critério de pronto |
 | M3 | Módulo Pessoas | — | não fatiado |
 | M4 | Ledger e plano de contas | — | não fatiado |
 | M5 · Despesas | Despesas, divisão e acertos | — | não fatiado |
@@ -48,7 +48,10 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 ## Fatiamento da Etapa 1 · aprovado
 
 Proposto pelo condutor em 2026-09-11. Aprovado pelo operador em 2026-09-12.
-M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`.
+M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`. `M1.7-oxlint` acrescentada em
+2026-09-20, proposta pelo condutor e aprovada pelo operador na mesma data: trocar ESLint
+por oxlint enquanto o repositório ainda é pequeno, antes do M2 gerar mais código para
+converter depois.
 
 | Unidade | Marco | Entrega | Depende de | Trilha |
 |---|---|---|---|---|
@@ -59,6 +62,7 @@ M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`.
 | `M1.4-ci-verificacao` | M1 · CI | GitHub Actions roda lint, tipos, testes e build em push e PR. Git hook local roda lint e tipos antes do commit. A `main` só aceita código com a CI verde. A ferramenta do hook e a forma da proteção saem da exploração. | `M0.1` | dividida: pipeline |
 | `M1.5-compose-e-caddy` | M1 · CI | `docker-compose.yml` com API, web estático e Caddy. Sobe em qualquer máquina com Docker e serve o web em `localhost`. | `M0.1` | dividida: base do deploy |
 | `M1.6-deploy-na-casa` | M1 · CI | Deploy por SSH em push na `main`. Cloudflare Tunnel documentado. Segredos listados no README. Push trivial chega ao domínio. | `M1.4`, `M1.5` | dividida: pipeline de deploy |
+| `M1.7-oxlint` | M1 · CI | ESLint substituído por oxlint em todo o workspace, mesma cobertura de regras (incluindo `react-hooks`), `pnpm lint` mais rápido, CI e hook local do `M1.4` atualizados. | `M1.4` | dividida: convenção de repositório, investigação externa |
 
 `M1.1-validar-supabase` é uma unidade só de validação, como manda a regra 04. Ela tem
 `ordem.md` e `exploracao.md`, e não tem contrato nem execução. Ela fecha quando o
@@ -72,6 +76,7 @@ Ordem de trabalho:
 | 2a | `M1.4` | liberada em 2026-09-13 |
 | 2b | `M1.5` | **fechada** em 2026-09-20 |
 | 2c | `M1.2` | liberada, não começou. Sem ordem emitida |
+| 2d | `M1.7` | liberada em 2026-09-20, prioridade antes de `M1.6` e do M2 |
 | 3 | `M1.3`, `M1.6` | dependências da tabela acima fechadas |
 
 A onda 2 só é explorada depois que `M0.1` fechar. Explorar CI, compose e migrações antes
@@ -88,3 +93,4 @@ de o monorepo existir produziria relatório sobre um repositório que ainda não
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
+| `M1.7-oxlint` | M1 · CI | dividida | `planejada` | `M1.4` | 2026-09-20, fatiada, prioridade antes de `M1.6` |
