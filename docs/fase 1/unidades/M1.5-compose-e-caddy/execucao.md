@@ -401,8 +401,10 @@ O item 6 do DoD, a troca de domínio, só faz sentido verificar depois desta cor
 dela, subir a pilha com `DOMAIN=casaautomatica.app` nunca levaria o `caddy` a `healthy`.
 Ele continua `não verificado`, porque o daemon do Docker não sobe nesta máquina.
 
-Uma coisa nova apareceu ao conferir a correção, e ela não foi tocada. Está no achado 6 de
-"Encontrado e não tocado".
+Conferir essa correção levantou uma segunda, também aprovada pelo condutor e registrada na
+linha seguinte de `## Alterações`, na mesma data: o `$DOMAIN` do header ganhou valor padrão
+e virou `${DOMAIN:-localhost}`. As duas estão no achado 6 de "Encontrado e não tocado", que
+já está fechado.
 
 ## Bloqueios e dúvidas
 
@@ -454,18 +456,37 @@ fechamento.
    `api ok port=3999 sample=10,99`. Isso não prova o build da imagem, mas tira a dúvida sobre o
    `deploy` descartar o código compilado.
 
-6. **Sem `DOMAIN` no ambiente, o healthcheck corrigido manda `Host: ` vazio.** Quem
+6. **Sem `DOMAIN` no ambiente, o healthcheck mandava `Host: ` vazio. Fechado.** Quem
    interpola `$DOMAIN` dentro do `docker-compose.yml` é o próprio Compose, no momento de
-   resolver o arquivo, e não o shell dentro do container. Com `DOMAIN` definida, o resultado
-   é o esperado. Sem ela, a variável resolve para string vazia, e o `wget` do healthcheck
-   manda um `Host` vazio, que não casa com o bloco `http://{$DOMAIN:localhost}` do Caddyfile.
-   O caminho padrão, que é o do item 3 do DoD e o do passo `smoke-compose` na CI, roda
-   justamente sem `DOMAIN`. Evidência, só com o cliente do Docker, sem daemon:
+   resolver o arquivo, e não o shell dentro do container. `CMD-SHELL` não muda isso: a
+   string chega ao container já interpolada. Com `DOMAIN` definida, o resultado era o
+   esperado. Sem ela, a variável resolvia para string vazia, e o `wget` do healthcheck
+   mandava um `Host` vazio, que não casa com o bloco `http://{$DOMAIN:localhost}` do
+   Caddyfile. O caminho padrão, que é o do item 3 do DoD e o do passo `smoke-compose` na CI,
+   roda justamente sem `DOMAIN`. Era assim que o arquivo resolvia:
    ```
    $ docker compose config
        test:
          - CMD-SHELL
          - 'wget --no-verbose --tries=1 --spider --header="Host: " http://localhost/
+           || exit 1'
+   ```
+   O condutor aprovou a correção na segunda linha da seção `## Alterações` do `contrato.md`,
+   de `2026-09-20`: o header passou a usar `${DOMAIN:-localhost}`, a mesma forma que o bloco
+   `environment` do próprio serviço `caddy` já usava. Nada mais mudou no arquivo. Ele
+   continua passando no Prettier.
+   ```
+   $ prettier --check docker-compose.yml
+   Checking formatting...
+   All matched files use Prettier code style!
+   fmt_exit=0
+   ```
+   Os dois casos agora resolvem para um `Host` que casa com um bloco de site do Caddyfile:
+   ```
+   $ docker compose config
+       test:
+         - CMD-SHELL
+         - 'wget --no-verbose --tries=1 --spider --header="Host: localhost" http://localhost/
            || exit 1'
 
    $ DOMAIN=casaautomatica.app docker compose config
@@ -474,10 +495,8 @@ fechamento.
          - 'wget --no-verbose --tries=1 --spider --header="Host: casaautomatica.app"
            http://localhost/ || exit 1'
    ```
-   Não corrigi. A correção que o contrato reaprovou é a que está no arquivo, letra por letra.
-   O condutor decide o que fazer. O `docker-compose.yml` já usa `${DOMAIN:-localhost}` no
-   bloco `environment` do mesmo serviço, e a mesma forma no header resolveria, mas isso é
-   mudança de contrato, não decisão do executor.
+   Isso é resolução do arquivo pelo cliente do Docker, sem daemon. Que o `caddy` chegue mesmo
+   a `healthy` continua dependendo de container em execução, e segue `não verificado` aqui.
 
 ## Como reverter
 

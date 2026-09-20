@@ -39,7 +39,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'wget --no-verbose --tries=1 --spider --header="Host: $DOMAIN" http://localhost/ || exit 1',
+          'wget --no-verbose --tries=1 --spider --header="Host: ${DOMAIN:-localhost}" http://localhost/ || exit 1',
         ]
       interval: 10s
       timeout: 3s
