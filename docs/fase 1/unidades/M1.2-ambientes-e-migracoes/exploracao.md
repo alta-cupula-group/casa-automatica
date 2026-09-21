@@ -760,7 +760,7 @@ Opções:
 - **C** — conexão direta por IPv6 · custo: a VM tem IPv6, mas a rede do `docker compose`
   precisa de IPv6 ligado, o que toca no `docker-compose.yml` da `M1.5` e da `M1.10`. Sem
   reserva se o provedor derrubar o IPv6 · consequência: nenhum pooler no caminho, e o
-  egress sai da cota de `Shared Pooler Egress`.
+  tráfego passa a contar como egress do banco, não do pooler. A cota total não muda.
 
 Recomendação do explorador: A. A C ganha um pooler a menos e paga com mudança no compose
 e com dependência do IPv6 do provedor. Para três moradores, o pooler em modo sessão não é
