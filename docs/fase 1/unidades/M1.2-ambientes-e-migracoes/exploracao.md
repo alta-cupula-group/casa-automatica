@@ -647,8 +647,8 @@ A senha do `dev` tem `%`. Colada crua na URL do painel, o `psql` recusa com
 host, porta, usuário e senha em variáveis separadas, a conexão funciona. O contrato
 precisa escolher uma das duas regras: a URL de cada ambiente vai com a senha codificada,
 ou a senha vai numa variável separada. O `.env.example` e o `README.md` precisam dizer
-qual. Nesta exploração, a senha do `dev` apareceu na saída de um comando. O operador troca
-a senha.
+qual. Nesta exploração, a senha do `dev` apareceu na saída de um comando. O operador trocou a
+senha e apagou o arquivo local com a URL em 2026-09-21.
 
 ## Opções
 
