@@ -103,7 +103,7 @@ trilha ao mesmo tempo.
 
 | # | Unidade | Trilha | Por que nesta posição |
 |---|---|---|---|
-| 1 | `M1.2-ambientes-e-migracoes` | banco | Caminho crítico. O M2 em diante depende do M1 · Banco inteiro, e esta unidade ainda não tem ordem emitida. É a fila mais longa da fase |
+| 1 | `M1.2-ambientes-e-migracoes` | banco | Caminho crítico. O M2 em diante depende do M1 · Banco inteiro. É a fila mais longa da fase. Ordem emitida em 2026-09-20, com Lucas explorando |
 | 2 | `M1.7-oxlint` | CI | Decisão do operador em 2026-09-20: trocar o linter enquanto o repositório é pequeno. Cada unidade seguinte que passar antes dela aumenta o que vai ter que ser convertido |
 | 3 | `M1.3-house-e-auditoria` | banco | Depende de `M1.2`. Fecha o M1 · Banco e libera o M2. Carrega o Row Level Security |
 | 4 | `M1.10-endurecer-compose` | CI | Endurece o que já roda, antes de existir porta aberta para a internet |
@@ -123,7 +123,7 @@ roadmap a entrega no M11.
 |---|---|---|---|---|---|
 | `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
-| `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `planejada` | `M0.1`, `M1.1` | 2026-09-20, explorador designado pelo operador: Lucas. Aguardando a ordem de exploração do condutor |
+| `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `em exploração` | `M0.1`, `M1.1` | 2026-09-20, ordem emitida. Explorador: Lucas, designado pelo operador |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-20, entrega ampliada com Row Level Security por `house` |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
