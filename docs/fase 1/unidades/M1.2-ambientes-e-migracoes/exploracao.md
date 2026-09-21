@@ -21,8 +21,9 @@
 6. Pelo MCP somente leitura: o `dev` roda Postgres 17.6, e o `postgres` tem `BYPASSRLS`
    na nuvem, igual à imagem. Com a chave publicável, `/rest/v1/<tabela>` devolve
    `503 PGRST002` estável.
-7. Ficou aberto: `select 1` e `pg_dump` pelo pooler do `dev`. Os dois precisam da senha.
-   Precisam do operador: PO1 a PO5.
+7. `select 1` e `pg_dump` passaram pelo pooler do `dev` em modo sessão, de um container
+   sem IPv6. Senha com `%` quebra a URL de conexão.
+8. Precisam do operador: PO1 a PO5.
 
 ## Respostas
 
@@ -159,8 +160,17 @@ Shared pooler connections: username is postgres.[PROJECT-REF]
 Custom roles through shared pooler: username is [ROLE].[PROJECT-REF]
 ```
 
-**Confiança:** fato verificado para rota, host e porta. **O `select 1` com senha não
-rodou.** Ele está em "Não descoberto".
+Com a senha, passada por variável de ambiente e não pela URL, o mesmo container
+autenticou:
+```
+ipv6 global: 0
+== select 1 (aws-0-us-west-2.pooler.supabase.com:5432)
+ ok | current_user | inet_server_port
+  1 | postgres     |             5432
+exit 0
+```
+
+**Confiança:** fato verificado.
 
 ### P3 — Papel da migração e papel da API
 
@@ -308,9 +318,10 @@ Exportação: a documentação oficial de backup usa `supabase db dump --db-url`
 URL do session pooler. Em "Use the Session pooler connection string by default", isso vale
 para quem não tem IPv6. O `supabase db dump` pede Docker.
 
-O `pg_dump` pelo pooler em modo sessão **não rodou** contra o `dev`, por falta de senha. O
-cliente precisa ter versão igual ou maior que a do servidor. A imagem `postgres:17-alpine`
-traz um `pg_dump` 17, que serve se o `dev` rodar Postgres 17.
+O `pg_dump` 17.11 da imagem `postgres:17-alpine` exportou o `dev`, que roda 17.6, pelo
+pooler em modo sessão. Não precisou do Supabase CLI. O dump completo, sem filtro de schema,
+tem 258 KB num banco sem tabela nossa. Isso vem dos schemas do Supabase, como `auth` e
+`storage`. O contrato decide o que a exportação do `prod` inclui.
 
 **Evidência:**
 ```
@@ -328,8 +339,18 @@ supabase db dump --db-url [CONNECTION_STRING] -f data.sql --use-copy --data-only
 "Use the Session pooler connection string by default."
 ```
 
-**Confiança:** fato verificado para a ausência de trava. Hipótese: `pg_dump` pelo pooler
-contra o `dev`, até rodar.
+```
+== pg_dump --schema-only --schema=public
+pg_dump (PostgreSQL) 17.11
+exit 0
+-- Dumped from database version 17.6
+-- Dumped by pg_dump version 17.11
+== pg_dump completo
+exit 0
+258149 bytes
+```
+
+**Confiança:** fato verificado.
 
 ### P6 — Como sobe o Postgres local dos testes
 
@@ -462,8 +483,14 @@ Com a chave publicável do `dev`, lida pelo MCP, a resposta muda. Não registrei
 Ou seja, o PostgREST do `dev` está no ar e não consegue ler o schema. Isso é compatível com
 a Data API desligada. A documentação diz só que "none of the auto-generated REST endpoints
 respond", sem dar o código HTTP. Não há projeto com a Data API ligada para comparar. Que
-o `503 PGRST002` é a assinatura do botão desligado é hipótese. A prova é ligar o botão no
-`dev` uma vez e ver a resposta mudar, e isso é ação de painel do operador.
+o `503 PGRST002` é a assinatura do botão desligado é hipótese.
+
+O painel do `dev` reforça a leitura. Em 2026-09-21, o diálogo **Connect**, aba
+**Framework**, mostrava o aviso "Database access requires the Data API. Client library
+database queries will not work until the Data API is enabled", com o botão "Enable Data
+API". O operador viu o aviso e mandou a captura. O painel diz que a Data API está desligada
+no mesmo dia em que o endpoint responde `503 PGRST002`. A prova completa ainda pede ligar o
+botão uma vez e ver a resposta mudar.
 
 **Evidência:**
 ```
@@ -611,32 +638,29 @@ O MCP conecta como `supabase_read_only_user`, e esse papel tem `BYPASSRLS`. Depo
 `dev` só vai ter a casa de teste, então nada vaza. Registro porque o `read_only=true`
 limita a escrita, não o alcance da leitura. Evidência na P3 e na P6.
 
+### 11. Senha com caractere especial quebra a URL de conexão
+
+A senha do `dev` tem `%`. Colada crua na URL do painel, o `psql` recusa com
+`invalid percent-encoded token`, e a mensagem de erro imprime o trecho da senha. Passando
+host, porta, usuário e senha em variáveis separadas, a conexão funciona. O contrato
+precisa escolher uma das duas regras: a URL de cada ambiente vai com a senha codificada,
+ou a senha vai numa variável separada. O `.env.example` e o `README.md` precisam dizer
+qual. Nesta exploração, a senha do `dev` apareceu na saída de um comando. O operador troca
+a senha.
+
 ## Opções
 
 As opções de cada decisão estão nas perguntas ao operador, com custo e consequência.
 
 ## Não descoberto
 
-Os dois primeiros itens rodam assim que existir `~/.m12-dev-url` com a URL do session
-pooler do `dev`. O script é este:
-
-```bash
-docker run --rm -e URL="$(cat ~/.m12-dev-url)" postgres:17-alpine sh -c '
-  psql "$URL" -c "select 1" &&
-  pg_dump "$URL" --schema-only --schema=public | head -20'
-```
-
-1. **`select 1` no pooler do `dev`, de máquina sem IPv6.** A rota está provada até o pedido
-   de senha. A consulta não rodou.
-2. **`pg_dump` pelo pooler em modo sessão.** Pede senha. O `pg_dump` 17 da imagem serve,
-   porque o `dev` roda 17.6.
-3. **Se `503 PGRST002` é a assinatura da Data API desligada.** Só se prova ligando o botão
+1. **Se `503 PGRST002` é a assinatura da Data API desligada.** Só se prova ligando o botão
    uma vez no `dev` e comparando a resposta.
-4. **Se o guest `casa-automatica` tem IPv6.** Decide entre conexão direta e pooler para a
+2. **Se o guest `casa-automatica` tem IPv6.** Decide entre conexão direta e pooler para a
    API. A seção 4 do `docs/scope-brief.md` fala de PPPoE e MTU, não de IPv6.
-5. **Host do pooler do `prod`.** A ordem proíbe consultar.
-6. **Memória da pilha do Supabase CLI.** Não instalei.
-7. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
+3. **Host do pooler do `prod`.** A ordem proíbe consultar.
+4. **Memória da pilha do Supabase CLI.** Não instalei.
+5. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
    documentação.
 
 ## Riscos vistos daqui
@@ -651,6 +675,7 @@ docker run --rm -e URL="$(cat ~/.m12-dev-url)" postgres:17-alpine sh -c '
 | Prepared statement no modo transação com `postgres` | `prepared statement "..." already exists` |
 | `pnpm install` falha na CI por script ignorado | `ERR_PNPM_IGNORED_BUILDS` |
 | `pg_dump` mais velho que o servidor | `server version mismatch` |
+| Senha com caractere especial crua na URL | `invalid percent-encoded token`, com o trecho da senha na mensagem |
 | Migração do `prod` sem exportação | nenhum arquivo de dump com data anterior à linha nova de `__drizzle_migrations` |
 
 ## Perguntas ao operador
