@@ -18,9 +18,11 @@
    IPv6. A conexão direta dá `Network unreachable`.
 5. A documentação oficial do Drizzle já descreve a 1.0, que ainda é `rc`. O `latest` no
    registro é 0.45.2. PO2 pede a escolha.
-6. Ficou aberto: `select 1`, `pg_dump` e `select version()` contra o `dev`. Os três
-   precisam da senha do `dev`, e o MCP não autenticou nesta sessão.
-7. Precisam do operador: PO1 a PO5.
+6. Pelo MCP somente leitura: o `dev` roda Postgres 17.6, e o `postgres` tem `BYPASSRLS`
+   na nuvem, igual à imagem. Com a chave publicável, `/rest/v1/<tabela>` devolve
+   `503 PGRST002` estável.
+7. Ficou aberto: `select 1` e `pg_dump` pelo pooler do `dev`. Os dois precisam da senha.
+   Precisam do operador: PO1 a PO5.
 
 ## Respostas
 
@@ -241,9 +243,18 @@ falhou: role "api_app" already exists
 "The default Postgres role. This has admin privileges." O `BYPASSRLS` não aparece na
 página. Ele saiu da imagem.
 
-**Confiança:** fato verificado para o Postgres oficial e para a imagem do Supabase.
-Hipótese: o projeto `dev` na nuvem tem os mesmos atributos da imagem. A prova é uma
-consulta a `pg_roles` no `dev`, que não rodou.
+No `dev` da nuvem, pelo MCP somente leitura, os atributos são os mesmos da imagem:
+```
+execute_sql: select rolname, rolsuper, rolbypassrls, rolcreaterole, rolcanlogin from pg_roles ...
+ postgres                | f | t | t | t
+ service_role            | f | t | f | f
+ supabase_admin          | t | t | t | t
+ authenticated           | f | f | f | f
+ authenticator           | f | f | f | t
+ supabase_read_only_user | f | t | f | t
+```
+
+**Confiança:** fato verificado no Postgres oficial, na imagem do Supabase e no `dev`.
 
 ### P4 — Como o comando recebe o ambiente
 
@@ -341,9 +352,14 @@ Um teste de RLS passa nela pelo motivo errado se conectar como `postgres`. Ver P
 Não instalei o Supabase CLI e não medi a pilha dele. A página de início do CLI não fala
 de memória nem da quantidade de containers.
 
-A versão maior do `dev` **não foi lida**. O MCP pediu autenticação e esta sessão não abre
-OAuth. As tags publicadas de `supabase/postgres` em 2026-09-16 são das linhas `17.6.1` e
-`15.14.1`. Isso é pista, não prova.
+O `dev` roda **Postgres 17.6**, em `aarch64`. As três formas chegam à versão maior 17. A
+imagem `supabase/postgres:17.6.1.173` chega também à versão menor, 17.6. A
+`postgres:17-alpine` está na 17.11.
+
+```
+execute_sql: select version(), current_setting('server_version_num') as num, current_user;
+PostgreSQL 17.6 on aarch64-unknown-linux-gnu, compiled by gcc (GCC) 15.2.0, 64-bit | 170006 | supabase_read_only_user
+```
 
 **Evidência:**
 ```
@@ -364,7 +380,7 @@ then you must use a Linux runner". Para job direto no runner: "The hostname is
 `localhost` or `127.0.0.1`". A CI atual usa `ubuntu-24.04`, em
 `.github/workflows/ci.yml`, linha 11.
 
-**Confiança:** fato verificado para imagens e memória. A versão do `dev` fica aberta.
+**Confiança:** fato verificado.
 
 ### P7 — Onde vivem as URLs e de onde o comando roda
 
@@ -435,10 +451,19 @@ A última prova já rodou aqui: a transação voltou e a tabela ficou com zero l
 
 Data API desligada: sem chave, a resposta não distingue nada. `/rest/v1/` e
 `/auth/v1/health` devolvem o mesmo `401 UNAUTHORIZED_MISSING_API_KEY`. O Auth não está
-desligado, então a resposta vem do gateway, antes do serviço. A sonda da PO5 da `M1.1`
-precisa da chave publicável do `dev`. Essa chave não é segredo, mas não estava disponível
-nesta sessão. A documentação diz só que "none of the auto-generated REST endpoints
-respond". Ela não dá o código HTTP.
+desligado, então a resposta vem do gateway, antes do serviço.
+
+Com a chave publicável do `dev`, lida pelo MCP, a resposta muda. Não registrei a chave aqui.
+- `/rest/v1/` responde `401 Secret API key required`, porque a raiz pede chave secreta.
+- `/rest/v1/<qualquer tabela>` responde `503 PGRST002`, com `proxy-status: PostgREST`. O
+  resultado foi o mesmo em três tentativas.
+- `/auth/v1/health` responde `200`. Isso prova que a chave vale.
+
+Ou seja, o PostgREST do `dev` está no ar e não consegue ler o schema. Isso é compatível com
+a Data API desligada. A documentação diz só que "none of the auto-generated REST endpoints
+respond", sem dar o código HTTP. Não há projeto com a Data API ligada para comparar. Que
+o `503 PGRST002` é a assinatura do botão desligado é hipótese. A prova é ligar o botão no
+`dev` uma vez e ver a resposta mudar, e isso é ação de painel do operador.
 
 **Evidência:**
 ```
@@ -464,9 +489,24 @@ sb-error-code: UNAUTHORIZED_MISSING_API_KEY
 $ curl -D - https://<ref>.supabase.co/auth/v1/health
 HTTP/2 401
 sb-error-code: UNAUTHORIZED_MISSING_API_KEY
+
+$ curl -D - -H "apikey: <chave publicável>" https://<ref>.supabase.co/rest/v1/
+HTTP/2 401
+sb-error-code: UNAUTHORIZED_INVALID_API_KEY_TYPE
+{"message":"Secret API key required","hint":"Only secret API keys can be used for this endpoint."}
+$ curl -D - -H "apikey: <chave publicável>" https://<ref>.supabase.co/rest/v1/house
+HTTP/2 503
+proxy-status: PostgREST; error=PGRST002
+{"code":"PGRST002","details":null,"hint":null,"message":"Could not query the database for the schema cache. Retrying."}
+$ for i in 1 2 3; do curl ... /rest/v1/house; done
+503 503 503
+$ curl -D - -H "apikey: <chave publicável>" https://<ref>.supabase.co/auth/v1/health
+HTTP/2 200
+{"version":"v2.197.0","name":"GoTrue",...}
 ```
 
-**Confiança:** fato verificado. A sonda com chave fica aberta.
+**Confiança:** fato verificado para as respostas. A leitura da resposta como Data API
+desligada é hipótese.
 
 ## Superfície
 
@@ -564,36 +604,39 @@ IP.
 
 Procurei fora do repositório e não achei. Nada deste relatório veio dele.
 
+### 10. O MCP somente leitura ignora o RLS
+
+O MCP conecta como `supabase_read_only_user`, e esse papel tem `BYPASSRLS`. Depois da
+`M1.3`, uma ferramenta de IA com o MCP lê as linhas de todas as casas do `dev`. Hoje o
+`dev` só vai ter a casa de teste, então nada vaza. Registro porque o `read_only=true`
+limita a escrita, não o alcance da leitura. Evidência na P3 e na P6.
+
 ## Opções
 
 As opções de cada decisão estão nas perguntas ao operador, com custo e consequência.
 
 ## Não descoberto
 
-Os três primeiros itens rodam assim que existir `~/.m12-dev-url` com a URL do session
+Os dois primeiros itens rodam assim que existir `~/.m12-dev-url` com a URL do session
 pooler do `dev`. O script é este:
 
 ```bash
 docker run --rm -e URL="$(cat ~/.m12-dev-url)" postgres:17-alpine sh -c '
   psql "$URL" -c "select 1" &&
-  psql "$URL" -c "select version()" &&
-  psql "$URL" -c "select rolname, rolsuper, rolbypassrls from pg_roles where rolname = '\''postgres'\''" &&
   pg_dump "$URL" --schema-only --schema=public | head -20'
 ```
 
 1. **`select 1` no pooler do `dev`, de máquina sem IPv6.** A rota está provada até o pedido
    de senha. A consulta não rodou.
-2. **Versão maior do Postgres do `dev`.** O MCP do Supabase pediu OAuth e esta sessão não
-   abre OAuth.
-3. **`pg_dump` pelo pooler em modo sessão.** Pede senha.
-4. **Resposta de `/rest/v1/` com a chave publicável.** Sem a chave, não há sinal.
-5. **Se `postgres` tem `BYPASSRLS` no `dev` da nuvem.** A imagem diz que sim. A consulta a
-   `pg_roles` está no script acima.
-6. **Se o guest `casa-automatica` tem IPv6.** Decide entre conexão direta e pooler para a
+2. **`pg_dump` pelo pooler em modo sessão.** Pede senha. O `pg_dump` 17 da imagem serve,
+   porque o `dev` roda 17.6.
+3. **Se `503 PGRST002` é a assinatura da Data API desligada.** Só se prova ligando o botão
+   uma vez no `dev` e comparando a resposta.
+4. **Se o guest `casa-automatica` tem IPv6.** Decide entre conexão direta e pooler para a
    API. A seção 4 do `docs/scope-brief.md` fala de PPPoE e MTU, não de IPv6.
-7. **Host do pooler do `prod`.** A ordem proíbe consultar.
-8. **Memória da pilha do Supabase CLI.** Não instalei.
-9. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
+5. **Host do pooler do `prod`.** A ordem proíbe consultar.
+6. **Memória da pilha do Supabase CLI.** Não instalei.
+7. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
    documentação.
 
 ## Riscos vistos daqui
