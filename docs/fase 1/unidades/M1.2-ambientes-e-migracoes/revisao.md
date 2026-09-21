@@ -1,5 +1,5 @@
 > Unidade: `M1.2-ambientes-e-migracoes` · Marco: `M1 · Banco`
-> Estado: em revisão
+> Estado: fechada
 > Revisor: revisor separado · Ferramenta: `Claude Code, modelo claude-sonnet-5` · Data: `2026-09-21`
 
 # Revisão — `M1.2-ambientes-e-migracoes`
@@ -9,8 +9,8 @@
 Escrito pelo condutor em 2026-09-21. Diz o estado de agora. As seções de baixo são o
 histórico, na ordem em que aconteceram.
 
-Estado: os dez itens do DoD do contrato estão atendidos. O condutor aprovou tecnicamente.
-Falta o veredito do operador.
+Estado: `fechada`. Os dez itens do DoD do contrato estão atendidos. O condutor aprovou
+tecnicamente, e o operador aprovou o GATE 2 em 2026-09-21.
 
 | # | O que se prova | Quem verificou | Como |
 |---|---|---|---|
@@ -183,7 +183,7 @@ Achados fora do escopo das correções obrigatórias.
 ## GATE 2
 
 - Aprovação técnica: condutor, 2026-09-21, depois da evidência dos itens 9 e 10
-- Veredito do operador: pendente
+- Veredito do operador: aprovado em 2026-09-21. A aprovação cobre a alteração do item 10 no contrato e as linhas 5 a 8 do backlog
 - Ressalva e destino: nenhuma ressalva de escopo. O que falta é evidência dos itens 9 e 10 do próprio DoD do contrato, a produzir depois do merge na `main` e da ação do operador no `prod`, como o contrato já previa
 
 ## Leitura do condutor
