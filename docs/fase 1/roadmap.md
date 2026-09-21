@@ -2,6 +2,7 @@
 
 > Status: **validado pelo operador em 12/09/2026**. Registrado pelo condutor na mesma data.
 > Alterado pelo operador em 15/09/2026: M1 · Banco volta a ter dois projetos Supabase, `dev` e `prod`, com a casa de teste só no `dev`. M1 · CI ganhou checagem de tipos na CI, git hook local e proteção da `main`, para que a verificação não dependa do relato de nenhuma ferramenta de IA.
+> Alterado pelo operador em 20/09/2026: a seção 3.5 do `scope-brief.md` fixou os requisitos de segurança. M1 · Banco ganhou Row Level Security, M2 ganhou sessão por cookie, CSRF e rate limit, e M1 · CI ganhou os cabeçalhos HTTP de segurança e a auditoria de dependências vulneráveis.
 > Base: [../scope-brief.md](../scope-brief.md) v2, aprovado em 11/09/2026. A validação do scraping da SEFAZ-SP com nota real foi concluída em 12/09/2026.
 > Unidade de planejamento: **marco (M)**, não data. O time trabalha nas horas vagas, então cada marco tem entregáveis verificáveis e um critério de pronto, e nada de prazo fixo. A ordem é obrigatória; marcos com o mesmo número podem andar em paralelo.
 
@@ -26,8 +27,8 @@
 **Depende de:** M0.
 
 ### M1 · Pipeline de CI e deploy
-**Entrega:** GitHub Actions rodando lint, checagem de tipos, testes e build a cada push e PR; git hook local que roda lint e checagem de tipos antes do commit; proteção da `main` que só aceita código com a CI verde; workflow de deploy por SSH para o servidor, disparado em push na `main`; `docker-compose.yml` com API, build estático do web e Caddy; Cloudflare Tunnel documentado; segredos do repositório listados no README (nomes, não valores).
-**Pronto quando:** um push na `main` com uma alteração trivial chega ao domínio da casa sem ninguém tocar no servidor; PR com teste quebrado fica vermelho e não entra na `main`; commit com erro de lint ou de tipo é barrado na máquina de quem commitou.
+**Entrega:** GitHub Actions rodando lint, checagem de tipos, testes e build a cada push e PR; git hook local que roda lint e checagem de tipos antes do commit; proteção da `main` que só aceita código com a CI verde; workflow de deploy por SSH para o servidor, disparado em push na `main`; `docker-compose.yml` com API, build estático do web e Caddy; Cloudflare Tunnel documentado; segredos do repositório listados no README (nomes, não valores); cabeçalhos HTTP de segurança no Caddy e auditoria de dependências vulneráveis na CI, como o `docs/scope-brief.md`, seção 3.5, exige.
+**Pronto quando:** um push na `main` com uma alteração trivial chega ao domínio da casa sem ninguém tocar no servidor; PR com teste quebrado fica vermelho e não entra na `main`; commit com erro de lint ou de tipo é barrado na máquina de quem commitou; a resposta do Caddy traz os cabeçalhos de segurança, no web estático e no proxy da API; uma dependência com vulnerabilidade conhecida publicada deixa a CI vermelha.
 **Depende de:** M0. Pode andar em paralelo com M1 · Banco.
 
 ---
