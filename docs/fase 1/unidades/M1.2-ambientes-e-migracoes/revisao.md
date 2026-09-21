@@ -1,10 +1,33 @@
 > Unidade: `M1.2-ambientes-e-migracoes` · Marco: `M1 · Banco`
-> Estado: em revisão
+> Estado: fechada
 > Revisor: revisor separado · Ferramenta: `Claude Code, modelo claude-sonnet-5` · Data: `2026-09-21`
 
 # Revisão — `M1.2-ambientes-e-migracoes`
 
-## Veredito
+## Resumo para o GATE 2
+
+Escrito pelo condutor em 2026-09-21. Diz o estado de agora. As seções de baixo são o
+histórico, na ordem em que aconteceram.
+
+Estado: `fechada`. Os dez itens do DoD do contrato estão atendidos. O condutor aprovou
+tecnicamente, e o operador aprovou o GATE 2 em 2026-09-21.
+
+| # | O que se prova | Quem verificou | Como |
+|---|---|---|---|
+| 1 a 8 | o comando, o papel `api_app`, a trava do `prod`, o TLS e a CI | revisor separado, Sonnet 5, rodando os comandos de novo | 53 testes de banco passando, reprodução à mão, CI verde no commit `302d0e4` |
+| 9 | o `dev` foi migrado pela CI e o `api_app` conecta lá | condutor e operador | log do run `35650285193`, consulta pelo MCP, `select current_user` do operador |
+| 10 | o `prod` foi migrado da máquina do operador, com exportação antes, e a Data API está desligada nos dois | operador | `ls -l` da exportação, `pg_restore --list` sem `drizzle`, consulta no `prod`, capturas do painel |
+
+O que o operador decide:
+1. se aprova a alteração do item 10, na seção `## Alterações` do contrato;
+2. se aprova a entrega;
+3. se aceita as linhas 5 a 8 do backlog como destino das observações.
+
+O `reprovado` da seção seguinte é o veredito do revisor antes dos itens 9 e 10 terem
+evidência. Ele não pediu correção de código. A seção `## Evidência dos itens 9 e 10`, no
+fim, fecha esses dois itens.
+
+## Veredito do revisor, antes dos itens 9 e 10
 
 `reprovado`, só pelos itens 9 e 10 do DoD do contrato. Os itens 1 a 8 do contrato e todo o
 DoD geral aplicável foram verificados por mim, de forma independente, e passam. Não há
@@ -159,8 +182,8 @@ Achados fora do escopo das correções obrigatórias.
 
 ## GATE 2
 
-- Aprovação técnica: pendente — condiciono a minha aprovação técnica à evidência dos itens 9 e 10
-- Veredito do operador: pendente
+- Aprovação técnica: condutor, 2026-09-21, depois da evidência dos itens 9 e 10
+- Veredito do operador: aprovado em 2026-09-21. A aprovação cobre a alteração do item 10 no contrato e as linhas 5 a 8 do backlog
 - Ressalva e destino: nenhuma ressalva de escopo. O que falta é evidência dos itens 9 e 10 do próprio DoD do contrato, a produzir depois do merge na `main` e da ação do operador no `prod`, como o contrato já previa
 
 ## Leitura do condutor
@@ -186,4 +209,86 @@ Registrada pelo condutor em 2026-09-21.
   - observação 2, `sh -c` no `db:generate`: pergunta ao operador no GATE 2, porque o
     condutor não sabe se algum morador gera migração fora de Linux, macOS ou WSL;
   - observações 4 e 5 são da máquina, não do repositório.
+
+## Evidência dos itens 9 e 10
+
+Colhida pelo condutor e pelo operador em 2026-09-21, depois do merge do PR #28.
+
+### Item 9 — `dev`
+
+O push do merge disparou `Migrar o dev`. As duas primeiras tentativas falharam por valor
+errado nos segredos, e as duas falhas mostram a trava funcionando:
+
+| Run | Resultado | Motivo |
+|---|---|---|
+| `35650285193`, primeira tentativa | falha | `A URL de banco não pode conter senha.` O segredo tinha senha na URL. A mensagem não repetiu a URL |
+| `35650404686` | falha | `password authentication failed for user "postgres"`. TLS verificado, senha errada no segredo |
+| `35650285193`, nova tentativa às 20:23:35Z | `success` | log abaixo |
+
+```
+db:migrate alvo=dev host=aws-0-us-west-2.pooler.supabase.com usuário=postgres.<ref>
+db:migrate terminou: migrações aplicadas.
+```
+
+Consulta do condutor pelo MCP somente leitura no `dev`:
+
+```
+rolname | rolcanlogin | rolsuper | rolbypassrls | rolcreaterole | rolcreatedb | rolinherit | owned_relations | migration_rows
+api_app | true        | false    | false        | false         | false       | false      | 0               | 1
+```
+
+O operador definiu a senha do `api_app` no `dev` com `\password` e conectou pelo pooler:
+
+```
+$ psql "host=aws-0-us-west-2.pooler.supabase.com port=5432 ... user=api_app.<ref> sslmode=verify-full ..." -c "select current_user;"
+ current_user
+--------------
+ api_app
+```
+
+Item 9: `atendido`.
+
+### Item 10 — `prod`
+
+O operador rodou `db:migrate` contra o `prod` da própria máquina. Nenhuma ferramenta de IA
+conectou ao `prod`.
+
+```
+$ ls -l ~/casa-automatica-exportacoes
+-rw-r--r-- 1 ... 353722 Sep 21 17:39 casa-automatica-prod-20260921T203937Z.dump
+
+$ psql "host=aws-0-sa-east-1.pooler.supabase.com ... sslmode=verify-full ..." -c ... -c ...
+ rolname | rolbypassrls
+ api_app | f
+ count |      to_timestamp
+     1 | 2026-09-21 19:47:59+00
+
+$ pg_restore --list <exportação> | grep -ci drizzle
+0
+```
+
+A coluna `created_at` de `drizzle.__drizzle_migrations` guarda a data em que o arquivo de
+migração foi gerado, não a da aplicação. O `dev` mostra o mesmo valor, e lá a migração
+rodou às 20:23Z. Por isso o horário não prova a ordem, e o contrato ganhou uma alteração no
+item 10. A ordem se prova assim:
+- a migração cria o schema `drizzle`, e a exportação não tem nenhum objeto `drizzle`. Ela
+  foi feita antes da migração;
+- cada execução contra o `prod` exporta antes de migrar, e só existe uma exportação. Houve
+  uma execução só.
+
+Data API: as capturas do painel do `casa-automatica-dev` e do `casa-automatica-prod`, em
+2026-09-21 às 17:58 e 17:59, mostram o controle **Enable Data API** desligado e o aviso
+"No schemas can be queried".
+
+Item 10: `atendido`, com a verificação alterada que o operador precisa aprovar.
+
+### Conclusão do condutor
+
+Os dez itens do DoD do contrato estão atendidos, com evidência. Aprovo tecnicamente a
+unidade em 2026-09-21. Falta o veredito do operador.
+
+Dois achados da coleta, sem correção nesta unidade:
+- a exportação nasce com permissão `-rw-r--r--`. Linha 7 do backlog;
+- o `README.md` passa caminho relativo do certificado ao `psql`, e o nome da pasta do
+  repositório tem espaço. Linha 8 do backlog.
 

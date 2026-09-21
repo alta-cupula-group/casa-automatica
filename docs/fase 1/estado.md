@@ -90,7 +90,7 @@ operador escreve, no fim de `exploracao.md`, o que fazer com o resultado.
 ## Ordem de trabalho
 
 Fechadas até aqui: `M0.1` e `M1.1` em 2026-09-13, `M1.4` em 2026-09-16, `M1.5` em
-2026-09-20. A onda inicial esperou `M0.1` fechar de propósito: explorar CI, compose e
+2026-09-20, `M1.2` em 2026-09-21. A onda inicial esperou `M0.1` fechar de propósito: explorar CI, compose e
 migrações antes de o monorepo existir produziria relatório sobre um repositório que ainda
 não tem forma.
 
@@ -123,7 +123,7 @@ roadmap a entrega no M11.
 |---|---|---|---|---|---|
 | `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
-| `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `em revisão` | `M0.1`, `M1.1` | 2026-09-21, execução entregue no commit `067eec4`, CI verde na branch. DoD 9 e 10 aguardam o merge e o operador. Antes: executor despachado na branch `unidade/M1.2-ambientes-e-migracoes`. GATE 1 vencido na mesma data, P1 na opção A. Certificado da CA entregue pelo operador: o do `dev` e o do `prod` têm o mesmo `sha256`, e o condutor conferiu que ele valida a cadeia do pooler do `dev` |
+| `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `fechada` | `M0.1`, `M1.1` | 2026-09-21, GATE 2 vencido. `dev` e `prod` migrados, `api_app` nos dois. O operador reaprovou a alteração do item 10. Observações viraram as linhas 5 a 8 do backlog e uma herança do M2 |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-20, entrega ampliada com Row Level Security por `house` |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
