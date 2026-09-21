@@ -1,6 +1,6 @@
 > Unidade: `M1.2-ambientes-e-migracoes` · Marco: `M1 · Banco` · Trilha: `dividida`
 > Estado: em exploração
-> Emitida por: condutor · Data: 2026-09-20 · Explorador: Lucas
+> Emitida por: condutor · Data: 2026-09-20 · Explorador: o operador
 
 # Ordem de exploração — `M1.2-ambientes-e-migracoes`
 
