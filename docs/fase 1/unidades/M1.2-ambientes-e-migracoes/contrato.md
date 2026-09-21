@@ -324,3 +324,4 @@ Só para contrato já aprovado que mudou. Cada linha exige novo GATE 1.
 
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
+| 2026-09-21 | Item 10: a ordem entre exportação e migração se prova pela ausência do schema `drizzle` na exportação, e não pelo horário de `__drizzle_migrations` | `created_at` guarda a data de geração do arquivo de migração, não a da aplicação. Achado do condutor ao colher a evidência | pendente, junto com o GATE 2 |
