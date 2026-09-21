@@ -132,6 +132,31 @@ O host do pooler do `prod` veio do operador, lido no diálogo **Connect** do pai
 `prod` em 2026-09-21: `aws-0-sa-east-1.pooler.supabase.com:5432`. Nenhuma ferramenta de
 IA conectou ao `prod`. O host não foi sondado daqui.
 
+A VM `casa-automatica` tem IPv6 e alcança a conexão direta do `dev`. O operador rodou o
+teste pelo `root` do node `pve`, com `qm guest exec` na VM 42069, em 2026-09-21:
+```
+== enderecos
+2: ens18: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 state UP qlen 1000
+    inet6 2804:1b3:a800:6b1:.../64 scope global dynamic mngtmpaddr proto kernel_ra
+       valid_lft 43181sec preferred_lft 43181sec
+== rota padrao
+default via fe80::... dev ens18 proto ra metric 1024 expires 160sec hoplimit 64 pref high
+== saida ipv6
+2804:1b3:a800:6b1:...
+== postgres direto do dev
+alcanca
+```
+
+Três ressalvas para a opção C da PO3:
+- o teste rodou na VM, não num container. A rede padrão do Docker não tem IPv6, como a
+  sondagem desta P2 mostrou. A API roda no `docker compose`, então a C exige ligar IPv6
+  na rede do compose;
+- o prefixo vem de anúncio do roteador, com validade de 12 horas, e o IP da casa troca
+  várias vezes por dia. Para conexão de saída isso basta. Se o provedor derrubar o IPv6,
+  a API perde o banco, e não há caminho de reserva;
+- o teste abriu a porta do `dev`. A conexão direta do `prod` não foi testada, pela regra
+  06.
+
 Para a API, a documentação oficial recomenda o modo sessão num servidor que fica ligado e
 não tem IPv6. Com IPv6, recomenda a conexão direta.
 
@@ -658,8 +683,8 @@ As opções de cada decisão estão nas perguntas ao operador, com custo e conse
 
 1. **Se `503 PGRST002` é a assinatura da Data API desligada.** Só se prova ligando o botão
    uma vez no `dev` e comparando a resposta.
-2. **Se o guest `casa-automatica` tem IPv6.** Decide entre conexão direta e pooler para a
-   API. A seção 4 do `docs/scope-brief.md` fala de PPPoE e MTU, não de IPv6.
+2. **Se a rede do `docker compose` alcança o IPv6 da VM.** A VM alcança. O container
+   não foi testado com IPv6 ligado.
 3. **Memória da pilha do Supabase CLI.** Não instalei.
 4. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
    documentação.
@@ -732,10 +757,14 @@ Opções:
 - **B** — pooler em modo transação, porta `6543` · custo: `prepare: false` no `postgres`, e
   a `M1.3` usa `set_config(..., true)` dentro de cada transação · consequência: mais
   clientes por menos conexões, o que a casa não precisa.
-- **C** — conexão direta por IPv6 · custo: depende do guest ter IPv6, o que não foi
-  verificado · consequência: nenhum pooler no caminho.
+- **C** — conexão direta por IPv6 · custo: a VM tem IPv6, mas a rede do `docker compose`
+  precisa de IPv6 ligado, o que toca no `docker-compose.yml` da `M1.5` e da `M1.10`. Sem
+  reserva se o provedor derrubar o IPv6 · consequência: nenhum pooler no caminho, e o
+  egress sai da cota de `Shared Pooler Egress`.
 
-Recomendação do explorador: A, até alguém provar IPv6 no guest.
+Recomendação do explorador: A. A C ganha um pooler a menos e paga com mudança no compose
+e com dependência do IPv6 do provedor. Para três moradores, o pooler em modo sessão não é
+gargalo.
 
 ### PO4 — Onde roda a migração do `dev` e do `prod`, e como o `prod` é travado e exportado?
 
