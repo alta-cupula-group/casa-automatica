@@ -4,7 +4,30 @@
 
 # Revisão — `M1.2-ambientes-e-migracoes`
 
-## Veredito
+## Resumo para o GATE 2
+
+Escrito pelo condutor em 2026-09-21. Diz o estado de agora. As seções de baixo são o
+histórico, na ordem em que aconteceram.
+
+Estado: os dez itens do DoD do contrato estão atendidos. O condutor aprovou tecnicamente.
+Falta o veredito do operador.
+
+| # | O que se prova | Quem verificou | Como |
+|---|---|---|---|
+| 1 a 8 | o comando, o papel `api_app`, a trava do `prod`, o TLS e a CI | revisor separado, Sonnet 5, rodando os comandos de novo | 53 testes de banco passando, reprodução à mão, CI verde no commit `302d0e4` |
+| 9 | o `dev` foi migrado pela CI e o `api_app` conecta lá | condutor e operador | log do run `35650285193`, consulta pelo MCP, `select current_user` do operador |
+| 10 | o `prod` foi migrado da máquina do operador, com exportação antes, e a Data API está desligada nos dois | operador | `ls -l` da exportação, `pg_restore --list` sem `drizzle`, consulta no `prod`, capturas do painel |
+
+O que o operador decide:
+1. se aprova a alteração do item 10, na seção `## Alterações` do contrato;
+2. se aprova a entrega;
+3. se aceita as linhas 5 a 8 do backlog como destino das observações.
+
+O `reprovado` da seção seguinte é o veredito do revisor antes dos itens 9 e 10 terem
+evidência. Ele não pediu correção de código. A seção `## Evidência dos itens 9 e 10`, no
+fim, fecha esses dois itens.
+
+## Veredito do revisor, antes dos itens 9 e 10
 
 `reprovado`, só pelos itens 9 e 10 do DoD do contrato. Os itens 1 a 8 do contrato e todo o
 DoD geral aplicável foram verificados por mim, de forma independente, e passam. Não há
