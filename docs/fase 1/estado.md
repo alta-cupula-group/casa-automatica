@@ -32,7 +32,7 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 | M0 | Fundação do repositório | `M0.1` | **fechado** em 2026-09-13 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12. Entrega da `M1.3` ampliada com Row Level Security em 2026-09-20, para cobrir o que o roadmap passou a exigir |
 | M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6`, `M1.7`, `M1.8`, `M1.9`, `M1.10` | fatiado em 2026-09-12, `M1.7` acrescentada, `M1.8` e `M1.9` promovidas do backlog, e `M1.10` acrescentada, todas em 2026-09-20. `M1.4` fechada em 2026-09-16, `M1.5` fechada em 2026-09-20 |
-| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor. Herda de `docs/scope-brief.md` §3.5 (2026-09-20): sessão amarrada a cookie, proteção contra CSRF e rate limit viram critério de pronto |
+| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor. Herda de `docs/scope-brief.md` §3.5 (2026-09-20): sessão amarrada a cookie, proteção contra CSRF e rate limit viram critério de pronto. Herda da revisão de `M1.2`: a imagem da API leva `apps/api/certs/supabase-ca.crt`, e a API conecta como `api_app` |
 | M3 | Módulo Pessoas | — | não fatiado |
 | M4 | Ledger e plano de contas | — | não fatiado |
 | M5 · Despesas | Despesas, divisão e acertos | — | não fatiado |
