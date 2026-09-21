@@ -183,7 +183,7 @@ Registrada pelo condutor em 2026-09-21.
   - observação 3, `api_app` pré-existente não converge: linha 6 do backlog;
   - o `Dockerfile` da API ainda não leva `apps/api/certs` para a imagem: herança do M2 em
     `docs/fase 1/estado.md`;
-  - observação 2, `sh -c` no `db:generate`: sem destino. O WSL tem `sh`, e ninguém
-    desenvolve fora dele;
+  - observação 2, `sh -c` no `db:generate`: pergunta ao operador no GATE 2, porque o
+    condutor não sabe se algum morador gera migração fora de Linux, macOS ou WSL;
   - observações 4 e 5 são da máquina, não do repositório.
 
