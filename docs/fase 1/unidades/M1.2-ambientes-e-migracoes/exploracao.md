@@ -125,10 +125,12 @@ pooler dele é o `aws-0`.
 |---|---|---|---|
 | Migração pela CI | `aws-0-us-west-2.pooler.supabase.com:5432` para o `dev` | sessão | runner sem IPv6. DDL e `CREATE ROLE` pedem sessão |
 | Migração da máquina de um morador | o mesmo host, porta `5432` | sessão | funciona com ou sem IPv6. A direta só com IPv6 |
-| API no servidor da casa | pooler do `prod`, `5432` ou `6543` | ver PO3 | depende de o guest `casa-automatica` ter IPv6 |
+| Migração do `prod` | `aws-0-sa-east-1.pooler.supabase.com:5432` | sessão | o mesmo motivo do `dev` |
+| API no servidor da casa | `aws-0-sa-east-1.pooler.supabase.com`, porta `5432` ou `6543` | ver PO3 | depende de o guest `casa-automatica` ter IPv6 |
 
-O host do pooler do `prod` não foi consultado, porque a ordem proíbe tocar no `prod`. O
-formato é `aws-<N>-sa-east-1.pooler.supabase.com`. O operador informa o `N`.
+O host do pooler do `prod` veio do operador, lido no diálogo **Connect** do painel do
+`prod` em 2026-09-21: `aws-0-sa-east-1.pooler.supabase.com:5432`. Nenhuma ferramenta de
+IA conectou ao `prod`. O host não foi sondado daqui.
 
 Para a API, a documentação oficial recomenda o modo sessão num servidor que fica ligado e
 não tem IPv6. Com IPv6, recomenda a conexão direta.
@@ -658,9 +660,8 @@ As opções de cada decisão estão nas perguntas ao operador, com custo e conse
    uma vez no `dev` e comparando a resposta.
 2. **Se o guest `casa-automatica` tem IPv6.** Decide entre conexão direta e pooler para a
    API. A seção 4 do `docs/scope-brief.md` fala de PPPoE e MTU, não de IPv6.
-3. **Host do pooler do `prod`.** A ordem proíbe consultar.
-4. **Memória da pilha do Supabase CLI.** Não instalei.
-5. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
+3. **Memória da pilha do Supabase CLI.** Não instalei.
+4. **Limite de tentativas de senha do pooler antes de bloquear o IP.** Não achei na
    documentação.
 
 ## Riscos vistos daqui
