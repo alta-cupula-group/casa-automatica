@@ -834,3 +834,25 @@ const sql = postgres(`postgres://postgres.${ref}@aws-0-us-west-2.pooler.supabase
 | `https://docs.github.com/en/actions/tutorials/use-containerized-services/create-postgresql-service-containers` | runner Linux, `localhost` |
 | `https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments` | revisor obrigatório em repositório público no plano gratuito |
 | `https://hub.docker.com/v2/repositories/supabase/postgres/tags` | linhas `17.6.1` e `15.14.1` publicadas em 2026-09-16 |
+
+## Veredito do operador
+
+Decidido pelo operador em 2026-09-21, na mesma sessão da exploração. Registrado a partir
+da resposta dele.
+
+| Pergunta | Decisão |
+|---|---|
+| PO1 | **A**. Uma migração cria o papel da API, com `LOGIN`, `NOBYPASSRLS`, sem senha e sem ser dono de tabela, e com `IF NOT EXISTS`. A senha de cada ambiente é passo manual escrito no `README.md` |
+| PO2 | **A**. `drizzle-orm` `0.45.2` e `drizzle-kit` `0.31.10` |
+| PO3 | **A**. A API conecta pelo pooler em modo sessão, porta `5432` |
+| PO4 | **C**. O `dev` migra pela CI. O `prod` migra da máquina de um morador, por um script do repositório que recusa o `prod` sem confirmação explícita e exporta o `prod` com `pg_dump` antes de migrar |
+| PO5 | **B**. Os testes usam a imagem `supabase/postgres` na versão do `dev`, hoje 17.6 |
+
+O que este veredito fixa para o contrato:
+
+- a senha do papel da API nunca vai para o repositório;
+- a troca para o Drizzle 1.0 não entra nesta unidade. Se for querida, vira linha do backlog;
+- a senha e a exportação do `prod` não passam pelo GitHub. Só a URL do `dev` vira segredo
+  do repositório;
+- o teste de RLS da `M1.3` conecta como o papel da API, num Postgres com os papéis do
+  Supabase.
