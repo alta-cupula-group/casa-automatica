@@ -1,6 +1,6 @@
 > Unidade: `M1.2-ambientes-e-migracoes` · Marco: `M1 · Banco` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-21 · Operador aprovou: —
+> Estado: aprovada
+> Condutor aprovou: 2026-09-21 · Operador aprovou: 2026-09-21
 > Base: `ordem.md`, `exploracao.md` com o veredito do operador de 2026-09-21, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M1.2-ambientes-e-migracoes`
@@ -295,7 +295,7 @@ Aplicado pelo condutor antes do GATE 1.
 > Um executor que leu só este contrato, as regras do repositório e os arquivos nomeados
 > acima consegue entregar sem fazer nenhuma pergunta?
 
-Resposta: `sim`, com a P1 respondida e o certificado entregue · Verificado em: `2026-09-21`
+Resposta: `sim`, com o certificado entregue pelo operador · Verificado em: `2026-09-21`
 
 ## Perguntas ao operador
 
@@ -311,6 +311,12 @@ Opções:
 - **B** — TLS sem verificação · custo: nenhum agora · consequência: a senha do `prod`
   passa por uma conexão cifrada que não confere com quem fala.
 Recomendação do condutor: A. O custo é um arquivo, e a senha em jogo é a do dono do `prod`.
+
+Decisão do operador em 2026-09-21: **A**. O contrato já estava escrito nela.
+
+## Aprovação
+
+O operador aprovou o contrato em 2026-09-21, sem ressalva, com a P1 na opção A.
 
 ## Alterações
 
