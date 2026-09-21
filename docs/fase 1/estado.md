@@ -32,7 +32,7 @@ Do `roadmap.md`. Um marco vira uma ou mais unidades no fatiamento.
 | M0 | Fundação do repositório | `M0.1` | **fechado** em 2026-09-13 |
 | M1 · Banco | Banco e ambientes | `M1.1`, `M1.2`, `M1.3` | fatiado em 2026-09-12. Entrega da `M1.3` ampliada com Row Level Security em 2026-09-20, para cobrir o que o roadmap passou a exigir |
 | M1 · CI | Pipeline de CI e deploy | `M1.4`, `M1.5`, `M1.6`, `M1.7`, `M1.8`, `M1.9`, `M1.10` | fatiado em 2026-09-12, `M1.7` acrescentada, `M1.8` e `M1.9` promovidas do backlog, e `M1.10` acrescentada, todas em 2026-09-20. `M1.4` fechada em 2026-09-16, `M1.5` fechada em 2026-09-20 |
-| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor. Herda de `docs/scope-brief.md` §3.5 (2026-09-20): sessão amarrada a cookie, proteção contra CSRF e rate limit viram critério de pronto |
+| M2 | Esqueleto da API e autenticação | — | não fatiado. Herda da revisão de `M0.1`: porta inteira entre 1 e 65535 vira item de DoD da unidade que sobe o servidor. Herda de `docs/scope-brief.md` §3.5 (2026-09-20): sessão amarrada a cookie, proteção contra CSRF e rate limit viram critério de pronto. Herda da revisão de `M1.2`: a imagem da API leva `apps/api/certs/supabase-ca.crt`, e a API conecta como `api_app` |
 | M3 | Módulo Pessoas | — | não fatiado |
 | M4 | Ledger e plano de contas | — | não fatiado |
 | M5 · Despesas | Despesas, divisão e acertos | — | não fatiado |
@@ -123,7 +123,7 @@ roadmap a entrega no M11.
 |---|---|---|---|---|---|
 | `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
-| `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `aprovada` | `M0.1`, `M1.1` | 2026-09-21, GATE 1 vencido, P1 na opção A. A execução espera o operador entregar o certificado da CA do Supabase |
+| `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `em revisão` | `M0.1`, `M1.1` | 2026-09-21, execução entregue no commit `067eec4`, CI verde na branch. DoD 9 e 10 aguardam o merge e o operador. Antes: executor despachado na branch `unidade/M1.2-ambientes-e-migracoes`. GATE 1 vencido na mesma data, P1 na opção A. Certificado da CA entregue pelo operador: o do `dev` e o do `prod` têm o mesmo `sha256`, e o condutor conferiu que ele valida a cadeia do pooler do `dev` |
 | `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-20, entrega ampliada com Row Level Security por `house` |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |

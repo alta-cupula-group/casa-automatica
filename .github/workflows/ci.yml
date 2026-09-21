@@ -10,6 +10,20 @@ jobs:
   verificar:
     name: verificar
     runs-on: ubuntu-24.04
+    # Postgres de teste, a mesma imagem e versão do dev. A senha é descartável e não é segredo.
+    # O pg_isready com -h localhost só responde quando o servidor final aceita TCP.
+    services:
+      postgres:
+        image: supabase/postgres:17.6.1.173
+        env:
+          POSTGRES_PASSWORD: teste-ci-descartavel
+        ports:
+          - 54322:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -h localhost"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
     steps:
       - name: Clonar o repositório
         uses: actions/checkout@v7.0.1
@@ -67,6 +81,9 @@ jobs:
 
       - name: Testes
         if: steps.escopo.outputs.so_documentacao != 'true'
+        env:
+          TEST_DATABASE_URL: postgres://postgres@localhost:54322/postgres
+          TEST_DATABASE_PASSWORD: teste-ci-descartavel
         run: pnpm -r test
 
       - name: Formatação

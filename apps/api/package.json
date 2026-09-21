@@ -8,14 +8,19 @@
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "db:generate": "sh -c 'if [ \"$1\" = \"--\" ]; then shift; fi; exec drizzle-kit generate --config=drizzle.config.ts \"$@\"' db:generate",
+    "db:migrate": "node src/db/migrate-cli.ts"
   },
   "dependencies": {
-    "@casa/shared": "workspace:*"
+    "@casa/shared": "workspace:*",
+    "drizzle-orm": "0.45.2",
+    "postgres": "3.4.9"
   },
   "devDependencies": {
     "@casa/config": "workspace:*",
     "@types/node": "26.5.1",
+    "drizzle-kit": "0.31.10",
     "vitest": "5.0.0"
   }
 }
