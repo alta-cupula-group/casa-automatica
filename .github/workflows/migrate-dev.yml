@@ -1,0 +1,53 @@
+# Aplica as migrações de apps/api/drizzle no dev.
+# Não roda em pull request e não tem caminho para o prod. O prod não tem segredo no GitHub.
+name: Migrar o dev
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/api/drizzle/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: migrar-dev
+  cancel-in-progress: false
+
+jobs:
+  migrar:
+    name: migrar
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Clonar o repositório
+        uses: actions/checkout@v7.0.1
+
+      - name: Instalar o Node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: "26"
+
+      - name: Instalar o pnpm
+        uses: pnpm/action-setup@v6.1.0
+
+      - name: Instalar as dependências
+        run: pnpm install --frozen-lockfile
+
+      - name: Migrar o dev
+        env:
+          MIGRATION_DATABASE_URL: ${{ secrets.DEV_MIGRATION_DATABASE_URL }}
+          MIGRATION_DATABASE_PASSWORD: ${{ secrets.DEV_MIGRATION_DATABASE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          # Recusa qualquer URL que não seja o pooler do dev, antes de migrar.
+          case "$MIGRATION_DATABASE_URL" in
+            *@aws-0-us-west-2.pooler.supabase.com:5432/*) ;;
+            *)
+              echo "DEV_MIGRATION_DATABASE_URL não aponta para o pooler do dev na porta 5432." >&2
+              exit 1
+              ;;
+          esac
+          pnpm --filter @casa/api db:migrate
