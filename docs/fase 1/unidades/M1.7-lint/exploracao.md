@@ -1113,3 +1113,13 @@ Sim: o oxlint também dá falso positivo sem build. `apps/api/src/index.ts` e o
 `no-unsafe-call` extra em `apps/web/src/App.tsx` desaparecem depois de `pnpm -r build`; o
 `no-unsafe-assignment` em `apps/web/src/App.tsx` é real e independente do build (é o
 mesmo de P5, causado pela falta de `vite-env.d.ts`).
+
+## Decisão do operador
+
+Registrada pelo condutor em 2026-09-22, com as palavras do operador na conversa.
+
+- **P1:** opção A, só o oxlint. Grupos G1, G2 e G3, na recomendação do condutor. O G4
+  fica de fora.
+- **P2:** o G2 entra com o `recommended` inteiro do `eslint-plugin-react-hooks`. Na opção
+  A, isso quer dizer as 14 regras desse conjunto que o oxlint tem. As duas que ele não
+  tem, `config` e `gating`, ficam de fora.
