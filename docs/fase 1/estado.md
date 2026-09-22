@@ -124,7 +124,7 @@ roadmap a entrega no M11.
 | `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `fechada` | `M0.1`, `M1.1` | 2026-09-21, GATE 2 vencido. `dev` e `prod` migrados, `api_app` nos dois. O operador reaprovou a alteração do item 10. Observações viraram as linhas 5 a 8 do backlog e uma herança do M2 |
-| `M1.3-house-e-auditoria` | M1 · Banco | dividida | `em exploração` | `M1.2` | 2026-09-21, ordem emitida. Explorador a definir pelo operador |
+| `M1.3-house-e-auditoria` | M1 · Banco | dividida | `em exploração` | `M1.2` | 2026-09-22, ordem emitida. Explorador: uma sessão de IA, com apoio do operador |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |

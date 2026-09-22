@@ -1,6 +1,6 @@
 > Unidade: `M1.3-house-e-auditoria` · Marco: `M1 · Banco` · Trilha: `dividida`
 > Estado: em exploração
-> Emitida por: condutor · Data: 2026-09-21 · Explorador: a definir pelo operador
+> Emitida por: condutor · Data: 2026-09-21 · Explorador: uma sessão de IA, com apoio do operador
 
 # Ordem de exploração — `M1.3-house-e-auditoria`
 
