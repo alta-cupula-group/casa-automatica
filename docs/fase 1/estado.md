@@ -53,6 +53,13 @@ M1 · Banco e M1 · CI dividem a mesma sequência `M1.x`. `M1.7-oxlint` acrescen
 por oxlint enquanto o repositório ainda é pequeno, antes do M2 gerar mais código para
 converter depois.
 
+Em 2026-09-21 o operador ampliou o objetivo da `M1.7` e ela foi renomeada para
+`M1.7-lint`. Antes de trocar, a exploração compara três opções: oxlint no lugar do
+ESLint, ESLint com mais regras, ou os dois juntos. O operador escolhe a ferramenta e as
+regras a partir do relatório, antes do contrato. A entrega original prometia "mesma
+cobertura, incluindo `react-hooks`", mas o ESLint daquela data não aplicava
+`react-hooks`. A ampliação resolve essa contradição.
+
 `M1.8-cabecalhos-seguranca` e `M1.9-auditoria-dependencias` acrescentadas em 2026-09-20.
 O operador promoveu as linhas 3 e 4 do backlog a unidades na mesma data. As duas fecham
 os dois últimos requisitos da seção 3.5 do `docs/scope-brief.md` que ainda não tinham
@@ -78,7 +85,7 @@ entregou; o contrato dela não pedia nada disso.
 | `M1.4-ci-verificacao` | M1 · CI | GitHub Actions roda lint, tipos, testes e build em push e PR. Git hook local roda lint e tipos antes do commit. A `main` só aceita código com a CI verde. A ferramenta do hook e a forma da proteção saem da exploração. | `M0.1` | dividida: pipeline |
 | `M1.5-compose-e-caddy` | M1 · CI | `docker-compose.yml` com API, web estático e Caddy. Sobe em qualquer máquina com Docker e serve o web em `localhost`. | `M0.1` | dividida: base do deploy |
 | `M1.6-deploy-na-casa` | M1 · CI | Deploy por SSH em push na `main`. Cloudflare Tunnel documentado. Segredos listados no README. Push trivial chega ao domínio. | `M1.4`, `M1.5` | dividida: pipeline de deploy |
-| `M1.7-oxlint` | M1 · CI | ESLint substituído por oxlint em todo o workspace, mesma cobertura de regras (incluindo `react-hooks`), `pnpm lint` mais rápido, CI e hook local do `M1.4` atualizados. | `M1.4` | dividida: convenção de repositório, investigação externa |
+| `M1.7-lint` | M1 · CI | `pnpm -r lint` roda a ferramenta e as regras que o operador escolher, entre oxlint, ESLint com mais regras, ou os dois juntos. CI, hook local do `M1.4` e `README.md` atualizados. | `M1.4` | dividida: convenção de repositório, investigação externa |
 | `M1.8-cabecalhos-seguranca` | M1 · CI | Caddy responde com política de conteúdo (CSP), HSTS e o cabeçalho que impede a página rodar em `iframe` de outro site, no web estático e no proxy da API. Teste prova cada cabeçalho na resposta. | `M1.5` | dividida: investigação externa dos valores de cada cabeçalho |
 | `M1.9-auditoria-dependencias` | M1 · CI | A CI falha quando uma dependência do repositório tem vulnerabilidade conhecida publicada. Roda em PR e numa agenda periódica. A ferramenta e a severidade que reprova saem da exploração. | `M1.4` | dividida: pipeline, investigação externa |
 | `M1.10-endurecer-compose` | M1 · CI | Os dois containers sobem sem privilégio de `root`, com o mínimo de capacidades do Linux, e a instalação de dependências não executa script de pacote. | `M1.5` | dividida: investigação externa, material descartável |
@@ -105,7 +112,7 @@ trilha ao mesmo tempo.
 | # | Unidade | Trilha | Por que nesta posição |
 |---|---|---|---|
 | 1 | `M1.2-ambientes-e-migracoes` | banco | **Fechada em 2026-09-21.** Caminho crítico. O M2 em diante depende do M1 · Banco inteiro |
-| 2 | `M1.7-oxlint` | CI | Decisão do operador em 2026-09-20: trocar o linter enquanto o repositório é pequeno. Cada unidade seguinte que passar antes dela aumenta o que vai ter que ser convertido |
+| 2 | `M1.7-lint` | CI | Decisão do operador em 2026-09-20: decidir o linter enquanto o repositório é pequeno. Cada unidade seguinte que passar antes dela aumenta o que vai ter que ser convertido |
 | 3 | `M1.3-house-e-auditoria` | banco | Depende de `M1.2`. Fecha o M1 · Banco e libera o M2. Carrega o Row Level Security |
 | 4 | `M1.10-endurecer-compose` | CI | Endurece o que já roda, antes de existir porta aberta para a internet |
 | 5 | `M1.8-cabecalhos-seguranca` | CI | Mesmo motivo. Cabeçalho de segurança só protege quem chega de fora, e vale ter no ar desde o primeiro dia |
@@ -125,11 +132,11 @@ roadmap a entrega no M11.
 | `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `fechada` | `M0.1`, `M1.1` | 2026-09-21, GATE 2 vencido. `dev` e `prod` migrados, `api_app` nos dois. O operador reaprovou a alteração do item 10. Observações viraram as linhas 5 a 8 do backlog e uma herança do M2 |
-| `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-20, entrega ampliada com Row Level Security por `house` |
+| `M1.3-house-e-auditoria` | M1 · Banco | dividida | `em exploração` | `M1.2` | 2026-09-22, ordem emitida. Explorador: uma sessão de IA, com apoio do operador |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
-| `M1.7-oxlint` | M1 · CI | dividida | `planejada` | `M1.4` | 2026-09-20, fatiada, prioridade antes de `M1.6` |
+| `M1.7-lint` | M1 · CI | dividida | `em exploração` | `M1.4` | 2026-09-21, ordem emitida. Objetivo ampliado pelo operador na mesma data, e unidade renomeada de `M1.7-oxlint`. Claude Code explora, e o operador acompanha, por decisão dele em 2026-09-22 |
 | `M1.8-cabecalhos-seguranca` | M1 · CI | dividida | `planejada` | `M1.5` | 2026-09-20, promovida do backlog e fatiada |
 | `M1.9-auditoria-dependencias` | M1 · CI | dividida | `planejada` | `M1.4` | 2026-09-20, promovida do backlog e fatiada |
 | `M1.10-endurecer-compose` | M1 · CI | dividida | `em exploração` | `M1.5` | 2026-09-20, ordem emitida. Explorador a definir pelo operador |
