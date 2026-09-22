@@ -1,7 +1,6 @@
 # Casa Automática
 
-Software da casa de três moradores. Este repositório é um monorepo pnpm com três pacotes de
-produto e um de configuração.
+Software da casa de três moradores. Este repositório é um monorepo pnpm com três pacotes.
 
 | Pacote         | Caminho           | O que é                                  |
 | -------------- | ----------------- | ---------------------------------------- |

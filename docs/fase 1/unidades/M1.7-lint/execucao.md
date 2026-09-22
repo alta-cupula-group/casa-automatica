@@ -235,12 +235,36 @@ Situação: `atendido`. Mesma máquina, no worktree, `time pnpm -r lint`:
 
 Todas as seis execuções saíram com código 0.
 
-### DoD 9 — O `README.md` descreve o novo lint.
-Situação: `atendido`
+### DoD 9 — O `README.md` descreve o novo lint e os pacotes que existem.
+Situação: `atendido`. Item alterado no contrato em 2026-09-22, commit `f8aa17c`.
 ```
 $ git grep -n -i eslint README.md
 exit=1
+$ git grep -n -i "configuração" README.md
+README.md:313:configuração da Data API, e veja que ela aparece desligada.
+exit=0
+$ sed -n 3,9p README.md
+Software da casa de três moradores. Este repositório é um monorepo pnpm com três pacotes.
+
+| Pacote         | Caminho           | O que é                                  |
+| -------------- | ----------------- | ---------------------------------------- |
+| `@casa/api`    | `apps/api`        | processo Node da API                     |
+| `@casa/web`    | `apps/web`        | aplicação React servida pelo Vite        |
+| `@casa/shared` | `packages/shared` | código compartilhado entre `api` e `web` |
+$ pnpm format:check
+All matched files use Prettier code style!
+format exit=0
+$ pnpm -r lint
+packages/shared lint$ oxlint
+packages/shared lint: Done
+apps/api lint$ oxlint
+apps/web lint$ oxlint src vite.config.ts
+apps/web lint: Done
+apps/api lint: Done
+lint exit=0
 ```
+A única linha com "configuração" fala da Data API do Supabase, não de um pacote. A frase
+de abertura conta três pacotes, os mesmos três da tabela.
 
 ### DoD 10 — A CI passa.
 Situação: `não verificado`. A ordem proíbe push, e não existe PR. A CI vai falhar em
@@ -315,9 +339,9 @@ inclusão de `pnpm-workspace.yaml` no contrato. Não decidi nenhuma das duas.
 
 ## Encontrado e não tocado
 
-1. **README, linhas 3 e 4.** A frase diz que o monorepo tem "três pacotes de produto e um
-   de configuração". Sem `packages/config`, ela ficou errada. O contrato só pede duas
-   mudanças no README, e eu não mexi nela.
+1. **README, linhas 3 e 4.** A frase dizia que o monorepo tem "três pacotes de produto e
+   um de configuração". O contrato foi alterado em 2026-09-22, no commit `f8aa17c`, e a
+   frase foi corrigida no commit `docs(M1.7): abertura do README corrigida`. Ver DoD 9.
 2. **Diferenças de implementação no corpus de sondagem do DoD 5.** Nenhuma tem opção que
    a corrija:
    - `react-hooks/exhaustive-deps`: o oxlint ancora o achado na linha do uso da variável.
