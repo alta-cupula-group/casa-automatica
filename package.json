@@ -17,8 +17,9 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "eslint": "10.10.0",
     "husky": "9.1.7",
+    "oxlint": "1.85.0",
+    "oxlint-tsgolint": "7.0.2002",
     "prettier": "3.9.6",
     "typescript": "6.0.3"
   }

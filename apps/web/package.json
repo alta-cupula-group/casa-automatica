@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit && vite build",
-    "lint": "eslint .",
+    "lint": "oxlint src vite.config.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
@@ -15,7 +15,6 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
-    "@casa/config": "workspace:*",
     "@testing-library/react": "16.3.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
