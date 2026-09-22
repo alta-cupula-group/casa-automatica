@@ -182,7 +182,7 @@ O DoD geral em `docs/fase 1/dod.md` vale por cima deste.
 | A análise de tipo não roda num arquivo fora de todo `tsconfig`. | Os casos do G3 no teste não acusam nada. | Parar e reportar. Criar `tsconfig` está fora deste contrato. |
 | O `pnpm install` pede para liberar script de instalação de `oxlint` ou `oxlint-tsgolint`. | Aviso do pnpm sobre `allowBuilds`, ou o binário não roda. | Parar e reportar. Não mexer em `pnpm-workspace.yaml`. |
 | A documentação do oxlint pede TypeScript 7 para a análise de tipo, e o repositório usa `6.0.3`. | Erro do `oxlint-tsgolint` ao rodar. | Parar e reportar. Trocar a versão do TypeScript está fora deste contrato. |
-| O hook acusa erro de tipo falso quando `packages/shared/dist` está velho ou ausente. | Erro de lint ou de tipo que some depois de `pnpm -r build`. | Nada nesta unidade. O `pnpm -r typecheck` do hook já depende do mesmo `dist`. Registrar em `execucao.md` se aparecer. |
+| O hook acusa erro falso quando `packages/shared/dist` está ausente ou velho. Isso vale para o oxlint e valeria para o ESLint com o G3. `apps/api` e `apps/web` leem os tipos do `@casa/shared` no `dist`, e o hook não roda build. | Erro de lint ou de tipo que some depois de `pnpm -r build`. | Nada nesta unidade. O problema já existe no `pnpm -r typecheck` do hook. O condutor verificou em 2026-09-22 num clone limpo: sem `dist`, o typecheck falha com `TS2307` em `apps/web/src/App.tsx:1`. Com `dist` velho, ele falha com `TS2305`. O executor registra em `execucao.md` se o problema aparecer. |
 
 ## Depende de
 
