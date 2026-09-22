@@ -1,5 +1,5 @@
 > Unidade: `M1.7-lint` · Marco: `M1 · CI` · Trilha: `dividida`
-> Estado: aprovada
+> Estado: aprovada · alteração de 2026-09-22 reaprovada na mesma data
 > Condutor aprovou: 2026-09-22 · Operador aprovou: 2026-09-22
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
@@ -136,7 +136,7 @@ pacote do workspace além destes os usa.
 | `apps/web/src/vite-env.d.ts` | criar |
 | `apps/web/src/lint.test.ts` | criar |
 | `apps/web/lint-fixtures/` | criar, um arquivo por regra da tabela do teste |
-| `README.md` | alterar: sai a linha de `@casa/config` da tabela de pacotes, e a linha de `pnpm -r lint` diz oxlint |
+| `README.md` | alterar: sai a linha de `@casa/config` da tabela de pacotes, a frase de abertura para de citar um pacote de configuração, e a linha de `pnpm -r lint` diz oxlint |
 | `docs/fase 1/unidades/M1.7-lint/execucao.md` | criar |
 | `docs/fase 1/estado.md` | alterar: linha da `M1.7-lint` |
 
@@ -167,7 +167,7 @@ pacote do workspace além destes os usa.
 | 6 | O `VITE_API_URL` tem tipo. | `pnpm -r typecheck` sai com código 0, e o item 1 passa com `typescript/no-unsafe-assignment` ligada. | o teste existente `apps/web/src/App.test.tsx` continua passando |
 | 7 | Os arquivos de teste das regras não vazam. | O item 1 passa com `apps/web/lint-fixtures/` presente. `apps/web/dist/` não tem nenhum arquivo vindo de `lint-fixtures/` depois de `pnpm -r build`. | verificação manual |
 | 8 | O lint ficou mais rápido. | `time pnpm -r lint` roda três vezes antes da troca e três depois, na mesma máquina. A mediana de depois é menor. | verificação manual, saída em `execucao.md` |
-| 9 | O `README.md` descreve o novo lint. | `git grep -n -i eslint README.md` não devolve nada. | verificação manual |
+| 9 | O `README.md` descreve o novo lint e os pacotes que existem. | `git grep -n -i eslint README.md` não devolve nada. `git grep -n -i "configuração" README.md` não devolve nenhuma frase que descreva um pacote de configuração. A frase de abertura conta três pacotes, os mesmos da tabela. | verificação manual |
 | 10 | A CI passa. | O check `CI / verificar` está verde no último commit da PR da unidade. | CI |
 
 O DoD geral em `docs/fase 1/dod.md` vale por cima deste.
@@ -217,3 +217,4 @@ que a revisão fica com um revisor separado, numa sessão própria.
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
 | 2026-09-22 | A seção Fora deixou de citar `App.tsx` como arquivo que pode mudar. | Alinhar com a lista de arquivos afetados, que não inclui o `App.tsx`. É esclarecimento e não muda o que será construído, pela regra 03. | não exige |
+| 2026-09-22 | O `README.md` também corrige a frase de abertura, que diz "três pacotes de produto e um de configuração". O item 9 do DoD passa a conferir isso. | O `packages/config` sai nesta unidade, e a frase ficou errada por causa dela. O executor viu o erro e não mexeu, porque o contrato não pedia. | 2026-09-22, pelo operador, na mesma mensagem em que pediu a alteração |
