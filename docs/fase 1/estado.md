@@ -97,12 +97,13 @@ operador escreve, no fim de `exploracao.md`, o que fazer com o resultado.
 ## Ordem de trabalho
 
 Fechadas até aqui: `M0.1` e `M1.1` em 2026-09-13, `M1.4` em 2026-09-16, `M1.5` em
-2026-09-20, `M1.2` em 2026-09-21. A onda inicial esperou `M0.1` fechar de propósito: explorar CI, compose e
-migrações antes de o monorepo existir produziria relatório sobre um repositório que ainda
-não tem forma.
+2026-09-20, `M1.2` em 2026-09-21. A onda inicial esperou `M0.1` fechar de propósito:
+explorar CI, compose e migrações antes de o monorepo existir produziria relatório sobre um
+repositório que ainda não tem forma.
 
 O que falta, em ordem de prioridade. Proposta pelo condutor em 2026-09-20, a pedido do
-operador. **Aguardando o veredito dele.** A posição 2 já é decisão dele, de 2026-09-20.
+operador. **Aprovada pelo operador em 2026-09-21.** A posição 2 já era decisão dele, de
+2026-09-20.
 
 Duas trilhas correm em paralelo. A do banco é o caminho crítico: nada da Etapa 2 anda sem
 ela. A da CI prepara o servidor para ser exposto. Dá para tocar uma unidade de cada
@@ -110,7 +111,7 @@ trilha ao mesmo tempo.
 
 | # | Unidade | Trilha | Por que nesta posição |
 |---|---|---|---|
-| 1 | `M1.2-ambientes-e-migracoes` | banco | Caminho crítico. O M2 em diante depende do M1 · Banco inteiro. É a fila mais longa da fase. Ordem emitida em 2026-09-20. O operador explora |
+| 1 | `M1.2-ambientes-e-migracoes` | banco | **Fechada em 2026-09-21.** Caminho crítico. O M2 em diante depende do M1 · Banco inteiro |
 | 2 | `M1.7-lint` | CI | Decisão do operador em 2026-09-20: decidir o linter enquanto o repositório é pequeno. Cada unidade seguinte que passar antes dela aumenta o que vai ter que ser convertido |
 | 3 | `M1.3-house-e-auditoria` | banco | Depende de `M1.2`. Fecha o M1 · Banco e libera o M2. Carrega o Row Level Security |
 | 4 | `M1.10-endurecer-compose` | CI | Endurece o que já roda, antes de existir porta aberta para a internet |
