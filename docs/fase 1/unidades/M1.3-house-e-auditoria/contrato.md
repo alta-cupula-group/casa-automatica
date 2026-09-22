@@ -1,6 +1,6 @@
 > Unidade: `M1.3-house-e-auditoria` · Marco: `M1 · Banco` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-22 · Operador aprovou: —
+> Estado: aprovada
+> Condutor aprovou: 2026-09-22 · Operador aprovou: 2026-09-22
 > Base: `ordem.md`, `exploracao.md` com o veredito do operador de 2026-09-22, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M1.3-house-e-auditoria`
@@ -309,6 +309,11 @@ O veredito do operador deixou três pontos para o condutor. A exploração deixo
 ## Perguntas ao operador
 
 Nenhuma. As sete perguntas da exploração estão decididas no veredito de 2026-09-22.
+
+## Aprovação
+
+O operador aprovou o contrato inteiro em 2026-09-22, sem ressalva. A aprovação inclui as
+cinco decisões do condutor da seção anterior.
 
 ## Alterações
 
