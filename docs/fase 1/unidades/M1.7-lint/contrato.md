@@ -149,7 +149,8 @@ pacote do workspace além destes os usa.
 - Fazer o hook rodar build antes do lint.
 - Trocar o Prettier ou mexer em formatação.
 - Criar `tsconfig` novo ou mudar o `include` dos que existem.
-- Corrigir código de produção além de `apps/web/src/App.tsx` e do novo `vite-env.d.ts`.
+- Corrigir código de produção. O erro de `apps/web/src/App.tsx:4` some com o novo
+  `vite-env.d.ts`, e o `App.tsx` não muda.
 - Mudar `docs/fase 1/roadmap.md` ou os documentos de unidades fechadas que citam ESLint.
   Eles são histórico.
 - Liberar script de instalação de pacote em `pnpm-workspace.yaml`.
@@ -215,3 +216,4 @@ que a revisão fica com um revisor separado, numa sessão própria.
 
 | Data | O que mudou | Motivo | Reaprovado em |
 |---|---|---|---|
+| 2026-09-22 | A seção Fora deixou de citar `App.tsx` como arquivo que pode mudar. | Alinhar com a lista de arquivos afetados, que não inclui o `App.tsx`. É esclarecimento e não muda o que será construído, pela regra 03. | não exige |
