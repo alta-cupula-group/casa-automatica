@@ -1,6 +1,6 @@
 > Unidade: `M1.7-lint` · Marco: `M1 · CI` · Trilha: `dividida`
-> Estado: aguardando operador
-> Condutor aprovou: 2026-09-22 · Operador aprovou: —
+> Estado: aprovada
+> Condutor aprovou: 2026-09-22 · Operador aprovou: 2026-09-22
 > Base: `ordem.md`, `exploracao.md`, `docs/scope-brief.md`, `docs/fase 1/dod.md`
 
 # Contrato — `M1.7-lint`
@@ -205,6 +205,11 @@ ponto em que essa descoberta pode falhar tem uma linha em Riscos.
 
 Nenhuma. A opção e os grupos foram decididos pelo operador em 2026-09-22. A decisão está
 registrada no fim de `exploracao.md`.
+
+## Aprovação
+
+O operador aprovou o contrato em 2026-09-22, sem ressalva. Na mesma data, ele decidiu
+que a revisão fica com um revisor separado, numa sessão própria.
 
 ## Alterações
 
