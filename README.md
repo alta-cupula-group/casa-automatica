@@ -1,14 +1,12 @@
 # Casa Automática
 
-Software da casa de três moradores. Este repositório é um monorepo pnpm com três pacotes de
-produto e um de configuração.
+Software da casa de três moradores. Este repositório é um monorepo pnpm com três pacotes.
 
 | Pacote         | Caminho           | O que é                                  |
 | -------------- | ----------------- | ---------------------------------------- |
 | `@casa/api`    | `apps/api`        | processo Node da API                     |
 | `@casa/web`    | `apps/web`        | aplicação React servida pelo Vite        |
 | `@casa/shared` | `packages/shared` | código compartilhado entre `api` e `web` |
-| `@casa/config` | `packages/config` | configuração de ESLint compartilhada     |
 
 O processo de trabalho está em `AGENTS.md` e em `docs/processo/`, e vale para qualquer ferramenta de IA. O escopo do produto está
 em `docs/scope-brief.md`.
@@ -61,7 +59,7 @@ recém-instalado.
 | Comando             | O que faz                                         |
 | ------------------- | ------------------------------------------------- |
 | `pnpm -r build`     | compila todos os pacotes                          |
-| `pnpm -r lint`      | roda o ESLint em todos os pacotes                 |
+| `pnpm -r lint`      | roda o oxlint em todos os pacotes                 |
 | `pnpm -r typecheck` | roda o TypeScript sem emitir, incluindo os testes |
 | `pnpm -r test`      | roda o Vitest em todos os pacotes                 |
 | `pnpm format:check` | confere a formatação com o Prettier               |
