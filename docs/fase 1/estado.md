@@ -97,12 +97,13 @@ operador escreve, no fim de `exploracao.md`, o que fazer com o resultado.
 ## Ordem de trabalho
 
 Fechadas até aqui: `M0.1` e `M1.1` em 2026-09-13, `M1.4` em 2026-09-16, `M1.5` em
-2026-09-20, `M1.2` em 2026-09-21, `M1.7` em 2026-10-01. A onda inicial esperou `M0.1` fechar de propósito: explorar CI, compose e
-migrações antes de o monorepo existir produziria relatório sobre um repositório que ainda
-não tem forma.
+2026-09-20, `M1.2` em 2026-09-21, `M1.7` em 2026-10-01. A onda inicial esperou `M0.1` fechar
+de propósito: explorar CI, compose e migrações antes de o monorepo existir produziria
+relatório sobre um repositório que ainda não tem forma.
 
 O que falta, em ordem de prioridade. Proposta pelo condutor em 2026-09-20, a pedido do
-operador. **Aguardando o veredito dele.** A posição 2 já é decisão dele, de 2026-09-20.
+operador. **Aprovada pelo operador em 2026-09-21.** A posição 2 já era decisão dele, de
+2026-09-20.
 
 Duas trilhas correm em paralelo. A do banco é o caminho crítico: nada da Etapa 2 anda sem
 ela. A da CI prepara o servidor para ser exposto. Dá para tocar uma unidade de cada
@@ -110,7 +111,7 @@ trilha ao mesmo tempo.
 
 | # | Unidade | Trilha | Por que nesta posição |
 |---|---|---|---|
-| 1 | `M1.2-ambientes-e-migracoes` | banco | Caminho crítico. O M2 em diante depende do M1 · Banco inteiro. É a fila mais longa da fase. Ordem emitida em 2026-09-20. O operador explora |
+| 1 | `M1.2-ambientes-e-migracoes` | banco | **Fechada em 2026-09-21.** Caminho crítico. O M2 em diante depende do M1 · Banco inteiro |
 | 2 | `M1.7-lint` | CI | **Fechada em 2026-10-01.** Decisão do operador em 2026-09-20: decidir o linter enquanto o repositório é pequeno. Cada unidade seguinte que passar antes dela aumenta o que vai ter que ser convertido |
 | 3 | `M1.3-house-e-auditoria` | banco | Depende de `M1.2`. Fecha o M1 · Banco e libera o M2. Carrega o Row Level Security |
 | 4 | `M1.10-endurecer-compose` | CI | Endurece o que já roda, antes de existir porta aberta para a internet |
@@ -131,7 +132,7 @@ roadmap a entrega no M11.
 | `M0.1-monorepo-base` | M0 | dividida | `fechada` | — | 2026-09-13, GATE 2 vencido. Branch na `main` |
 | `M1.1-validar-supabase` | M1 · Banco | só exploração | `fechada` | — | 2026-09-12, veredito do operador registrado |
 | `M1.2-ambientes-e-migracoes` | M1 · Banco | dividida | `fechada` | `M0.1`, `M1.1` | 2026-09-21, GATE 2 vencido. `dev` e `prod` migrados, `api_app` nos dois. O operador reaprovou a alteração do item 10. Observações viraram as linhas 5 a 8 do backlog e uma herança do M2 |
-| `M1.3-house-e-auditoria` | M1 · Banco | dividida | `planejada` | `M1.2` | 2026-09-20, entrega ampliada com Row Level Security por `house` |
+| `M1.3-house-e-auditoria` | M1 · Banco | dividida | `em exploração` | `M1.2` | 2026-09-22, ordem emitida. Explorador: uma sessão de IA, com apoio do operador |
 | `M1.4-ci-verificacao` | M1 · CI | dividida | `fechada` | `M0.1` | 2026-09-16, GATE 2 vencido. Duas ressalvas viraram linhas do backlog |
 | `M1.5-compose-e-caddy` | M1 · CI | dividida | `fechada` | `M0.1` para explorar, `M1.4` fechada | 2026-09-20, GATE 2 vencido. Revisão aprovada sem correções obrigatórias, DoD do contrato e DoD geral inteiramente atendidos (item 6 confirmado depois que o Docker passou a funcionar na máquina da execução, com WSL instalado). Operador aprovou a entrega |
 | `M1.6-deploy-na-casa` | M1 · CI | dividida | `planejada` | `M1.4`, `M1.5` | 2026-09-12, fatiada |
