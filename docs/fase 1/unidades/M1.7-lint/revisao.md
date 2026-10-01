@@ -1,5 +1,5 @@
 > Unidade: `M1.7-lint` · Marco: `M1 · CI`
-> Estado: em revisão
+> Estado: fechada
 > Revisor: `revisor separado` · Ferramenta: `Claude Code, modelo claude-sonnet-5-5` · Data: `2026-10-01`
 
 # Revisão — `M1.7-lint`
@@ -84,5 +84,5 @@ Nenhuma.
 ## GATE 2
 
 - Aprovação técnica: `revisor separado` em `2026-10-01`
-- Veredito do operador: `—`
-- Ressalva e destino: `observação 1, linha de backlog a critério do condutor`
+- Veredito do operador: aprovado em 2026-10-01
+- Ressalva e destino: a observação 1 virou a linha 11 do `docs/fase 1/backlog.md`, por decisão do operador na mesma data. As observações 2, 3 e 4 ficam sem destino: a 2 já está nos riscos do contrato, e a 3 e a 4 não são desvio
